@@ -3,6 +3,7 @@ import { Row, Column } from '../components/helpers'
 
 import { useWeb3 } from '../contexts/useWeb3'
 import { web3 } from '../utils/ethers'
+import { useRouter } from 'next/router'
 
 import useCurrentBlock from '../hooks/useCurrentBlock'
 
@@ -10,6 +11,8 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 
 export default function Home() {
+  const router = useRouter()
+
   const { web3, connectWallet, disconnectWallet, account } = useWeb3()
   const block = useCurrentBlock()
 
@@ -78,11 +81,13 @@ export default function Home() {
             <Card>
               <CardTitle>Get Started with ESD</CardTitle>
               <Column jc={'space-between'} h={'100%'} p={'10px 0 0 '}>
-                <Cta href="/esd">- Mint & Redeem ESD tokens &rarr;</Cta>
-                <Cta href="/esds">
+                <Cta onClick={() => router.push('/esd')}>
+                  - Mint & Redeem ESD tokens &rarr;
+                </Cta>
+                <Cta onClick={() => router.push('/esds')}>
                   - Purchase ESD share tokens to earn rewards &rarr;
                 </Cta>
-                <Cta href="/governance">
+                <Cta onClick={() => router.push('/governance')}>
                   - Make a proposal or vote in the governance process &rarr;
                 </Cta>
               </Column>

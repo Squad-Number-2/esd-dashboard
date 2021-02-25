@@ -33,7 +33,10 @@ function NavBar() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Section>
-        <a href="/" style={{ marginRight: '16px', height: '40px' }}>
+        <a
+          onClick={() => router.push('/')}
+          style={{ marginRight: '16px', height: '40px' }}
+        >
           <img src={logoUrl} height="40px" alt="Empty Set Dollar" />
         </a>
         <Row w={'auto'}>
