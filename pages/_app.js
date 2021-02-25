@@ -8,6 +8,11 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-family: "Helvetica", sans-serif, monospace;
+    background: black;
+    a {
+      text-decoration: none;
+      color: #424242;
+    }
   }
 `
 

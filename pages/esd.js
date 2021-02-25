@@ -19,73 +19,91 @@ export default function Home() {
       <>
         <Wrapper>
           <Column w={'100%'} style={{ maxWidth: '1200px' }} m={'50px 0 0'}>
-            <Title>Welcome to the Empty Set Dollar DAO </Title>
+            <Title>Mint, Redeem & Earn with your ESD </Title>
             <Subtitle>
-              Manage your ESD, Trade you ESDS tokens and participate in
-              Governance.
+              Use the interface below to manage your ESD tokens.
             </Subtitle>
           </Column>
         </Wrapper>
 
         <ContentWrapper ai={'center'}>
           <CardRow topRow>
-            <Card wide>
-              <Row>
-                <Column w={'50%'}>
-                  <CardTitle>Migrate your ESD V1 to ESD V1.5</CardTitle>
-                  <p>
-                    ESD has recently upgraded. Connect your wallet and click the
-                    migrate button to burn your ESD V1 tokens and receive the
-                    equivalent ESDS.
-                  </p>
-                  <p>
-                    Learn more about the transition on <a>our blog</a>.
-                  </p>
-                </Column>
-                <Column w={'50%'} ai={'center'}>
-                  <div>
-                    <InfoTitle>Your ESD V1 Balance</InfoTitle>
-                    <div>ø 2,300</div>
-                  </div>
-                  <br />
-                  <Button>Migrate Now</Button>
-                </Column>
-              </Row>
-            </Card>
-          </CardRow>
-          <CardRow>
             <Card>
-              <CardTitle>Your Balance</CardTitle>
+              <CardTitle>Mint ESD</CardTitle>
               <Grid>
                 <div>
-                  <InfoTitle>ESD Balance</InfoTitle>
-                  <div>ø 3.50</div>
-                </div>
-                <div>
-                  <InfoTitle>ESDS Balance</InfoTitle>
-                  <div>12,004.00</div>
-                </div>
-                <div>
-                  <InfoTitle>Incentivized ESD</InfoTitle>
+                  <InfoTitle>Your ESD Balance</InfoTitle>
                   <div>ø 8,459.30</div>
                 </div>
+
+                <Button>Mint ESD</Button>
+
                 <div>
-                  <InfoTitle>Incentizer APY</InfoTitle>
-                  <div>13.68%</div>
+                  <InfoTitle>Total ESD Supply</InfoTitle>
+                  <div>ø 120,000,000</div>
+                </div>
+                <div>
+                  <InfoTitle>Weekly Change</InfoTitle>
+                  <div>▲ 38.29%</div>
                 </div>
               </Grid>
             </Card>
             <Card>
-              <CardTitle>Get Started with ESD</CardTitle>
-              <Column jc={'space-between'} h={'100%'} p={'10px 0 0 '}>
-                <Cta href="/esd">- Mint & Redeem ESD tokens &rarr;</Cta>
-                <Cta href="/esds">
-                  - Purchase ESD share tokens to earn rewards &rarr;
-                </Cta>
-                <Cta href="/governance">
-                  - Make a proposal or vote in the governance process &rarr;
-                </Cta>
-              </Column>
+              <CardTitle>Redeem ESD</CardTitle>
+              <Grid>
+                <div>
+                  <InfoTitle>Your ESD Balance</InfoTitle>
+                  <div>ø 8,459.30</div>
+                </div>
+
+                <Button>Redeem ESD</Button>
+
+                <div>
+                  <InfoTitle>ESD Collateral Ratio</InfoTitle>
+                  <div>86.46%</div>
+                </div>
+                <div>
+                  <InfoTitle>Weekly Change</InfoTitle>
+                  <div>▼ 3.29%</div>
+                </div>
+              </Grid>
+            </Card>
+          </CardRow>
+          <CardRow>
+            <Card wide>
+              <Row>
+                <Column w={'50%'}>
+                  <CardTitle>Earn a return on your ESD</CardTitle>
+                  <p>
+                    You can deposit your ESD into the Incentivzer contract to
+                    earn a return between 0-15% APY. The return depends on the
+                    price of ESD.
+                  </p>
+                  <p>
+                    Learn more about the Incentizer on{' '}
+                    <a>the documentation platform</a>.
+                  </p>
+                </Column>
+                <Column w={'50%'} ai={'center'}>
+                  <Grid>
+                    <div>
+                      <InfoTitle>Deposited ESD</InfoTitle>
+                      <div>12,004.00</div>
+                    </div>
+
+                    <div>
+                      <InfoTitle>Incentizer APY</InfoTitle>
+                      <div>13.68%</div>
+                    </div>
+                    <div>
+                      <Button>Deposit ESD</Button>
+                    </div>
+                    <div>
+                      <Button>Withdraw ESD</Button>
+                    </div>
+                  </Grid>
+                </Column>
+              </Row>
             </Card>
           </CardRow>
           <Infobox ai={'center'}>

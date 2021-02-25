@@ -19,75 +19,46 @@ export default function Home() {
       <>
         <Wrapper>
           <Column w={'100%'} style={{ maxWidth: '1200px' }} m={'50px 0 0'}>
-            <Title>Welcome to the Empty Set Dollar DAO </Title>
+            <Title>ESD Shares?</Title>
             <Subtitle>
-              Manage your ESD, Trade you ESDS tokens and participate in
-              Governance.
+              Use the interface below to manage your ESD tokens.
             </Subtitle>
           </Column>
         </Wrapper>
 
         <ContentWrapper ai={'center'}>
           <CardRow topRow>
-            <Card wide>
-              <Row>
-                <Column w={'50%'}>
-                  <CardTitle>Migrate your ESD V1 to ESD V1.5</CardTitle>
-                  <p>
-                    ESD has recently upgraded. Connect your wallet and click the
-                    migrate button to burn your ESD V1 tokens and receive the
-                    equivalent ESDS.
-                  </p>
-                  <p>
-                    Learn more about the transition on <a>our blog</a>.
-                  </p>
-                </Column>
-                <Column w={'50%'} ai={'center'}>
-                  <div>
-                    <InfoTitle>Your ESD V1 Balance</InfoTitle>
-                    <div>ø 2,300</div>
-                  </div>
-                  <br />
-                  <Button>Migrate Now</Button>
-                </Column>
-              </Row>
-            </Card>
-          </CardRow>
-          <CardRow>
             <Card>
-              <CardTitle>Your Balance</CardTitle>
+              <CardTitle>Information</CardTitle>
               <Grid>
                 <div>
-                  <InfoTitle>ESD Balance</InfoTitle>
-                  <div>ø 3.50</div>
+                  <InfoTitle>ESDS Price</InfoTitle>
+                  <div>$3.24 USDC</div>
+                </div>
+
+                <div>
+                  <InfoTitle>Weekly Change</InfoTitle>
+                  <div>▲ 8.29%</div>
+                </div>
+
+                <div>
+                  <InfoTitle>Total ESDS Supply</InfoTitle>
+                  <div>ø 52,040,000</div>
                 </div>
                 <div>
-                  <InfoTitle>ESDS Balance</InfoTitle>
-                  <div>12,004.00</div>
-                </div>
-                <div>
-                  <InfoTitle>Incentivized ESD</InfoTitle>
-                  <div>ø 8,459.30</div>
-                </div>
-                <div>
-                  <InfoTitle>Incentizer APY</InfoTitle>
-                  <div>13.68%</div>
+                  <InfoTitle>ESDS Reserve Volume</InfoTitle>
+                  <div>$1,201,000 USDC</div>
                 </div>
               </Grid>
             </Card>
             <Card>
-              <CardTitle>Get Started with ESD</CardTitle>
-              <Column jc={'space-between'} h={'100%'} p={'10px 0 0 '}>
-                <Cta href="/esd">- Mint & Redeem ESD tokens &rarr;</Cta>
-                <Cta href="/esds">
-                  - Purchase ESD share tokens to earn rewards &rarr;
-                </Cta>
-                <Cta href="/governance">
-                  - Make a proposal or vote in the governance process &rarr;
-                </Cta>
-              </Column>
+              <CardTitle>Trade ESDS</CardTitle>
+              <Grid>
+                <InfoTitle>Uniswap esq interface? </InfoTitle>
+              </Grid>
             </Card>
           </CardRow>
+
           <Infobox ai={'center'}>
             <h1>Need to know more?</h1>
             <Row>

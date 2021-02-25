@@ -53,7 +53,7 @@ export const Web3Provider = (props) => {
   // Once loaded, initalise the provider
   useEffect(() => {
     initProvider()
-  }, [provider])
+  }, [])
 
   const tools = useMemo(
     () => ({
