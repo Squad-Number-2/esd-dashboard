@@ -1,6 +1,6 @@
-# Web3 Starter
+# ESD Dashboard - v1.5
 
-Simple web3 starter
+A web3 dashboard for the management of the Empty Set Dollar protocol version 1.5
 
 ## Get started:
 
