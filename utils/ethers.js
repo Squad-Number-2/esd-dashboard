@@ -15,3 +15,5 @@ export const registerProvider = (wallet) => {
     web3 = new ethers.providers.Web3Provider(window.ethereum)
   }
 }
+
+export const zeroAddress = ethers.constants.AddressZero
