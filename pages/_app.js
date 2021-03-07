@@ -9,6 +9,7 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     font-family: "Helvetica", sans-serif, monospace;
     background: black;
+    min-height: 100vh;
     a {
       text-decoration: none;
       color: #424242;
