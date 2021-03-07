@@ -3,16 +3,12 @@ import styled from 'styled-components'
 import { Row, Column } from '../helpers'
 
 const Footer = () => {
-  const logoUrl = `./logo/logo_${false ? 'black' : 'white'}.svg`
+  const logoUrl = `/logo/logo_${false ? 'black' : 'white'}.svg`
 
   return (
     <Wrapper>
       <Section>
-        <a
-          to="/"
-          external={false}
-          style={{ marginRight: '16px', height: '40px' }}
-        >
+        <a style={{ marginRight: '16px', height: '40px' }}>
           <img src={logoUrl} height="40px" alt="Empty Set Dollar" />
         </a>
         <Row w={'auto'}>

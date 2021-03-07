@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { Row, Column } from '../helpers'
@@ -9,13 +8,15 @@ import { useWeb3 } from '../../contexts/useWeb3'
 function NavBar() {
   const router = useRouter()
   const { connectWallet, disconnectWallet, account, status } = useWeb3()
-  const logoUrl = `./logo/logo_${false ? 'black' : 'white'}.svg`
-
+  const logoUrl = `/logo/logo_${false ? 'black' : 'white'}.svg`
+  console.log(account)
   /// Need to refactor to add
   const buttonText = () => {
     switch (status) {
       case 'connected':
-        return account.slice(0, 4) + '...' + account.slice(-4, -1)
+        return account
+          ? account.slice(0, 4) + '...' + account.slice(-4, -1)
+          : '......'
         break
       case 'disconnected':
         return 'Connect Wallet'
@@ -28,21 +29,29 @@ function NavBar() {
 
   return (
     <Wrapper>
-      <Head>
-        <title>Empty Set Dollar</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <Section>
-        <a
-          onClick={() => router.push('/')}
-          style={{ marginRight: '16px', height: '40px' }}
-        >
+        <LogoLink onClick={() => router.push('/')}>
           <img src={logoUrl} height="40px" alt="Empty Set Dollar" />
-        </a>
+        </LogoLink>
         <Row w={'auto'}>
-          <Button onClick={() => router.push('/esd')}>ESD</Button>
-          <Button onClick={() => router.push('/esds')}>ESDS</Button>
-          <Button onClick={() => router.push('/governance')}>Governance</Button>
+          <Button
+            active={router.pathname === '/stable'}
+            onClick={() => router.push('/stable')}
+          >
+            ESD
+          </Button>
+          <Button
+            active={router.pathname === '/share'}
+            onClick={() => router.push('/share')}
+          >
+            ESDS
+          </Button>
+          <Button
+            active={router.pathname === '/governance'}
+            onClick={() => router.push('/governance')}
+          >
+            Governance
+          </Button>
           <WalletButton
             inverted
             onClick={() =>
@@ -58,6 +67,11 @@ function NavBar() {
     </Wrapper>
   )
 }
+
+const LogoLink = styled.a`
+  margin-right: '16px';
+  height: '40px';
+`
 
 const Wrapper = styled(Row)`
   width: 100%;
@@ -91,6 +105,8 @@ const Button = styled.a`
   font-size: 14px;
   height: 40px;
   color: white;
+  text-decoration: ${({ active }) => (active ? 'underline' : 'none')};
+  cursor: pointer;
 `
 const WalletButton = styled.button`
   color: ${({ inverted }) => (inverted ? 'black' : '#00d661')};
