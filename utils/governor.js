@@ -119,9 +119,10 @@ export const fetchSingleProposal = async (id) => {
 
 export const fetchDelegations = async () => {
   // Token contract single
+  console.log(contracts.stake)
   const token = new ethers.Contract(
-    contracts.token.address,
-    contracts.token.abi,
+    contracts.stake.address,
+    contracts.stake.abi,
     web3
   )
 
@@ -167,8 +168,8 @@ export const fetchDelegations = async () => {
 export const fetchDelegate = async (address) => {
   // Token contract single
   const token = new ethers.Contract(
-    contracts.token.address,
-    contracts.token.abi,
+    contracts.stake.address,
+    contracts.stake.abi,
     web3
   )
   try {
@@ -182,8 +183,8 @@ export const setDelegate = async (address) => {
   const signer = web3.getSigner()
   // Token contract single
   const token = new ethers.Contract(
-    contracts.token.address,
-    contracts.token.abi,
+    contracts.stake.address,
+    contracts.stake.abi,
     signer
   )
 
@@ -193,5 +194,20 @@ export const setDelegate = async (address) => {
   } catch (e) {
     // Parse Error & hit notification lib
     return
+  }
+}
+
+export const castVote = async (proposal, vote) => {
+  if (!proposal) throw 'You must provide a proposal ID'
+  // Token contract single
+  const gov = new ethers.Contract(
+    contracts.governor.address,
+    contracts.governor.abi,
+    web3
+  )
+  try {
+    return await gov.castVote(proposal, vote)
+  } catch (e) {
+    return false
   }
 }

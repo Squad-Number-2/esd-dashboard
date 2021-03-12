@@ -5,7 +5,9 @@ import { useWeb3 } from '../contexts/useWeb3'
 import { web3 } from '../utils/ethers'
 import { useRouter } from 'next/router'
 
-import useCurrentBlock from '../hooks/useCurrentBlock'
+import useContractBalance from '../hooks/useContractBalance'
+import contracts from '../contracts'
+const { dollar, stake, oldDao, oldDollar } = contracts
 
 import Page from '../components/page'
 
@@ -13,7 +15,10 @@ export default function Home() {
   const router = useRouter()
 
   const { web3, connectWallet, disconnectWallet, account } = useWeb3()
-  const block = useCurrentBlock()
+  const dollarBalance = useContractBalance(dollar.address)
+  const stakeBalance = useContractBalance(stake.address)
+  const oldDaoBalance = useContractBalance(oldDao.address)
+  const oldDollarBalance = useContractBalance(oldDollar.address)
 
   return (
     <Page>
@@ -30,7 +35,7 @@ export default function Home() {
       <ContentWrapper ai={'center'}>
         <CardRow topRow>
           <Card wide>
-            <Row>
+            <Row jc="space-between">
               <Column w={'50%'}>
                 <CardTitle>Migrate your ESD V1 to ESD V1.5</CardTitle>
                 <p>
@@ -44,8 +49,10 @@ export default function Home() {
               </Column>
               <Column w={'50%'} ai={'center'}>
                 <div>
-                  <InfoTitle>Your ESD V1 Balance</InfoTitle>
-                  <div>ø 2,300</div>
+                  <InfoTitle>Your V1 Balance</InfoTitle>
+                  <div>
+                    ø {oldDollarBalance} ESD | ø {oldDaoBalance} ESDS
+                  </div>
                 </div>
                 <br />
                 <Button>Migrate Now</Button>
@@ -59,11 +66,11 @@ export default function Home() {
             <Grid>
               <div>
                 <InfoTitle>ESD Balance</InfoTitle>
-                <div>ø 3.50</div>
+                <div>ø {dollarBalance}</div>
               </div>
               <div>
                 <InfoTitle>ESDS Balance</InfoTitle>
-                <div>12,004.00</div>
+                <div>{stakeBalance}</div>
               </div>
               <div>
                 <InfoTitle>Incentivized ESD</InfoTitle>
