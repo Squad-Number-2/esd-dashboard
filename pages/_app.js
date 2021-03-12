@@ -28,7 +28,7 @@ export default function App({ Component, pageProps }) {
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <UseWalletProvider chainId={1}>
+        <UseWalletProvider chainId={3}>
           <Web3Provider>
             <Component {...pageProps} />
           </Web3Provider>
