@@ -7,9 +7,27 @@ import { useRouter } from 'next/router'
 
 import useContractBalance from '../hooks/useContractBalance'
 import contracts from '../contracts'
+
+import {
+  Flex,
+  Grid,
+  Box,
+  Center,
+  Image,
+  Link,
+  Heading,
+  Text,
+  Button,
+  useColorModeValue,
+  Stat,
+  StatLabel,
+  StatNumber,
+} from '@chakra-ui/react'
+
 const { dollar, stake, oldDao, oldDollar } = contracts
 
 import Page from '../components/page'
+import MoreInfo from '../components/moreInfo'
 
 export default function Home() {
   const router = useRouter()
@@ -21,118 +39,112 @@ export default function Home() {
   const oldDollarBalance = useContractBalance(oldDollar.address)
 
   return (
-    <Page>
-      <Wrapper>
-        <Column w={'100%'} style={{ maxWidth: '1200px' }} m={'50px 0 0'}>
-          <Title>Welcome to the Empty Set Dollar DAO </Title>
-          <Subtitle>
-            Manage your ESD, Trade you ESDS tokens and participate in
-            Governance.
-          </Subtitle>
-        </Column>
-      </Wrapper>
+    <Page
+      header={'Welcome to the Empty Set Dollar DAO'}
+      subheader={'Manage, trade, and govern the your ESD.'}
+    >
+      <Box m={'-97px 0 20px'}>
+        <Box
+          bg="white"
+          p="2em 4em"
+          border="1px solid #e8e8e8"
+          borderRadius="lg"
+          m="0em 0em 1em"
+        >
+          <Flex>
+            <Box w="60%">
+              <Heading fontSize="2xl">Migrate your ESD V1 to ESD V1.5</Heading>
+              <Text m="1em 0em 0em">
+                ESD has recently upgraded. Connect your wallet and click the
+                migrate button to burn your ESD V1 tokens and receive the
+                equivalent ESDS.
+              </Text>
+              <Text m="1em 0em 0em">
+                Learn more about the transition on <Link>our blog</Link>.
+              </Text>
+            </Box>
+            <Box w="40%">
+              <Heading fontSize="lg">Your V1 Balance</Heading>
+              <Flex m="1em 0em 0em">
+                <Stat>
+                  <StatLabel>Dollar (ESD)</StatLabel>
+                  <StatNumber>ø {oldDollarBalance}</StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>Stake (ESDS)</StatLabel>
+                  <StatNumber>ø {oldDollarBalance}</StatNumber>
+                </Stat>
+              </Flex>
+              <br />
+              <Button colorScheme="green">Migrate Now</Button>
+            </Box>
+          </Flex>
+        </Box>
 
-      <ContentWrapper ai={'center'}>
-        <CardRow topRow>
-          <Card wide>
-            <Row jc="space-between">
-              <Column w={'50%'}>
-                <CardTitle>Migrate your ESD V1 to ESD V1.5</CardTitle>
-                <p>
-                  ESD has recently upgraded. Connect your wallet and click the
-                  migrate button to burn your ESD V1 tokens and receive the
-                  equivalent ESDS.
-                </p>
-                <p>
-                  Learn more about the transition on <a>our blog</a>.
-                </p>
-              </Column>
-              <Column w={'50%'} ai={'center'}>
-                <div>
-                  <InfoTitle>Your V1 Balance</InfoTitle>
-                  <div>
-                    ø {oldDollarBalance} ESD | ø {oldDaoBalance} ESDS
-                  </div>
-                </div>
-                <br />
-                <Button>Migrate Now</Button>
-              </Column>
-            </Row>
-          </Card>
-        </CardRow>
-        <CardRow>
-          <Card>
-            <CardTitle>Your Balance</CardTitle>
-            <Grid>
-              <div>
-                <InfoTitle>ESD Balance</InfoTitle>
-                <div>ø {dollarBalance}</div>
-              </div>
-              <div>
-                <InfoTitle>ESDS Balance</InfoTitle>
-                <div>{stakeBalance}</div>
-              </div>
-              <div>
-                <InfoTitle>Incentivized ESD</InfoTitle>
-                <div>ø 8,459.30</div>
-              </div>
-              <div>
-                <InfoTitle>Incentizer APY</InfoTitle>
-                <div>13.68%</div>
-              </div>
-            </Grid>
-          </Card>
-          <Card>
-            <CardTitle>Get Started with ESD</CardTitle>
-            <Column jc={'space-between'} h={'100%'} p={'10px 0 0 '}>
-              <Cta onClick={() => router.push('/esd')}>
-                - Mint & Redeem ESD tokens &rarr;
-              </Cta>
-              <Cta onClick={() => router.push('/esds')}>
-                - Purchase ESD share tokens to earn rewards &rarr;
-              </Cta>
-              <Cta onClick={() => router.push('/governance')}>
-                - Make a proposal or vote in the governance process &rarr;
-              </Cta>
-            </Column>
-          </Card>
-        </CardRow>
-        <Infobox ai={'center'}>
-          <h1>Need to know more?</h1>
-          <Row>
-            <InfoCard href={'https://docs.emptyset.finance/'} target={'_blank'}>
-              <img src={'/graphics/new.png'} style={{ width: '100%' }} />
-              <h3>New to Empty Set Dollar?</h3>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-                luctus, velit ac tincidunt ultrices, mauris arcu imperdiet{' '}
-              </p>
-            </InfoCard>
-            <InfoCard
-              href={'https://docs.emptyset.finance/faqs/bonding'}
-              target={'_blank'}
-            >
-              <img src={'/graphics/how.png'} style={{ width: '100%' }} />
-              <h3>How do you use the DAO/LP?</h3>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-                luctus, velit ac tincidunt ultrices, mauris arcu imperdiet{' '}
-              </p>
-            </InfoCard>
-            <InfoCard
-              href={'https://docs.emptyset.finance/faqs/risks'}
-              target={'_blank'}
-            >
-              <img src={'/graphics/risks.png'} style={{ width: '100%' }} />
-              <h3>Learn about the Risks?</h3>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-                luctus, velit ac tincidunt ultrices, mauris arcu imperdiet{' '}
-              </p>
-            </InfoCard>
-          </Row>
-        </Infobox>
-      </ContentWrapper>
+        <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+          <Box
+            bg="white"
+            p="2em 4em"
+            border="1px solid #e8e8e8"
+            borderRadius="lg"
+            flexGrow="1"
+          >
+            <Heading fontSize="2xl">Your Balance</Heading>
+            <Flex m=".5em 0 0">
+              <Stat>
+                <StatLabel>Dollar (ESD)</StatLabel>
+                <StatNumber>ø {dollarBalance}</StatNumber>
+              </Stat>
+              <Stat>
+                <StatLabel>Stake (ESDS)</StatLabel>
+                <StatNumber>ø {stakeBalance}</StatNumber>
+              </Stat>
+            </Flex>
+            <Flex m=".5em 0 0">
+              <Stat>
+                <StatLabel>Incentivized ESD</StatLabel>
+                <StatNumber>ø {oldDollarBalance}</StatNumber>
+              </Stat>
+              <Stat>
+                <StatLabel>Incentizer APY</StatLabel>
+                <StatNumber>10.34%</StatNumber>
+              </Stat>
+            </Flex>
+          </Box>
+          <Box
+            bg="white"
+            p="2em 4em"
+            border="1px solid #e8e8e8"
+            borderRadius="lg"
+            w="auto"
+          >
+            <Heading fontSize="2xl" m="0em 0em 0.5em">
+              Get Started with ESD
+            </Heading>
+            <Link href="/dollar">
+              <Text fontSize="lg" m="0em 0em 0.25em">
+                Mint & Redeem ESD tokens &rarr;
+              </Text>
+            </Link>
+            <Link href="/stake">
+              <Text fontSize="lg" m="0em 0em 0.25em">
+                Purchase ESD share tokens to earn rewards &rarr;
+              </Text>
+            </Link>
+            <Link href="/governance">
+              <Text fontSize="lg" m="0em 0em 0.25em">
+                Make a proposal or vote in the governance process &rarr;
+              </Text>
+            </Link>
+            <Link href="https://docs.emptyset.finance" isExternal={true}>
+              <Text fontSize="lg" m="0em 0em 0.25em">
+                Get stuck into the documentation &rarr;
+              </Text>
+            </Link>
+          </Box>
+        </Grid>
+        <MoreInfo />
+      </Box>
     </Page>
   )
 }
@@ -163,7 +175,7 @@ const ContentWrapper = styled(Column)`
   background: white;
   width: 100%;
   flex-grow: 1;
-  margin: 150px 0 0;
+  margin: 0px 0 0;
   padding: 0 20px 50px;
   box-sizing: border-box;
 `
@@ -210,24 +222,6 @@ const Card = styled(Column)`
     margin-right: 0px;
   }
 `
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  grid-auto-rows: minmax(70px, auto);
-`
-const Button = styled.button`
-  color: #00d661;
-  border: 1px solid;
-  box-sizing: border-box;
-  border-radius: 8px;
-  padding: 8px 16px 6px;
-  background: none;
-  font-size: 18px;
-  outline: none;
-  max-height: 40px;
-`
-
 const Wrapper = styled(Row)`
   width: 100%;
   padding: 0px 20px;
