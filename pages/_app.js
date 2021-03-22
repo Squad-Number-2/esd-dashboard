@@ -2,6 +2,8 @@ import { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { Web3Provider } from '../contexts/useWeb3'
 import { useWallet, UseWalletProvider } from 'use-wallet'
 
+import { ChakraProvider, CSSReset, extendTheme } from '@chakra-ui/react'
+
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
@@ -18,22 +20,31 @@ const GlobalStyle = createGlobalStyle`
 `
 
 const theme = {
-  colors: {
-    primary: '#0070f3',
+  styles: {
+    global: {
+      'html, body': {
+        minHeight: '100vh',
+        fontSize: 'sm',
+        color: 'gray.600',
+        lineHeight: 'tall',
+      },
+      a: {
+        color: 'teal.500',
+      },
+    },
   },
 }
 
 export default function App({ Component, pageProps }) {
   return (
-    <>
+    <ChakraProvider theme={extendTheme({ theme })}>
+      <CSSReset />
       <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        <UseWalletProvider chainId={3}>
-          <Web3Provider>
-            <Component {...pageProps} />
-          </Web3Provider>
-        </UseWalletProvider>
-      </ThemeProvider>
-    </>
+      <UseWalletProvider chainId={3}>
+        <Web3Provider>
+          <Component {...pageProps} />
+        </Web3Provider>
+      </UseWalletProvider>
+    </ChakraProvider>
   )
 }
