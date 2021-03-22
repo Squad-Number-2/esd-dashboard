@@ -3,6 +3,8 @@ import { Row, Column } from '../components/helpers'
 
 import { useWeb3 } from '../contexts/useWeb3'
 import { web3 } from '../utils/ethers'
+import { mint } from '../utils/migration'
+
 import { useRouter } from 'next/router'
 
 import useContractBalance from '../hooks/useContractBalance'
@@ -77,6 +79,12 @@ export default function Home() {
               </Flex>
               <br />
               <Button colorScheme="green">Migrate Now</Button>
+              <Button
+                colorScheme="green"
+                onClick={async () => await mint(account, '100000')}
+              >
+                Mint oldESD
+              </Button>
             </Box>
           </Flex>
         </Box>
@@ -98,16 +106,6 @@ export default function Home() {
               <Stat>
                 <StatLabel>Stake (ESDS)</StatLabel>
                 <StatNumber>ø {stakeBalance}</StatNumber>
-              </Stat>
-            </Flex>
-            <Flex m=".5em 0 0">
-              <Stat>
-                <StatLabel>Incentivized ESD</StatLabel>
-                <StatNumber>ø {oldDollarBalance}</StatNumber>
-              </Stat>
-              <Stat>
-                <StatLabel>Incentizer APY</StatLabel>
-                <StatNumber>10.34%</StatNumber>
               </Stat>
             </Flex>
           </Box>

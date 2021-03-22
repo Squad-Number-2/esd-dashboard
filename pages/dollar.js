@@ -48,6 +48,10 @@ export default function Dollar() {
     contracts.reserve.address
   )
 
+  const dollarAllowance = useContractAllowance(
+    contracts.dollar.address,
+    contracts.reserve.address
+  )
   // Reserve
   // read - reserveBalance() - Reserve in USDC value
   // read - reserveRatio() - Reserve Ratio
@@ -130,7 +134,10 @@ export default function Dollar() {
               </Stat>
               <MintModal balance={usdcBalance} allowance={usdcAllowance} />
 
-              <RedeemModal balance={dollarBalance} />
+              <RedeemModal
+                balance={dollarBalance}
+                allowance={dollarAllowance}
+              />
             </Grid>
           </Box>
         </Grid>

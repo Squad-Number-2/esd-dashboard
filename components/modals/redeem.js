@@ -20,9 +20,11 @@ import {
   InputGroup,
   InputRightAddon,
 } from '@chakra-ui/react'
+import contracts from '../../contracts'
+import { web3, setApproval } from '../../utils/ethers'
 import { redeem } from '../../utils/reserve'
 
-export default function Redeem({ balance }) {
+export default function Redeem({ balance, allowance }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [value, setValue] = useState('')
 
@@ -67,13 +69,29 @@ export default function Redeem({ balance }) {
             </InputGroup>
           </ModalBody>
           <ModalFooter>
-            <Button
-              colorScheme="green"
-              disabled={parseFloat(value) > parseFloat(balance)}
-              onClick={async () => await redeem(value)}
-            >
-              Redeem ESD
-            </Button>
+            {parseInt(allowance) === 0 ? (
+              <Button
+                disabled={value > balance}
+                colorScheme="pink"
+                onClick={() =>
+                  setApproval(
+                    contracts.dollar.address,
+                    contracts.reserve.address
+                  )
+                }
+              >
+                Approve USDC
+              </Button>
+            ) : (
+              <Button
+                colorScheme="green"
+                disabled={parseFloat(value) > parseFloat(balance)}
+                onClick={async () => await redeem(value)}
+              >
+                Redeem ESD
+              </Button>
+            )}
+
             <Button
               m="0 0 0 1em"
               variant="outline"
