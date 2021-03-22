@@ -532,4 +532,4 @@ const abi = [
   },
 ]
 
-export default { abi, address, decimals }
+export default { abi, address }
