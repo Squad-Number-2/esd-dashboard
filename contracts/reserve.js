@@ -531,5 +531,4 @@ const abi = [
     type: 'function',
   },
 ]
-
-export default { abi, address }
+export default { abi, address, name: 'Reserve' }

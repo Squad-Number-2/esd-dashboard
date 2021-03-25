@@ -365,5 +365,4 @@ const abi = [
     type: 'function',
   },
 ]
-
 export default { abi, address, decimals }

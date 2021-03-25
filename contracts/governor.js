@@ -422,4 +422,5 @@ const abi = [
     type: 'function',
   },
 ]
+
 export default { address, abi }
