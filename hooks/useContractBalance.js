@@ -38,7 +38,7 @@ const currentBalance = (contract, digits, fixed) => {
     const rawNum = await erc20.balanceOf(account)
     const normalised = parseFloat(
       ethers.utils.formatUnits(rawNum, digits || 18)
-    ).toFixed(fixed ? fixed : 4)
+    ).toFixed(fixed ? fixed : 2)
     setBalance(normalised)
   }
 
