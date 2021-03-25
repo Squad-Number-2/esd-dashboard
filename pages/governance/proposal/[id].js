@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
-import { Row, Column } from '../../../components/helpers'
 
 import { useWeb3 } from '../../../contexts/useWeb3'
 
 import useCurrentBlock from '../../../hooks/useCurrentBlock'
 
 import Page from '../../../components/page'
-import { fetchSingleProposal } from '../../../utils/governor'
+import { fetchSingleProposal, castVote } from '../../../utils/governor'
 
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
@@ -47,6 +46,11 @@ export default function Proposal() {
     }
   }
 
+  const vote = async (bool) => {
+    const response = await castVote(id, bool)
+    alert('Vote pending.')
+  }
+
   useEffect(async () => {
     loadData()
   }, [])
@@ -57,7 +61,10 @@ export default function Proposal() {
   }, [web3, id])
 
   return (
-    <Page header={proposal.title} subheader={proposal.state}>
+    <Page
+      header={proposal.title}
+      subheader={proposal.state + ' - Ends at #' + proposal.endBlock}
+    >
       <Box m={'-97px 0 20px'}>
         <Flex>
           <Box
@@ -74,6 +81,21 @@ export default function Proposal() {
             {proposal.description ? (
               <ReactMarkdown plugins={[gfm]} children={proposal.details} />
             ) : null}
+
+            <Heading fontSize="md" m="1em 0 0.5em">
+              Proposal Actions
+            </Heading>
+            {proposal.actions
+              ? proposal.actions.map((action) => (
+                  <Box mb="0.5em">
+                    <Text>{action.signature}</Text>
+                    <Text fontSize="xs">{action.target}</Text>
+                    <Text fontSize="xs">
+                      Call Data: {action.calldata.slice(0, 50)}...
+                    </Text>
+                  </Box>
+                ))
+              : null}
           </Box>
           <Box
             bg="white"
@@ -91,10 +113,10 @@ export default function Proposal() {
               <Heading fontSize="lg">Votes Against</Heading>
               <Text>{proposal.against_votes} ESDS</Text>
             </Box>
-            <Button w="100%" m=".5em 0">
+            <Button w="100%" m=".5em 0" onClick={() => vote(true)}>
               Vote for Proposal
             </Button>
-            <Button w="100%" m=".5em 0">
+            <Button w="100%" m=".5em 0" onClick={() => vote(false)}>
               Vote against Proposal
             </Button>
           </Box>

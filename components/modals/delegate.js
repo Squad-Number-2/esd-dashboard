@@ -1,0 +1,88 @@
+import { useState } from 'react'
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Flex,
+  Box,
+  Center,
+  Image,
+  Link,
+  Heading,
+  Text,
+  useDisclosure,
+  Button,
+  Input,
+  InputGroup,
+  InputRightAddon,
+  Divider,
+} from '@chakra-ui/react'
+
+import useContractAllowance from '../../hooks/useContractAllowance'
+
+import contracts from '../../contracts'
+import { ethers } from 'ethers'
+import { web3, setApproval, zeroAddress } from '../../utils/ethers'
+import { setDelegate } from '../../utils/governor'
+
+export default function Delegate({ account }) {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [value, setValue] = useState('')
+
+  return (
+    <>
+      <Button colorScheme="green" onClick={onOpen}>
+        Delegate your ESDS
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+        motionPreset="slideInBottom"
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Delegate your ESDS</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text m="0 0 1em" fontSize="sm">
+              In order to vote or submit governance proposals you must delegate
+              your ESDS. You can choose to delegate to yourself or another
+              address to delegate on your behalf.
+            </Text>
+            <Box align="center" m="0 0 1em">
+              <InputGroup m="0 0 1em">
+                <Input
+                  placeholder={'0x000....'}
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                />
+              </InputGroup>
+              <Button
+                colorScheme="green"
+                w="100%"
+                disabled={!ethers.utils.isAddress(value)}
+                onClick={async () => await setDelegate(value)}
+              >
+                Delegate ESDS to address
+              </Button>
+              <Divider m="1em 0" />
+
+              <Button
+                colorScheme="green"
+                w="100%"
+                onClick={async () => await setDelegate(account)}
+              >
+                Delegate ESDS to yourself
+              </Button>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
+  )
+}
