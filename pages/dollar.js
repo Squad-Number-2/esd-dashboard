@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { Row, Column } from '../components/helpers'
 
 import { useWeb3 } from '../contexts/useWeb3'
 import { web3, setApproval } from '../utils/ethers'
 import { getData } from '../utils/reserve'
+import { commas } from '../utils/helpers'
 
 import useCurrentBlock from '../hooks/useCurrentBlock'
 import useContractBalance from '../hooks/useContractBalance'
@@ -100,11 +99,11 @@ export default function Dollar() {
               </Stat>
               <Stat>
                 <StatLabel>Assets in USDC</StatLabel>
-                <StatNumber>${(reserveData.balance * 1).toFixed(2)}</StatNumber>
+                <StatNumber>${commas(reserveData.balance)}</StatNumber>
               </Stat>
               <Stat>
                 <StatLabel>Redeem Price</StatLabel>
-                <StatNumber>${(reserveData.price * 1).toFixed(2)}</StatNumber>
+                <StatNumber>${commas(reserveData.price)}</StatNumber>
               </Stat>
             </Grid>
           </Box>
@@ -126,11 +125,11 @@ export default function Dollar() {
             >
               <Stat>
                 <StatLabel>USDC Balance</StatLabel>
-                <StatNumber>${usdcBalance}</StatNumber>
+                <StatNumber>${commas(usdcBalance)}</StatNumber>
               </Stat>
               <Stat>
                 <StatLabel>ESD Balance</StatLabel>
-                <StatNumber>ø {dollarBalance}</StatNumber>
+                <StatNumber>ø {commas(dollarBalance)}</StatNumber>
               </Stat>
               <MintModal balance={usdcBalance} allowance={usdcAllowance} />
 
