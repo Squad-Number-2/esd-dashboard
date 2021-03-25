@@ -21,7 +21,6 @@ function Header({ header, subheader }) {
     status,
     balance,
   } = useWeb3()
-  const logoUrl = `/logo/logo_${false ? 'black' : 'white'}.svg`
 
   return (
     <Flex
@@ -32,20 +31,18 @@ function Header({ header, subheader }) {
       align="center"
     >
       <Link onClick={() => router.push('/')}>
-        <Image src={logoUrl} height="40px" alt="Empty Set Dollar" />
+        <Image
+          src="/logo/logo_white.svg"
+          height="40px"
+          alt="Empty Set Dollar"
+        />
       </Link>
-      <Flex minW="md" p="4" justify="space-around" align="center">
+      <Flex minW="sm" p="4" justify="space-around" align="center">
         <Link
           active={router.pathname === '/dollar'}
           onClick={() => router.push('/dollar')}
         >
           Dollar
-        </Link>
-        <Link
-          active={router.pathname === '/stake'}
-          onClick={() => router.push('/stake')}
-        >
-          Stake
         </Link>
         <Link
           active={router.pathname === '/governance'}

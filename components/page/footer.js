@@ -4,12 +4,15 @@ import { useRouter } from 'next/router'
 
 const Footer = () => {
   const router = useRouter()
-  const logoUrl = `/logo/logo_${false ? 'black' : 'white'}.svg`
   return (
     <Flex p="30px 20px" bg="black" justify="space-between" color={'white'}>
       <Box p="4">
         <Link onClick={() => router.push('/')}>
-          <Image src={logoUrl} height="40px" alt="Empty Set Dollar" />
+          <Image
+            src={'/logo/logo_white.svg'}
+            height="40px"
+            alt="Empty Set Dollar"
+          />
         </Link>
       </Box>
 
