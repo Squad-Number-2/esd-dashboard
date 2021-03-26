@@ -1,65 +1,33 @@
 import { ethers } from 'ethers'
-import { web3 } from '../utils/ethers'
 import React, { useState, useEffect } from 'react'
 import { useWeb3 } from '../contexts/useWeb3'
+import { fetchAllowance } from '../utils/ethers'
 
-const currentBalance = (contract, spender, digits, fixed) => {
-  const { account } = useWeb3()
+const currentAllowance = (contract, spender, digits, fixed) => {
+  const { web3, account, status } = useWeb3()
   let [block, setBlock] = useState(0)
-  let [balance, setBalance] = useState(0)
+  let [allowance, setAllowance] = useState(0)
 
-  const erc20 = new ethers.Contract(
-    contract,
-    [
-      {
-        constant: true,
-        inputs: [
-          {
-            name: '_owner',
-            type: 'address',
-          },
-          {
-            name: '_spender',
-            type: 'address',
-          },
-        ],
-        name: 'allowance',
-        outputs: [
-          {
-            name: '',
-            type: 'uint256',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function',
-      },
-    ],
-    web3
-  )
-
-  const fetchAllowance = async () => {
-    const rawNum = await erc20.allowance(account, spender)
-    const normalised = parseFloat(
-      ethers.utils.formatUnits(rawNum, digits || 18)
-    ).toFixed(fixed ? fixed : 4)
-    setBalance(normalised)
-  }
-
-  useEffect(() => {
-    if (account) fetchAllowance()
-  }, [account])
+  useEffect(async () => {
+    if (account && status === 'connected') {
+      setAllowance(
+        await fetchAllowance(account, contract, spender, digits, fixed)
+      )
+    }
+  }, [account, status])
 
   useEffect(() => {
     web3.on('block', async (newBlock) => {
       if (newBlock > block && newBlock !== block && account) {
-        fetchAllowance()
+        setAllowance(
+          await fetchAllowance(account, contract, spender, digits, fixed)
+        )
         setBlock(newBlock)
       }
     })
   }, [])
 
-  return balance
+  return allowance
 }
 
-export default currentBalance
+export default currentAllowance

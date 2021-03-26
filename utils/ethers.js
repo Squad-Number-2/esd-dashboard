@@ -92,4 +92,48 @@ export const fetchBalance = async (contract, account, digits, fixed) => {
   return normalised
 }
 
+export const fetchAllowance = async (
+  account,
+  contract,
+  spender,
+  digits,
+  fixed
+) => {
+  const erc20 = new ethers.Contract(
+    contract,
+    [
+      {
+        constant: true,
+        inputs: [
+          {
+            name: '_owner',
+            type: 'address',
+          },
+          {
+            name: '_spender',
+            type: 'address',
+          },
+        ],
+        name: 'allowance',
+        outputs: [
+          {
+            name: '',
+            type: 'uint256',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    web3
+  )
+
+  const rawNum = await erc20.allowance(account, spender)
+  const normalised = parseFloat(
+    ethers.utils.formatUnits(rawNum, digits || 18)
+  ).toFixed(fixed ? fixed : 4)
+  return normalised
+}
+
 export const zeroAddress = ethers.constants.AddressZero
