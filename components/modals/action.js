@@ -49,6 +49,7 @@ export default function Delegate({ addAction }) {
     setFunc(false)
     setSelectFunc(false)
   }
+
   const onFunction = (i) => {
     if (i === false) {
       setSelectFunc(i)
@@ -87,23 +88,23 @@ export default function Delegate({ addAction }) {
     return `${func.name}(${inputs.join(',')})`
   }
 
-  const encodeCall = (abi, name, values) => {
-    let iface = new ethers.utils.Interface(abi)
-    return iface.encodeFunctionData(name, values)
-  }
-  // not needed?
-  // const encodeValues = (inputs, values) => {
-  //   let types = []
-  //   inputs.map((input) => types.push(input.type))
-  //   const encodedVals = ethers.utils.defaultAbiCoder.encode(types, values)
-  //   console.log(encodedVals)
-  //   return encodedVals
+  // const encodeCall = (abi, name, values) => {
+  //   let iface = new ethers.utils.Interface(abi)
+  //   return iface.encodeFunctionData(name, values)
   // }
+  // not needed?
+  const encodeValues = (inputs, values) => {
+    let types = []
+    inputs.map((input) => types.push(input.type))
+    const encodedVals = ethers.utils.defaultAbiCoder.encode(types, values)
+    console.log(encodedVals)
+    return encodedVals
+  }
 
   const add = () => {
     let data
     try {
-      data = encodeCall(target.abi, func.name, values)
+      data = encodeValues(func.inputs, values)
     } catch (error) {
       return alert(
         'Error encoding data. Please check your inputs are correct and try again'
