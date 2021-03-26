@@ -41,57 +41,61 @@ export default function Home() {
   const stakeBalance = useContractBalance(stake.address)
   const oldDaoBalance = useContractBalance(oldDao.address)
   const oldDollarBalance = useContractBalance(oldDollar.address)
-  console.log(oldDaoBalance)
+
   return (
     <Page
       header={'Welcome to the Empty Set Dollar DAO'}
-      subheader={'Manage, trade, and govern the your ESD.'}
+      subheader={'Manage, trade, and govern the ESD'}
     >
       <Box m={'-97px 0 20px'}>
-        <Box
-          bg="white"
-          p="2em 4em"
-          border="1px solid #e8e8e8"
-          borderRadius="lg"
-          m="0em 0em 1em"
-        >
-          <Flex>
-            <Box w="50%" pr="10px">
-              <Heading fontSize="2xl">Migrate your ESD V1 to ESD V1.5</Heading>
-              <Text m="1em 0em 0em">
-                ESD has recently upgraded. Connect your wallet and click the
-                migrate button to burn your ESD V1 tokens and receive the
-                equivalent ESDS.
-              </Text>
-              <Text m="1em 0em 0em">
-                Learn more about the transition on <Link>our blog</Link>.
-              </Text>
-            </Box>
-            <Box w="50%">
-              <Heading fontSize="lg">Your V1 Balance</Heading>
-              <Flex m="1em 0em 0em">
-                <Stat w="fit-content">
-                  <StatLabel>Dollar (ESD)</StatLabel>
-                  <Skeleton isLoaded={oldDollarBalance} mr="10px">
-                    <StatNumber>ø {commas(oldDollarBalance)}</StatNumber>
-                  </Skeleton>
-                </Stat>
-                <Stat>
-                  <StatLabel>Stake (ESDS)</StatLabel>
-                  <Skeleton isLoaded={oldDaoBalance} mr="10px">
-                    <StatNumber>ø {commas(oldDaoBalance)}</StatNumber>
-                  </Skeleton>
-                </Stat>
-              </Flex>
-              <br />
-              <MigrationModal
-                account={account}
-                esd={oldDollarBalance}
-                esds={oldDaoBalance}
-              />
-            </Box>
-          </Flex>
-        </Box>
+        {oldDaoBalance > 0 || oldDollarBalance > 0 ? (
+          <Box
+            bg="white"
+            p="2em 4em"
+            border="1px solid #e8e8e8"
+            borderRadius="lg"
+            m="0em 0em 1em"
+          >
+            <Flex>
+              <Box w="50%" pr="10px">
+                <Heading fontSize="2xl">
+                  Migrate your ESD V1 to ESD V1.5
+                </Heading>
+                <Text m="1em 0em 0em">
+                  ESD has recently upgraded. Connect your wallet and click the
+                  migrate button to burn your ESD V1 tokens and receive the
+                  equivalent ESDS.
+                </Text>
+                <Text m="1em 0em 0em">
+                  Learn more about the transition on <Link>our blog</Link>.
+                </Text>
+              </Box>
+              <Box w="50%">
+                <Heading fontSize="lg">Your V1 Balance</Heading>
+                <Flex m="1em 0em 0em">
+                  <Stat w="fit-content">
+                    <StatLabel>Dollar (ESD)</StatLabel>
+                    <Skeleton isLoaded={oldDollarBalance} mr="10px">
+                      <StatNumber>ø {commas(oldDollarBalance)}</StatNumber>
+                    </Skeleton>
+                  </Stat>
+                  <Stat>
+                    <StatLabel>Stake (ESDS)</StatLabel>
+                    <Skeleton isLoaded={oldDaoBalance} mr="10px">
+                      <StatNumber>ø {commas(oldDaoBalance)}</StatNumber>
+                    </Skeleton>
+                  </Stat>
+                </Flex>
+                <br />
+                <MigrationModal
+                  account={account}
+                  esd={oldDollarBalance}
+                  esds={oldDaoBalance}
+                />
+              </Box>
+            </Flex>
+          </Box>
+        ) : null}
 
         <Grid templateColumns="repeat(2, 1fr)" gap={4}>
           <Box
