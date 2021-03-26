@@ -92,7 +92,7 @@ export function useWeb3() {
   }
   const { tools } = web3Context
 
-  return useMemo(() => ({ web3, ...tools }), [tools])
+  return useMemo(() => ({ ...tools }), [tools])
 }
 
 export default useWeb3
