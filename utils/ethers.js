@@ -1,9 +1,10 @@
 import { ethers } from 'ethers'
+
 // Set provider for pre-render operations where no wallet is present.
 // let provider = new ethers.providers.JsonRpcProvider(atob(ETH_NODE))
 export let web3 = new ethers.providers.InfuraProvider(
-  'homestead',
-  process.env.INFURA
+  'ropsten',
+  '0de24f0d71624f808c0cf9941e07ddd7'
 )
 
 const MaxUint = ethers.constants.MaxUint256
@@ -55,6 +56,40 @@ export const setApproval = async (contract, spender, amount) => {
   } catch (error) {
     return error
   }
+}
+
+export const fetchBalance = async (contract, account, digits, fixed) => {
+  const erc20 = new ethers.Contract(
+    contract,
+    [
+      {
+        constant: true,
+        inputs: [
+          {
+            name: '_owner',
+            type: 'address',
+          },
+        ],
+        name: 'balanceOf',
+        outputs: [
+          {
+            name: 'balance',
+            type: 'uint256',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    web3
+  )
+
+  const rawNum = await erc20.balanceOf(account)
+  const normalised = parseFloat(
+    ethers.utils.formatUnits(rawNum, digits || 18)
+  ).toFixed(fixed ? fixed : 2)
+  return normalised
 }
 
 export const zeroAddress = ethers.constants.AddressZero
