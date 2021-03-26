@@ -28,6 +28,7 @@ import {
   InputRightAddon,
   Divider,
   Center,
+  Skeleton,
 } from '@chakra-ui/react'
 
 export default function Proposal() {
@@ -63,7 +64,11 @@ export default function Proposal() {
   return (
     <Page
       header={proposal.title}
-      subheader={proposal.state + ' - Ends at #' + proposal.endBlock}
+      subheader={
+        proposal.title
+          ? proposal.state + ' - Ends at #' + proposal.endBlock
+          : null
+      }
     >
       <Box m={'-97px 0 20px'}>
         <Flex>
@@ -80,22 +85,38 @@ export default function Proposal() {
             </Heading>
             {proposal.description ? (
               <ReactMarkdown plugins={[gfm]} children={proposal.details} />
-            ) : null}
+            ) : (
+              <Box>
+                <Skeleton h="20px" mb="5px" w="89%" />
+                <Skeleton h="20px" mb="5px" w="78%" />
+                <Skeleton h="20px" mb="5px" w="92%" />
+                <Skeleton h="20px" mb="5px" w="78%" />
+                <Skeleton h="20px" mb="5px" w="73%" />
+              </Box>
+            )}
 
             <Heading fontSize="md" m="1em 0 0.5em">
               Proposal Actions
             </Heading>
-            {proposal.actions
-              ? proposal.actions.map((action) => (
-                  <Box mb="0.5em">
-                    <Text>{action.signature}</Text>
-                    <Text fontSize="xs">{action.target}</Text>
-                    <Text fontSize="xs">
-                      Call Data: {action.calldata.slice(0, 50)}...
-                    </Text>
-                  </Box>
-                ))
-              : null}
+            {proposal.actions ? (
+              proposal.actions.map((action) => (
+                <Box mb="0.5em">
+                  <Text>{action.signature}</Text>
+                  <Text fontSize="xs">{action.target}</Text>
+                  <Text fontSize="xs">
+                    Call Data: {action.calldata.slice(0, 50)}...
+                  </Text>
+                </Box>
+              ))
+            ) : (
+              <>
+                <Box mb="0.5em">
+                  <Skeleton h="25px" mb="5px" w="30%" />
+                  <Skeleton h="18px" mb="2px" w="50%" />
+                  <Skeleton h="18px" mb="5px" w="60%" />
+                </Box>
+              </>
+            )}
           </Box>
           <Box
             bg="white"

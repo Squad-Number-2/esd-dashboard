@@ -28,6 +28,7 @@ import {
   Th,
   Td,
   TableCaption,
+  Skeleton,
 } from '@chakra-ui/react'
 import Page from '../components/page'
 import MintModal from '../components/modals/mint'
@@ -37,6 +38,8 @@ import contracts from '../contracts'
 
 export default function Dollar() {
   const { web3, connectWallet, disconnectWallet, account } = useWeb3()
+
+  const [loaded, setLoaded] = useState(false)
 
   const [reserveData, setReserveData] = useState({})
   const dollarBalance = useContractBalance(contracts.dollar.address)
@@ -69,6 +72,7 @@ export default function Dollar() {
     if (account) {
       const reserve = await getData()
       setReserveData(reserve)
+      setLoaded(true)
     }
   }, [account])
 
@@ -95,15 +99,23 @@ export default function Dollar() {
             >
               <Stat>
                 <StatLabel>Reserve Ratio</StatLabel>
-                <StatNumber>{(reserveData.ratio * 100).toFixed(2)}%</StatNumber>
+                <Skeleton isLoaded={loaded} mr="10px">
+                  <StatNumber>
+                    {(reserveData.ratio * 100).toFixed(2)}%
+                  </StatNumber>
+                </Skeleton>
               </Stat>
               <Stat>
                 <StatLabel>Assets in USDC</StatLabel>
-                <StatNumber>${commas(reserveData.balance)}</StatNumber>
+                <Skeleton isLoaded={loaded} mr="10px">
+                  <StatNumber>${commas(reserveData.balance)}</StatNumber>
+                </Skeleton>
               </Stat>
               <Stat>
                 <StatLabel>Redeem Price</StatLabel>
-                <StatNumber>${commas(reserveData.price)}</StatNumber>
+                <Skeleton isLoaded={loaded} mr="10px">
+                  <StatNumber>${commas(reserveData.price)}</StatNumber>
+                </Skeleton>
               </Stat>
             </Grid>
           </Box>
@@ -125,11 +137,15 @@ export default function Dollar() {
             >
               <Stat>
                 <StatLabel>USDC Balance</StatLabel>
-                <StatNumber>${commas(usdcBalance)}</StatNumber>
+                <Skeleton isLoaded={loaded} mr="10px">
+                  <StatNumber>${commas(usdcBalance)}</StatNumber>
+                </Skeleton>
               </Stat>
               <Stat>
                 <StatLabel>ESD Balance</StatLabel>
-                <StatNumber>ø {commas(dollarBalance)}</StatNumber>
+                <Skeleton isLoaded={loaded} mr="10px">
+                  <StatNumber>ø {commas(dollarBalance)}</StatNumber>
+                </Skeleton>
               </Stat>
               <MintModal balance={usdcBalance} allowance={usdcAllowance} />
 

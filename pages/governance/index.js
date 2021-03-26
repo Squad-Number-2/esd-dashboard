@@ -31,6 +31,7 @@ import {
   InputRightAddon,
   Divider,
   Center,
+  Skeleton,
 } from '@chakra-ui/react'
 
 export default function Home() {
@@ -39,7 +40,7 @@ export default function Home() {
 
   const [delegations, setDelegations] = useState([])
   const [proposals, setProposals] = useState([])
-  const [delegate, setDelegate] = useState('')
+  const [delegate, setDelegate] = useState(false)
 
   useEffect(async () => {
     console.log('Fetching Proposals')
@@ -94,13 +95,17 @@ export default function Home() {
             w="40%"
           >
             <Heading fontSize="xl">Your Wallet</Heading>
-            {delegate != zeroAddress ? (
+            {delegate != zeroAddress && account ? (
               <Box p="1em 0">
                 <Heading fontSize="md">Voting Weight:</Heading>
-                <Text>{commas(voteWeight())} ESDS</Text>
+                <Skeleton isLoaded={delegations[0]} mr="10px">
+                  <Text>{commas(voteWeight())} ESDS</Text>
+                </Skeleton>
                 <Divider m=".5em" />
                 <Heading fontSize="md">Delegating to:</Heading>
-                <Text m="0 0 .5em">{usersDelegate()}</Text>
+                <Skeleton isLoaded={delegate} mr="10px">
+                  <Text m="0 0 .5em">{usersDelegate()}</Text>
+                </Skeleton>
                 <DelegateModal account={account} />
                 <br />
                 <Button
@@ -134,19 +139,32 @@ export default function Home() {
             w="60%"
           >
             <Heading fontSize="xl">Governance Proposals</Heading>
-            {proposals.map((prop, id) => (
-              <Link
-                key={id + 'prop'}
-                onClick={() => router.push(`/governance/proposal/${id + 1}`)}
-              >
-                <Box p=".5em 0">
-                  <Text fontSize="md">{prop.title}</Text>
-                  <Text color="grey" fontSize="sm">
-                    {prop.state}
-                  </Text>
-                </Box>
-              </Link>
-            ))}
+            {proposals[0] ? (
+              proposals.map((prop, id) => (
+                <Link
+                  key={id + 'prop'}
+                  onClick={() => router.push(`/governance/proposal/${id + 1}`)}
+                >
+                  <Box p=".5em 0">
+                    <Text fontSize="md">{prop.title}</Text>
+                    <Text color="grey" fontSize="sm">
+                      {prop.state}
+                    </Text>
+                  </Box>
+                </Link>
+              ))
+            ) : (
+              <>
+                {Array(6)
+                  .fill(null)
+                  .map((_, i) => (
+                    <Box p=".5em 0" key={i + 'fake'}>
+                      <Skeleton mb="10px" w="80%" h="30px" />
+                      <Skeleton w="120px" h="20px" />
+                    </Box>
+                  ))}
+              </>
+            )}
           </Box>
         </Flex>
       </Box>

@@ -25,6 +25,7 @@ import {
   Stat,
   StatLabel,
   StatNumber,
+  Skeleton,
 } from '@chakra-ui/react'
 
 const { dollar, stake, oldDao, oldDollar } = contracts
@@ -40,7 +41,7 @@ export default function Home() {
   const stakeBalance = useContractBalance(stake.address)
   const oldDaoBalance = useContractBalance(oldDao.address)
   const oldDollarBalance = useContractBalance(oldDollar.address)
-
+  console.log(oldDaoBalance)
   return (
     <Page
       header={'Welcome to the Empty Set Dollar DAO'}
@@ -55,7 +56,7 @@ export default function Home() {
           m="0em 0em 1em"
         >
           <Flex>
-            <Box w="60%">
+            <Box w="50%" pr="10px">
               <Heading fontSize="2xl">Migrate your ESD V1 to ESD V1.5</Heading>
               <Text m="1em 0em 0em">
                 ESD has recently upgraded. Connect your wallet and click the
@@ -66,16 +67,20 @@ export default function Home() {
                 Learn more about the transition on <Link>our blog</Link>.
               </Text>
             </Box>
-            <Box w="40%">
+            <Box w="50%">
               <Heading fontSize="lg">Your V1 Balance</Heading>
               <Flex m="1em 0em 0em">
-                <Stat>
+                <Stat w="fit-content">
                   <StatLabel>Dollar (ESD)</StatLabel>
-                  <StatNumber>ø {commas(oldDollarBalance)}</StatNumber>
+                  <Skeleton isLoaded={oldDollarBalance} mr="10px">
+                    <StatNumber>ø {commas(oldDollarBalance)}</StatNumber>
+                  </Skeleton>
                 </Stat>
                 <Stat>
                   <StatLabel>Stake (ESDS)</StatLabel>
-                  <StatNumber>ø {commas(oldDaoBalance)}</StatNumber>
+                  <Skeleton isLoaded={oldDaoBalance} mr="10px">
+                    <StatNumber>ø {commas(oldDaoBalance)}</StatNumber>
+                  </Skeleton>
                 </Stat>
               </Flex>
               <br />
@@ -100,11 +105,15 @@ export default function Home() {
             <Flex m=".5em 0 0">
               <Stat>
                 <StatLabel>Dollar (ESD)</StatLabel>
-                <StatNumber>ø {commas(dollarBalance)}</StatNumber>
+                <Skeleton isLoaded={dollarBalance} mr="10px">
+                  <StatNumber>ø {commas(dollarBalance)}</StatNumber>
+                </Skeleton>
               </Stat>
               <Stat>
                 <StatLabel>Stake (ESDS)</StatLabel>
-                <StatNumber>ø {commas(stakeBalance)}</StatNumber>
+                <Skeleton isLoaded={stakeBalance} mr="10px">
+                  <StatNumber>ø {commas(stakeBalance)}</StatNumber>
+                </Skeleton>
               </Stat>
             </Flex>
           </Box>
@@ -118,12 +127,12 @@ export default function Home() {
             <Heading fontSize="2xl" m="0em 0em 0.5em">
               Get Started with ESD
             </Heading>
-            <Link href="/dollar">
+            <Link onClick={() => router.push('/dollar')}>
               <Text fontSize="lg" m="0em 0em 0.25em">
                 Mint & Redeem ESD tokens &rarr;
               </Text>
             </Link>
-            <Link href="/governance">
+            <Link onClick={() => router.push('/governance')}>
               <Text fontSize="lg" m="0em 0em 0.25em">
                 Make a proposal or vote in the governance process &rarr;
               </Text>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
 
 import Page from '../../components/page'
 
@@ -30,7 +29,9 @@ import {
   Textarea,
   Divider,
   Center,
+  IconButton,
 } from '@chakra-ui/react'
+import { CloseIcon } from '@chakra-ui/icons'
 
 export default function Home() {
   const { web3, connectWallet, disconnectWallet, account } = useWeb3()
@@ -42,7 +43,6 @@ export default function Home() {
 
   const addAction = (action) => {
     setActions([...actions, action])
-    console.log(actions)
   }
 
   const submit = async () => {
@@ -53,7 +53,6 @@ export default function Home() {
 
     actions.map((action) => {
       targets.push(action.target)
-      //   values.push(action.values)
       values.push(0)
       signatures.push(action.signature)
       calldatas.push(action.callData)
@@ -61,6 +60,12 @@ export default function Home() {
 
     const desc = '# ' + title + '\n' + description
     const response = await propose(targets, values, signatures, calldatas, desc)
+  }
+
+  const removeAction = (action) => {
+    setActions(
+      actions.filter((item) => JSON.stringify(item) != JSON.stringify(action))
+    )
   }
 
   return (
@@ -150,9 +155,16 @@ export default function Home() {
               Proposal Actions
             </Heading>
             {actions
-              ? actions.map((action) => (
-                  <Box mb=".5em">
-                    <Text fontSize="sm">{action.signature}</Text>
+              ? actions.map((action, i) => (
+                  <Box mb=".5em" key={i + 'action'}>
+                    <Flex align="center" justify="space-between">
+                      <Text fontSize="sm">{action.signature}</Text>
+                      <IconButton
+                        size="sm"
+                        icon={<CloseIcon />}
+                        onClick={() => removeAction(action)}
+                      />
+                    </Flex>
                     <Text fontSize="sm">{JSON.stringify(action.values)}</Text>
                   </Box>
                 ))
