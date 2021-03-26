@@ -25,60 +25,52 @@ function Header({ header, subheader }) {
   return (
     <Flex
       bg="black"
-      justify="space-between"
-      p="30px 60px"
       color="white"
+      justify="center"
       align="center"
+      p="30px 60px"
     >
-      <Link onClick={() => router.push('/')}>
-        <Image
-          src="/logo/logo_white.svg"
-          height="40px"
-          alt="Empty Set Dollar"
-        />
-      </Link>
-      <Flex minW="sm" p="4" justify="space-around" align="center">
-        <Link
-          active={router.pathname === '/dollar'}
-          onClick={() => router.push('/dollar')}
-        >
-          Dollar
+      <Flex w="100%" maxW={'1200px'} justify="space-between" align="center">
+        <Link onClick={() => router.push('/')}>
+          <Image
+            src="/logo/logo_white.svg"
+            height="40px"
+            alt="Empty Set Dollar"
+          />
         </Link>
-        <Link
-          active={router.pathname === '/governance'}
-          onClick={() => router.push('/governance')}
-        >
-          Governance
-        </Link>
+        <Flex minW="sm" p="4" justify="space-around" align="center">
+          <Link onClick={() => router.push('/dollar')}>Dollar</Link>
+          <Link onClick={() => router.push('/governance')}>Governance</Link>
 
-        <Button
-          onClick={() => (account ? null : connectWallet('injected'))}
-          variant="solid"
-          colorScheme="green"
-          boxShadow="md"
-          borderRadius="lg"
-        >
-          <Text fontSize="sm" color="white.100" mr={2}>
-            {account ? `` : 'Connect Wallet'}
-          </Text>
-          {account && (
-            <>
-              <Text fontSize="sm" m={0}>
-                {account.substring(0, 6) +
-                  '...' +
-                  account.substring(account.length - 4)}
-              </Text>
-            </>
-          )}
-          {account && (
-            <CancelButton
-              margin={{ marginLeft: '8px' }}
-              width="14px"
-              height="14px"
-              handleClick={() => disconnectWallet()}
-            />
-          )}
-        </Button>
+          <Button
+            onClick={() => (account ? null : connectWallet('injected'))}
+            variant="solid"
+            colorScheme="green"
+            boxShadow="md"
+            borderRadius="lg"
+          >
+            <Text fontSize="sm" color="white.100" mr={2}>
+              {account ? `` : 'Connect Wallet'}
+            </Text>
+            {account && (
+              <>
+                <Text fontSize="sm" m={0}>
+                  {account.substring(0, 6) +
+                    '...' +
+                    account.substring(account.length - 4)}
+                </Text>
+              </>
+            )}
+            {account && (
+              <CancelButton
+                margin={{ marginLeft: '8px' }}
+                width="14px"
+                height="14px"
+                handleClick={() => disconnectWallet()}
+              />
+            )}
+          </Button>
+        </Flex>
       </Flex>
     </Flex>
   )
