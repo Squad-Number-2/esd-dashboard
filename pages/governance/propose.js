@@ -74,6 +74,7 @@ export default function Home() {
       subheader={
         'Enter the details of your governance action and include actions to change contracts'
       }
+      back
     >
       <Box m={'-97px 0 20px'}>
         <Flex>

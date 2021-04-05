@@ -64,7 +64,6 @@ export const fetchProposals = async () => {
     data.push(prop)
   })
 
-  data.reverse()
   return data
 }
 
@@ -86,7 +85,6 @@ export const fetchSingleProposal = async (id) => {
     proposer,
     startBlock,
   } = await gov.proposals(id)
-
   const propState = await gov.state(id)
 
   // Get proposal content
@@ -180,8 +178,7 @@ export const fetchDelegations = async () => {
 }
 
 export const fetchDelegate = async (address) => {
-  console.log(address)
-  console.log(contracts.stake)
+  console.log('Fetching delegate for: ', address)
   // Token contract single
   try {
     const token = new ethers.Contract(
@@ -241,6 +238,38 @@ export const propose = async (targets, values, signatures, calldatas, desc) => {
       signer
     )
     return await gov.propose(targets, values, signatures, calldatas, desc)
+  } catch (e) {
+    console.log(e)
+    return alert(e.message)
+  }
+}
+
+export const queue = async (id) => {
+  const signer = web3.getSigner()
+
+  try {
+    const gov = new ethers.Contract(
+      contracts.governor.address,
+      contracts.governor.abi,
+      signer
+    )
+    return await gov.queue(id)
+  } catch (e) {
+    console.log(e)
+    return alert(e.message)
+  }
+}
+
+export const execute = async (id) => {
+  const signer = web3.getSigner()
+
+  try {
+    const gov = new ethers.Contract(
+      contracts.governor.address,
+      contracts.governor.abi,
+      signer
+    )
+    return await gov.execute(id)
   } catch (e) {
     console.log(e)
     return alert(e.message)

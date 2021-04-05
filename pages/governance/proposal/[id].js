@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 
-import { useWeb3 } from '../../../contexts/useWeb3'
+import { format, formatDistance } from 'date-fns'
 
+import { useWeb3 } from '../../../contexts/useWeb3'
 import useCurrentBlock from '../../../hooks/useCurrentBlock'
 
 import Page from '../../../components/page'
-import { fetchSingleProposal, castVote } from '../../../utils/governor'
+import { fetchSingleProposal, castVote, queue } from '../../../utils/governor'
 
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
@@ -29,6 +30,8 @@ import {
   Divider,
   Center,
   Skeleton,
+  IconButton,
+  Tooltip,
 } from '@chakra-ui/react'
 
 export default function Proposal() {
@@ -61,14 +64,52 @@ export default function Proposal() {
     loadData()
   }, [web3, id])
 
+  const subheading = (proposal) => {
+    switch (proposal.state) {
+      case 'Cancelled':
+        return 'Cancelled'
+        break
+      case 'Pending':
+        return 'Pending - Ends at #' + proposal.endBlock
+        break
+      case 'Active':
+        return `Active - Voting ending in ${formatDistance(
+          proposal.eta * 1000,
+          now
+        )}`
+        break
+      case 'Defeated':
+        return (
+          'Defeated by ' +
+          (proposal.against_votes - proposal.for_votes) +
+          ' votes'
+        )
+        break
+      case 'Succeeded':
+        return 'Succeeded - Waiting for proposal to be Queued'
+        break
+      case 'Queued':
+        const now = new Date().getTime()
+        return proposal.eta * 1000 > now
+          ? `Queued - Executable in ${formatDistance(proposal.eta * 1000, now)}`
+          : `Queued - Ready to Execute`
+        break
+      case 'Expired':
+        return 'Expired'
+        break
+      case 'Executed':
+        return 'Executed - Executed on '
+        break
+      default:
+        break
+    }
+  }
+
   return (
     <Page
       header={proposal.title}
-      subheader={
-        proposal.title
-          ? proposal.state + ' - Ends at #' + proposal.endBlock
-          : null
-      }
+      subheader={proposal.title ? subheading(proposal) : null}
+      back
     >
       <Box m={'-97px 0 20px'}>
         <Flex>
@@ -134,12 +175,33 @@ export default function Proposal() {
               <Heading fontSize="lg">Votes Against</Heading>
               <Text>{proposal.against_votes} ESDS</Text>
             </Box>
-            <Button w="100%" m=".5em 0" onClick={() => vote(true)}>
-              Vote for Proposal
-            </Button>
-            <Button w="100%" m=".5em 0" onClick={() => vote(false)}>
-              Vote against Proposal
-            </Button>
+            {proposal.state === 'Active' ? (
+              <>
+                <Button w="100%" m=".5em 0" onClick={() => vote(true)}>
+                  Vote for Proposal
+                </Button>
+                <Button w="100%" m=".5em 0" onClick={() => vote(false)}>
+                  Vote against Proposal
+                </Button>
+              </>
+            ) : null}
+            {proposal.state === 'Succeeded' ? (
+              <Button w="100%" m=".5em 0" onClick={() => queue(id)}>
+                Queue Proposal
+              </Button>
+            ) : null}
+
+            {proposal.state === 'Queued' ? (
+              <Button
+                w="100%"
+                m=".5em 0"
+                colorScheme="green"
+                onClick={() => execute(id)}
+                disabled={proposal.eta * 1000 > new Date().getTime()}
+              >
+                Execute Proposal
+              </Button>
+            ) : null}
           </Box>
         </Flex>
       </Box>
