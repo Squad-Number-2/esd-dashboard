@@ -88,11 +88,12 @@ export default function Delegate({ addAction }) {
     return `${func.name}(${inputs.join(',')})`
   }
 
+  // not needed?
   // const encodeCall = (abi, name, values) => {
   //   let iface = new ethers.utils.Interface(abi)
   //   return iface.encodeFunctionData(name, values)
   // }
-  // not needed?
+
   const encodeValues = (inputs, values) => {
     let types = []
     inputs.map((input) => types.push(input.type))

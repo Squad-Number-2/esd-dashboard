@@ -33,6 +33,19 @@ export default function Delegate({ account }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [value, setValue] = useState('')
 
+  const executeDelegate = async () => {
+    const response = await setDelegate(value)
+    watchTx(response.hash, 'Setting delegate')
+    setValue('')
+    onClose()
+  }
+  const executeSelf = async () => {
+    const response = await setDelegate(account)
+    watchTx(response.hash, 'Setting delegate')
+    setValue('')
+    onClose()
+  }
+
   return (
     <>
       <Button colorScheme="green" onClick={onOpen}>
@@ -66,7 +79,7 @@ export default function Delegate({ account }) {
                 colorScheme="green"
                 w="100%"
                 disabled={!ethers.utils.isAddress(value)}
-                onClick={async () => await setDelegate(value)}
+                onClick={() => executeDelegate()}
               >
                 Delegate ESDS to address
               </Button>
@@ -75,7 +88,7 @@ export default function Delegate({ account }) {
               <Button
                 colorScheme="green"
                 w="100%"
-                onClick={async () => await setDelegate(account)}
+                onClick={() => executeSelf()}
               >
                 Delegate ESDS to yourself
               </Button>

@@ -44,7 +44,7 @@ export default function Home() {
 
   useEffect(async () => {
     console.log('Fetching Proposals')
-    setProposals(await fetchProposals())
+    setProposals((await fetchProposals()).reverse())
     setDelegations(await fetchDelegations())
   }, [])
 
@@ -142,11 +142,13 @@ export default function Home() {
             {proposals[0] ? (
               proposals.map((prop, id) => (
                 <Link
-                  key={id + 'prop'}
-                  onClick={() => router.push(`/governance/proposal/${id + 1}`)}
+                  key={'prop' + prop.id}
+                  onClick={() =>
+                    router.push(`/governance/proposal/${prop.id + 1}`)
+                  }
                 >
                   <Box p=".5em 0">
-                    <Text fontSize="md">{prop.title}</Text>
+                    <Text fontSize="md">{`${prop.id + 1}. ${prop.title}`}</Text>
                     <Text color="grey" fontSize="sm">
                       {prop.state}
                     </Text>

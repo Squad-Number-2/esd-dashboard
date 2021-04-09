@@ -21,19 +21,25 @@ import {
   InputRightAddon,
 } from '@chakra-ui/react'
 import contracts from '../../contracts'
+import useAlerts from '../../contexts/useAlerts'
+
 import { web3, setApproval } from '../../utils/ethers'
 import { mint } from '../../utils/reserve'
 
 export default function Mint({ balance, allowance }) {
-  // Check Approvals
-  // No letters
-  // Input =< Balance
-
+  const { watchTx } = useAlerts()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [value, setValue] = useState('')
 
   const setMax = () => {
     setValue(parseFloat(balance))
+  }
+
+  const executeFunc = async () => {
+    const response = await mint(value)
+    watchTx(response.hash, 'ESD mint')
+    setValue('')
+    onClose()
   }
 
   return (
@@ -90,7 +96,7 @@ export default function Mint({ balance, allowance }) {
               <Button
                 disabled={parseFloat(value) > parseFloat(balance)}
                 colorScheme="green"
-                onClick={async () => await mint(value)}
+                onClick={() => executeFunc()}
               >
                 Mint ESD
               </Button>

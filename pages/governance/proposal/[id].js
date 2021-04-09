@@ -8,7 +8,12 @@ import { useWeb3 } from '../../../contexts/useWeb3'
 import useCurrentBlock from '../../../hooks/useCurrentBlock'
 
 import Page from '../../../components/page'
-import { fetchSingleProposal, castVote, queue } from '../../../utils/governor'
+import {
+  fetchSingleProposal,
+  castVote,
+  queue,
+  execute,
+} from '../../../utils/governor'
 
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
@@ -46,7 +51,6 @@ export default function Proposal() {
       console.log('Fetching Proposal')
       const prop = await fetchSingleProposal(id)
       setProposal(prop)
-      console.log(prop)
     }
   }
 
@@ -70,13 +74,10 @@ export default function Proposal() {
         return 'Cancelled'
         break
       case 'Pending':
-        return 'Pending - Ends at #' + proposal.endBlock
+        return `Pending - Starts at #${proposal.startBlock}`
         break
       case 'Active':
-        return `Active - Voting ending in ${formatDistance(
-          proposal.eta * 1000,
-          now
-        )}`
+        return `Active - Voting ends at #${proposal.endBlock}`
         break
       case 'Defeated':
         return (

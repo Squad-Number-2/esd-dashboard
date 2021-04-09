@@ -30,11 +30,10 @@ import contracts from '../../contracts'
 import { web3, setApproval } from '../../utils/ethers'
 import { migrate } from '../../utils/migration'
 
-export default function Mint({ account, esd, esds }) {
-  // Check Approvals
-  // No letters
-  // Input =< Balance
+import useAlerts from '../../contexts/useAlerts'
 
+export default function Mint({ account, esd, esds }) {
+  const { watchTx } = useAlerts()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [value, setValue] = useState('')
 
@@ -42,6 +41,13 @@ export default function Mint({ account, esd, esds }) {
     contracts.oldDollar.address,
     contracts.migrator.address
   )
+
+  const executeFunc = async () => {
+    const response = await migrate(account)
+    watchTx(response.hash, 'ESD V1 migration')
+    setValue('')
+    onClose()
+  }
 
   return (
     <>
@@ -95,10 +101,7 @@ export default function Mint({ account, esd, esds }) {
                 Approve ESD
               </Button>
             ) : (
-              <Button
-                colorScheme="green"
-                onClick={async () => await migrate(account)}
-              >
+              <Button colorScheme="green" onClick={() => executeFunc()}>
                 Migrate ESD & ESDS
               </Button>
             )}

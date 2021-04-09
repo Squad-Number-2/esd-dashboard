@@ -23,14 +23,24 @@ import {
 import contracts from '../../contracts'
 import { web3, setApproval } from '../../utils/ethers'
 import { redeem } from '../../utils/reserve'
+import useAlerts from '../../contexts/useAlerts'
 
 export default function Redeem({ balance, allowance }) {
+  const { watchTx } = useAlerts()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [value, setValue] = useState('')
 
   const setMax = () => {
     setValue(parseFloat(balance))
   }
+
+  const executeFunc = async () => {
+    const response = await redeem(value)
+    watchTx(response.hash, 'ESD redeem')
+    setValue('')
+    onClose()
+  }
+
   return (
     <>
       <Button colorScheme="green" onClick={onOpen}>
@@ -86,7 +96,7 @@ export default function Redeem({ balance, allowance }) {
               <Button
                 colorScheme="green"
                 disabled={parseFloat(value) > parseFloat(balance)}
-                onClick={async () => await redeem(value)}
+                onClick={() => executeFunc()}
               >
                 Redeem ESD
               </Button>

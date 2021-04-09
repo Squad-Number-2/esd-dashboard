@@ -3,6 +3,8 @@ import { useRouter } from 'next/router'
 
 import Header from './header'
 import Footer from './footer'
+import Alerts from './alerts'
+
 import {
   Flex,
   Box,
@@ -46,6 +48,7 @@ const Page = ({ children, header, subheader, back }) => {
           {children}
         </Box>
       </Flex>
+      <Alerts />
       <Footer />
     </Flex>
   )
