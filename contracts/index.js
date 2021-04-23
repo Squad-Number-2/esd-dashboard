@@ -8,6 +8,7 @@ import reserve from './reserve'
 import migrator from './migrator'
 import proxyAdmin from './proxyAdmin'
 import registry from './registry'
+import incentivisor from './incentivisor'
 
 let contracts = {
   usdc,
@@ -20,13 +21,14 @@ let contracts = {
   migrator,
   proxyAdmin,
   registry,
+  iEsdUsdc: {
+    abi: incentivisor.abi,
+    address: '0x80560504210626426F9F53f6E0a3FFaDE647079f',
+    name: 'ESD/USD Incentivizor',
+  },
 }
-//"Migrator": "0x126Cb064584678ee57Db8b1576c00DD49236957A"
-// Stake Deployed to: 0x3332f56a061cf2b4172A9DE58253AB21B4331818
-// Dollar Deployed to: 0x0B283FBD3475CBf6825B3a112958Ee9b42Dfcd2b
-// Registry Deployed to: 0xe13DbE3Ac039C2ca815A885017654aEd31F7B12A
-// GovernorAlpha Deployed to: 0xD03a54cAdE6d8C4fe9e1D9e777bDcFC425950efc
-// Reserve Deployed to: 0xFd1F0D1d393e44A37e9B2d8774AE8B36dD8014A8
+
+// Ropsten addresses
 contracts.stake.address = '0xe2b06fef1df17d00aabd091de62c7b39af950ecf'
 contracts.oldDao.address = '0xD783084469DaFc397a06bD7a5214D75Cf4F94707'
 contracts.oldDollar.address = '0xE0551610571E180FB6AE6bbEAD2e4225fe0cAb31'
