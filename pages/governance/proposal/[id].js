@@ -141,8 +141,8 @@ export default function Proposal() {
               Proposal Actions
             </Heading>
             {proposal.actions ? (
-              proposal.actions.map((action) => (
-                <Box mb="0.5em">
+              proposal.actions.map((action, i) => (
+                <Box key={i + 'Actions'} mb="0.5em">
                   <Text>{action.signature}</Text>
                   <Text fontSize="xs">{action.target}</Text>
                   <Text fontSize="xs">
