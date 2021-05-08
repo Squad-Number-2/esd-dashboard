@@ -1,8 +1,10 @@
 import React from 'react'
-import { Flex, Box, Image, Link } from '@chakra-ui/react'
+import { Flex, Box, Image, Link, Button } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
+import { useWeb3 } from '../../contexts/useWeb3'
 
 const Footer = () => {
+  const { web3 } = useWeb3()
   const router = useRouter()
   return (
     <Flex
@@ -23,7 +25,7 @@ const Footer = () => {
           </Link>
         </Box>
 
-        <Flex minW="sm" p="4" justify="space-around" align="center">
+        <Flex minW="md" p="4" justify="space-around" align="center">
           <Link href={'https://emptyset.finance/'} target={'_blank'}>
             Home
           </Link>
@@ -46,6 +48,21 @@ const Footer = () => {
           >
             Trade
           </Link>
+          {web3._network ? (
+            <Box
+              border={
+                web3._network.chainId != 1
+                  ? '2px solid palevioletred'
+                  : '2px solid white'
+              }
+              color={web3._network.chainId != 1 ? 'palevioletred' : 'white'}
+              p="2px 6px 3px"
+              borderRadius="8px"
+            >
+              {web3._network.name[0].toUpperCase() +
+                web3._network.name.slice(1).toLowerCase()}
+            </Box>
+          ) : null}
         </Flex>
       </Flex>
     </Flex>

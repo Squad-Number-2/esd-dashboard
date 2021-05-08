@@ -21,31 +21,43 @@ function Header({ header, subheader }) {
     account,
     status,
     balance,
+    web3,
   } = useWeb3()
 
   return (
-    <Flex
-      bg="black"
-      color="white"
-      justify="center"
-      align="center"
-      p="30px 60px"
-    >
-      <Flex w="100%" maxW={'1200px'} justify="space-between" align="center">
-        <Link onClick={() => router.push('/')}>
-          <Image
-            src="/logo/logo_white.svg"
-            height="40px"
-            alt="Empty Set Dollar"
-          />
-        </Link>
-        <Flex minW="sm" p="4" justify="space-around" align="center">
-          <Link onClick={() => router.push('/dollar')}>Dollar</Link>
-          <Link onClick={() => router.push('/governance')}>Governance</Link>
-          <WalletModal />
+    <>
+      {web3._network && web3._network.chainId != 1 ? (
+        <Box h="25px" bg="palevioletred" textAlign="center" color="white">
+          You are using the{' '}
+          {web3._network.name[0].toUpperCase() +
+            web3._network.name.slice(1).toLowerCase()}{' '}
+          network!
+        </Box>
+      ) : null}
+
+      <Flex
+        bg="black"
+        color="white"
+        justify="center"
+        align="center"
+        p="30px 60px"
+      >
+        <Flex w="100%" maxW={'1200px'} justify="space-between" align="center">
+          <Link onClick={() => router.push('/')}>
+            <Image
+              src="/logo/logo_white.svg"
+              height="40px"
+              alt="Empty Set Dollar"
+            />
+          </Link>
+          <Flex minW="sm" p="4" justify="space-around" align="center">
+            <Link onClick={() => router.push('/dollar')}>Dollar</Link>
+            <Link onClick={() => router.push('/governance')}>Governance</Link>
+            <WalletModal />
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
+    </>
   )
 }
 
