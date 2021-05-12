@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-
 import Page from '../../components/page'
-
 import { useWeb3 } from '../../contexts/useWeb3'
 import { zeroAddress } from '../../utils/ethers'
 import { commas } from '../../utils/helpers'
 import ActionModal from '../../components/modals/action'
+
+import ReactMarkdown from 'react-markdown'
+import gfm from 'remark-gfm'
 
 import {
   fetchProposals,
@@ -120,9 +121,7 @@ export default function Home() {
                 <Text fontSize="lg" m="1em 0 .5em">
                   {title}
                 </Text>
-                <Text fontSize="sm" m="1em 0 .5em">
-                  {description}
-                </Text>
+                <ReactMarkdown plugins={[gfm]} children={description} />
                 <Button
                   m="1em 0 0"
                   colorScheme="green"
