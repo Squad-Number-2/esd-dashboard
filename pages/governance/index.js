@@ -57,10 +57,10 @@ export default function Home() {
   }, [account, status])
 
   const voteWeight = () => {
-    if (account && delegations[0]) {
+    if (account && delegate) {
       try {
         return parseFloat(
-          delegations.find((item) => account === item.delegate).vote_weight
+          delegations.find((item) => delegate === item.delegate).vote_weight
         )
       } catch (error) {
         return 0.0
@@ -77,6 +77,45 @@ export default function Home() {
       return delegate.slice(0, 5) + '...' + delegate.slice(-6, -1)
     }
   }
+
+  const subheading = (proposal) => {
+    switch (proposal.state) {
+      case 'Cancelled':
+        return 'Cancelled'
+        break
+      case 'Pending':
+        return `Pending - Starts at #${proposal.startBlock}`
+        break
+      case 'Active':
+        return `Active - Voting ends at #${proposal.endBlock}`
+        break
+      case 'Defeated':
+        return (
+          'Defeated by ' +
+          commas(proposal.against_votes - proposal.for_votes) +
+          ' votes'
+        )
+        break
+      case 'Succeeded':
+        return 'Succeeded - Waiting for proposal to be Queued'
+        break
+      case 'Queued':
+        const now = new Date().getTime()
+        return proposal.eta * 1000 > now
+          ? `Queued - Executable in ${formatDistance(proposal.eta * 1000, now)}`
+          : `Queued - Ready to Execute`
+        break
+      case 'Expired':
+        return 'Expired'
+        break
+      case 'Executed':
+        return 'Executed - Executed on '
+        break
+      default:
+        break
+    }
+  }
+
   return (
     <Page
       header={'Protocol Governance'}
@@ -108,13 +147,15 @@ export default function Home() {
                 </Skeleton>
                 <DelegateModal account={account} />
                 <br />
-                <Button
-                  m=".5em 0"
-                  colorScheme="green"
-                  onClick={() => router.push('/governance/propose')}
-                >
-                  Propose
-                </Button>
+                {account === delegate ? (
+                  <Button
+                    m=".5em 0"
+                    colorScheme="green"
+                    onClick={() => router.push('/governance/propose')}
+                  >
+                    Propose
+                  </Button>
+                ) : null}
               </Box>
             ) : (
               <Box p="1em 0">
@@ -150,7 +191,7 @@ export default function Home() {
                   <Box p=".5em 0">
                     <Text fontSize="md">{`${prop.id + 1}. ${prop.title}`}</Text>
                     <Text color="grey" fontSize="sm">
-                      {prop.state}
+                      {subheading(prop)}
                     </Text>
                   </Box>
                 </Link>
