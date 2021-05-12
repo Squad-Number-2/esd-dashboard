@@ -28,7 +28,9 @@ export const AlertProvider = (props) => {
   }
   // remove - remove alerts (clear & rm on success fail)
   const removeAlert = (id) => {
-    setAlerts(alerts.splice(id, 1))
+    setTimeout(() => {
+      setAlerts(alerts.splice(id, 1))
+    }, 1000)
   }
   // watchTx - listen for success/fail
   const watchTx = (hash, actionName) => {
