@@ -31,6 +31,7 @@ const Page = ({ children, header, subheader, back }) => {
             variant="ghost"
             colorScheme="white"
             onClick={() => router.back()}
+            mt="3px"
           />
         ) : null}
 
