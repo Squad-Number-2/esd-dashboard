@@ -9,7 +9,6 @@ import MigrationModal from '../components/modals/migrate'
 import { useRouter } from 'next/router'
 
 import useContractBalance from '../hooks/useContractBalance'
-import contracts from '../contracts'
 
 import {
   Flex,
@@ -28,7 +27,8 @@ import {
   Skeleton,
 } from '@chakra-ui/react'
 
-const { dollar, stake, oldDao, oldDollar } = contracts
+import contracts from '../contracts'
+const { DOLLAR, STAKE, V1_DAO, V1_DOLLAR } = contracts
 
 import Page from '../components/page'
 import MoreInfo from '../components/moreInfo'
@@ -37,15 +37,15 @@ export default function Home() {
   const router = useRouter()
 
   const { web3, connectWallet, disconnectWallet, account } = useWeb3()
-  const dollarBalance = useContractBalance(dollar.address)
-  const stakeBalance = useContractBalance(stake.address)
-  const oldDaoBalance = useContractBalance(oldDao.address)
-  const oldDollarBalance = useContractBalance(oldDollar.address)
+  const dollarBalance = useContractBalance(DOLLAR.address)
+  const stakeBalance = useContractBalance(STAKE.address)
+  const oldDaoBalance = useContractBalance(V1_DAO.address)
+  const oldDollarBalance = useContractBalance(V1_DOLLAR.address)
 
   return (
     <Page
       header={'Welcome to the Empty Set Dollar DAO'}
-      subheader={'Manage, trade, and govern the ESD'}
+      subheader={'Manage, trade, and govern the DSU'}
     >
       <Box m={'-97px 0 20px'}>
         {oldDaoBalance > 0 || oldDollarBalance > 0 ? (
@@ -62,25 +62,47 @@ export default function Home() {
                   Migrate your ESD V1 to ESD V1.5
                 </Heading>
                 <Text m="1em 0em 0em">
-                  ESD has recently upgraded. Connect your wallet and click the
-                  migrate button to burn your ESD V1 tokens and receive the
-                  equivalent ESDS.
+                  Empty Set has recently upgraded. Connect your wallet and click
+                  the migrate button to burn your ESD V1 tokens and receive the
+                  equivalent ESS.
                 </Text>
                 <Text m="1em 0em 0em">
                   Learn more about the transition on <Link>our blog</Link>.
                 </Text>
               </Box>
               <Box w="50%">
+                <Heading fontSize="lg">Found V1 Balances:</Heading>
+                <Text>
+                  We've found ESD balances on a number of other protocols.
+                  Please withdraw them to your wallet before migrating.
+                </Text>
+                <Flex m="1em 0em 0em">
+                  <Stat w="fit-content">
+                    <StatLabel>ESD/ETH Sushi: {0.0032} LP</StatLabel>
+                  </Stat>
+                  <Stat w="fit-content">
+                    <StatLabel>ESD/USDC Uniswap V2: {0.0232} LP</StatLabel>
+                  </Stat>
+                </Flex>
+                <Flex m=".5em 0em 0em">
+                  <Stat w="fit-content">
+                    <StatLabel>Cream.Fi: {commas(150087.32)} ESD</StatLabel>
+                  </Stat>
+                  <Stat w="fit-content">
+                    <StatLabel>Saffron Finance: {0.0232} LP</StatLabel>
+                  </Stat>
+                </Flex>
+                <br />
                 <Heading fontSize="lg">Your V1 Balance</Heading>
                 <Flex m="1em 0em 0em">
                   <Stat w="fit-content">
-                    <StatLabel>Dollar (ESD)</StatLabel>
+                    <StatLabel>Dollar (DSU)</StatLabel>
                     <Skeleton isLoaded={oldDollarBalance} mr="10px">
                       <StatNumber>ø {commas(oldDollarBalance)}</StatNumber>
                     </Skeleton>
                   </Stat>
                   <Stat>
-                    <StatLabel>Stake (ESDS)</StatLabel>
+                    <StatLabel>Share (ESS)</StatLabel>
                     <Skeleton isLoaded={oldDaoBalance} mr="10px">
                       <StatNumber>ø {commas(oldDaoBalance)}</StatNumber>
                     </Skeleton>

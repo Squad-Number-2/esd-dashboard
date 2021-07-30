@@ -138,7 +138,7 @@ export default function Home() {
               <Box p="1em 0">
                 <Heading fontSize="md">Voting Weight:</Heading>
                 <Skeleton isLoaded={delegations[0]} mr="10px">
-                  <Text>{commas(voteWeight())} ESDS</Text>
+                  <Text>{commas(voteWeight())} ESS</Text>
                 </Skeleton>
                 <Divider m=".5em" />
                 <Heading fontSize="md">Delegating to:</Heading>
@@ -163,7 +163,7 @@ export default function Home() {
                   Delegate your vote
                 </Heading>
                 <Text m="0 0 .5em">
-                  In order to cast a vote, you need to delegate your ESDS to an
+                  In order to cast a vote, you need to delegate your ESS to an
                   address. To do this you need to choose either your own wallet
                   or another wallet to vote on your behalf.
                 </Text>

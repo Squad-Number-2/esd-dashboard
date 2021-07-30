@@ -35,6 +35,7 @@ import MintModal from '../components/modals/mint'
 import RedeemModal from '../components/modals/redeem'
 
 import contracts from '../contracts'
+const { DOLLAR, USDC, RESERVE } = contracts
 
 export default function Dollar() {
   const { web3, connectWallet, disconnectWallet, account } = useWeb3()
@@ -42,31 +43,12 @@ export default function Dollar() {
   const [loaded, setLoaded] = useState(false)
 
   const [reserveData, setReserveData] = useState({})
-  const dollarBalance = useContractBalance(contracts.dollar.address)
-  const usdcBalance = useContractBalance(contracts.usdc.address, 6)
+  const dollarBalance = useContractBalance(DOLLAR.address)
+  const usdcBalance = useContractBalance(USDC.address, 6)
 
-  const usdcAllowance = useContractAllowance(
-    contracts.usdc.address,
-    contracts.reserve.address
-  )
+  const usdcAllowance = useContractAllowance(USDC.address, RESERVE.address)
 
-  const dollarAllowance = useContractAllowance(
-    contracts.dollar.address,
-    contracts.reserve.address
-  )
-  // Reserve
-  // read - reserveBalance() - Reserve in USDC value
-  // read - reserveRatio() - Reserve Ratio
-  // read - redeemPrice() - Tokens 1 ESD redemption receives from Reserve
-  // writ - mint(amount) - Takes USDC and returns ESD
-  // writ - redeem(amount) - Returns USDC? to user in exchange for ESD
-  // Stabilizer
-  // read - totalUnderlying() - Total Supply
-  // read - balanceOfUnderlying(account) - User balance
-  // read - rate() - Get effective reward rate
-  // writ - supply(amount) - Provide ESD to Stabilizer
-  // writ - redeem(amount) - Remove sESD from Stabilizer
-  // writ - redeemUnderlying(amount) - Remove ESD from Stabilizer
+  const dollarAllowance = useContractAllowance(DOLLAR.address, RESERVE.address)
 
   useEffect(async () => {
     if (account) {
@@ -78,8 +60,8 @@ export default function Dollar() {
 
   return (
     <Page
-      header={'Empty Set Døllar (ESD)'}
-      subheader={'Mint, redeem and stake your ESD.'}
+      header={'⊙ Digital Standard Unit (DSU)'}
+      subheader={'Mint, redeem and stake your DSU.'}
     >
       <Box m={'-97px 0 20px'}>
         <Grid templateColumns="repeat(2, 1fr)" gap={4} m="0 0 1em">
@@ -111,12 +93,12 @@ export default function Dollar() {
                   <StatNumber>${commas(reserveData.balance)}</StatNumber>
                 </Skeleton>
               </Stat>
-              <Stat>
+              {/* <Stat>
                 <StatLabel>Redeem Price</StatLabel>
                 <Skeleton isLoaded={loaded} mr="10px">
                   <StatNumber>${commas(reserveData.price)}</StatNumber>
                 </Skeleton>
-              </Stat>
+              </Stat> */}
             </Grid>
           </Box>
           <Box
@@ -127,7 +109,7 @@ export default function Dollar() {
             w="auto"
           >
             <Heading fontSize="2xl" m="0em 0em 0.5em">
-              Mint & Redeem ESD
+              Mint & Redeem DSU
             </Heading>
             <Grid
               templateColumns="repeat(2, 1fr)"
@@ -142,7 +124,7 @@ export default function Dollar() {
                 </Skeleton>
               </Stat>
               <Stat>
-                <StatLabel>ESD Balance</StatLabel>
+                <StatLabel>DSU Balance</StatLabel>
                 <Skeleton isLoaded={loaded} mr="10px">
                   <StatNumber>ø {commas(dollarBalance)}</StatNumber>
                 </Skeleton>
@@ -167,7 +149,7 @@ export default function Dollar() {
             <Heading fontSize="2xl">Provide liquidity & earn rewards</Heading>
             <Text m="1em 3em 0em 0">
               Provide tokens to selected liquidity pools to receive a reward in
-              ESDS.
+              ESS.
             </Text>
           </Box>
           <Table m="1em -1.3em 0 " variant="simple">
@@ -194,20 +176,7 @@ export default function Dollar() {
                   <Button colorScheme="green">Manage LP</Button>
                 </Th>
               </Tr>
-              <Tr>
-                <Td>
-                  <Flex align="center">
-                    <Image src="/logo/uni.svg" w="24px" m="0 10px 0 0" />
-                    Uniswap ESDS-USDC
-                  </Flex>
-                </Td>
-                <Td isNumeric>$10,030,200 USD</Td>
-                <Td isNumeric>73.40%</Td>
-                <Th isNumeric>
-                  <Button colorScheme="green">Manage LP</Button>
-                </Th>
-              </Tr>
-              <Tr>
+              {/* <Tr>
                 <Td>
                   <Flex align="center">
                     <Image src="/logo/sushi.svg" w="24px" m="0 10px 0 0" />
@@ -219,7 +188,7 @@ export default function Dollar() {
                 <Th isNumeric>
                   <Button colorScheme="green">Manage LP</Button>
                 </Th>
-              </Tr>
+              </Tr> */}
               <Tr>
                 <Td>
                   <Flex>
