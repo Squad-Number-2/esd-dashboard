@@ -29,10 +29,10 @@ import useContractBalance from '../../hooks/useContractBalance'
 
 import { web3, setApproval, getSymbol } from '../../utils/ethers'
 import {
-  depositToIncentivizer,
-  withdrawFromIncentivizer,
-  claimFromIncentivizer,
-  exitFromIncentivizer,
+  depositToCrvPool,
+  withdrawFromCrvPool,
+  claimFromCrvPool,
+  exitFromCrvPool,
 } from '../../utils/pools'
 import { migrate } from '../../utils/migration'
 import { commas } from '../../utils/helpers'
@@ -61,17 +61,14 @@ export default function Manage({ pool, incentivizer, symbol, user }) {
     watchTx(response.hash, 'Approving contract')
   }
   const executeDeposit = async () => {
-    const response = await depositToIncentivizer(
-      incentivizer,
-      deposit.toString()
-    )
+    const response = await depositToCrvPool(incentivizer, deposit.toString())
     watchTx(response.hash, 'Depositing ' + symbol)
     setDeposit('')
     onClose()
   }
 
   const executeWithdraw = async () => {
-    const response = await withdrawFromIncentivizer(
+    const response = await withdrawFromCrvPool(
       incentivizer,
       withdraw.toString()
     )
@@ -81,12 +78,12 @@ export default function Manage({ pool, incentivizer, symbol, user }) {
   }
 
   const executeClaim = async () => {
-    const response = await claimFromIncentivizer(incentivizer)
+    const response = await claimFromCrvPool(incentivizer)
     watchTx(response.hash, 'Claiming ESS')
     onClose()
   }
   const executeExit = async () => {
-    const response = await exitFromIncentivizer(incentivizer)
+    const response = await exitFromCrvPool(incentivizer)
     watchTx(response.hash, 'Exiting pool & claiming ESS')
     onClose()
   }
