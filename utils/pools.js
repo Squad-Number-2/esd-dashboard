@@ -2,7 +2,8 @@ import { Contract, Provider } from 'ethers-multicall'
 import { ethers } from 'ethers'
 import { web3 } from '../utils/ethers'
 import contracts from '../contracts'
-const { CURVE_DSU, INCENTIVIZER_DSU } = contracts
+const { CURVE_DSU, INCENTIVIZER_DSU, UNISWAP_DSU_ESS, STAKE, DOLLAR } =
+  contracts
 
 export const getCurveTVL = async (fixed) => {
   const curve = new ethers.Contract(CURVE_DSU.address, CURVE_DSU.abi, web3)
@@ -14,6 +15,28 @@ export const getCurveTVL = async (fixed) => {
     ethers.utils.formatUnits(dsu.add(threeCrv), 18)
   ).toFixed(fixed ? fixed : 2)
   return normalised
+}
+
+// Specifically USDC/ESS
+export const getUniPoolBalance = async () => {
+  const dollarContract = new ethers.Contract(DOLLAR.address, DOLLAR.abi, web3)
+  const stakeContract = new ethers.Contract(STAKE.address, STAKE.abi, web3)
+
+  const dollarBal = ethers.utils.formatUnits(
+    await dollarContract.balanceOf(UNISWAP_DSU_ESS.address, {
+      gasLimit: 100000,
+    }),
+    18
+  )
+  const stakeBal = ethers.utils.formatUnits(
+    await stakeContract.balanceOf(UNISWAP_DSU_ESS.address, {
+      gasLimit: 100000,
+    }),
+    18
+  )
+
+  const essPrice = parseInt(dollarBal) / parseInt(stakeBal)
+  return essPrice * parseInt(stakeBal) + parseInt(dollarBal)
 }
 
 export const getIncentivizerBalance = async (contract, account, fixed) => {
@@ -33,14 +56,14 @@ export const getIncentivizerBalance = async (contract, account, fixed) => {
   return { reward, underlying }
 }
 
-export const depositToIncentivizer = async (contract, value) => {
+export const depositToCrvPool = async (contract, value) => {
   const signer = web3.getSigner()
   const cont = new ethers.Contract(contract.address, contract.abi, signer)
 
   const response = await cont.stake(ethers.utils.parseUnits(value, 18))
   return response
 }
-export const withdrawFromIncentivizer = async (contract, value) => {
+export const withdrawFromCrvPool = async (contract, value) => {
   const signer = web3.getSigner()
   const cont = new ethers.Contract(contract.address, contract.abi, signer)
 
@@ -48,13 +71,13 @@ export const withdrawFromIncentivizer = async (contract, value) => {
   return response
 }
 
-export const claimFromIncentivizer = async (contract) => {
+export const claimFromCrvPool = async (contract) => {
   const signer = web3.getSigner()
   const cont = new ethers.Contract(contract.address, contract.abi, signer)
   const response = await cont.claim()
   return response
 }
-export const exitFromIncentivizer = async (contract) => {
+export const exitFromCrvPool = async (contract) => {
   const signer = web3.getSigner()
   const cont = new ethers.Contract(contract.address, contract.abi, signer)
   const response = await cont.exit()

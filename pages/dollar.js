@@ -3,7 +3,11 @@ import { useEffect, useState } from 'react'
 import { useWeb3 } from '../contexts/useWeb3'
 import { web3, setApproval } from '../utils/ethers'
 import { getData } from '../utils/reserve'
-import { getCurveTVL, getIncentivizerBalance } from '../utils/pools'
+import {
+  getCurveTVL,
+  getIncentivizerBalance,
+  getUniPoolBalance,
+} from '../utils/pools'
 import { commas } from '../utils/helpers'
 
 import useCurrentBlock from '../hooks/useCurrentBlock'
@@ -37,7 +41,15 @@ import RedeemModal from '../components/modals/redeem'
 import ManageModal from '../components/modals/manage'
 
 import contracts from '../contracts'
-const { DOLLAR, USDC, RESERVE, CURVE_DSU, INCENTIVIZER_DSU } = contracts
+const {
+  DOLLAR,
+  USDC,
+  RESERVE,
+  CURVE_DSU,
+  UNISWAP_DSU_ESS,
+  INCENTIVIZER_DSU,
+  INCENTIVIZER_DSU_ESS,
+} = contracts
 
 export default function Dollar() {
   const { web3, connectWallet, disconnectWallet, account } = useWeb3()
@@ -55,12 +67,22 @@ export default function Dollar() {
     if (account) {
       const reserve = await getData()
       const curveTVL = await getCurveTVL()
+      const uniTVL = await getUniPoolBalance()
+
+      const uniBalance = await getIncentivizerBalance(
+        INCENTIVIZER_DSU_ESS,
+        account
+      )
 
       const curveBalance = await getIncentivizerBalance(
         INCENTIVIZER_DSU,
         account
       )
-      setPoolData([{ id: 'curve', tvl: curveTVL, user: curveBalance }])
+
+      setPoolData([
+        { id: 'uni', tvl: uniTVL, user: uniBalance },
+        { id: 'curve', tvl: curveTVL, user: curveBalance },
+      ])
       setReserveData(reserve)
       setLoaded(true)
     }
@@ -178,26 +200,17 @@ export default function Dollar() {
                       Uniswap ESD-USDC
                     </Flex>
                   </Td>
-                  <Td isNumeric>$5,030,200 USD</Td>
+                  <Td isNumeric>${commas(poolData[0].tvl)} USD</Td>
                   <Td isNumeric>??</Td>
                   <Th isNumeric>
-                    {' '}
-                    <Button colorScheme="green">Manage LP</Button>
+                    <ManageModal
+                      pool={UNISWAP_DSU_ESS}
+                      incentivizer={INCENTIVIZER_DSU_ESS}
+                      symbol="UNI-V2"
+                      user={poolData[0].user}
+                    />
                   </Th>
                 </Tr>
-                {/* <Tr>
-                <Td>
-                  <Flex align="center">
-                    <Image src="/logo/sushi.svg" w="24px" m="0 10px 0 0" />
-                    Sushiswap ESDS-ETH
-                  </Flex>
-                </Td>
-                <Td isNumeric>$9,230,200 USD</Td>
-                <Td isNumeric>43.40%</Td>
-                <Th isNumeric>
-                  <Button colorScheme="green">Manage LP</Button>
-                </Th>
-              </Tr> */}
                 <Tr>
                   <Td>
                     <Flex>
@@ -205,14 +218,14 @@ export default function Dollar() {
                       Curve ESD-3CRV
                     </Flex>
                   </Td>
-                  <Td isNumeric>${commas(poolData[0].tvl)} USD</Td>
+                  <Td isNumeric>${commas(poolData[1].tvl)} USD</Td>
                   <Td isNumeric>??</Td>
                   <Th isNumeric>
                     <ManageModal
                       pool={CURVE_DSU}
                       incentivizer={INCENTIVIZER_DSU}
                       symbol="DSU3CRV"
-                      user={poolData[0].user}
+                      user={poolData[1].user}
                     />
                   </Th>
                 </Tr>
