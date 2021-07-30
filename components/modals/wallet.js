@@ -25,17 +25,12 @@ import { useWeb3 } from '../../contexts/useWeb3'
 
 export default function WalletModal() {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const {
-    connectWallet,
-    disconnectWallet,
-    account,
-    status,
-    balance,
-  } = useWeb3()
+  const { connectWallet, disconnectWallet, account, status, balance } =
+    useWeb3()
 
   useEffect(() => {
     if (account) onClose()
-  }, account)
+  }, [account])
 
   return (
     <>
@@ -123,7 +118,7 @@ const CancelButton = ({
   margin = {},
   handleClick,
 }) => (
-  <button
+  <div
     onClick={handleClick}
     style={{
       border: 'none',
@@ -148,5 +143,5 @@ const CancelButton = ({
         fill={fill}
       />
     </svg>
-  </button>
+  </div>
 )
