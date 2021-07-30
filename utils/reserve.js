@@ -13,10 +13,9 @@ export const mint = async (rawAmount) => {
   const reserve = new ethers.Contract(address, abi, signer)
   const amount = ethers.utils.parseUnits(rawAmount, 18)
   try {
-    const response = await reserve.mint(amount)
+    const response = await reserve.mint(amount, { gasLimit: 500000 })
     return response
   } catch (e) {
-    // Parse Error & hit notification lib
     return e
   }
 }
@@ -27,7 +26,7 @@ export const redeem = async (rawAmount) => {
   const reserve = new ethers.Contract(address, abi, signer)
   const amount = ethers.utils.parseUnits(rawAmount, 18)
   try {
-    const response = await reserve.redeem(amount)
+    const response = await reserve.redeem(amount, { gasLimit: 500000 })
     return response
   } catch (e) {
     // Parse Error & hit notification lib
