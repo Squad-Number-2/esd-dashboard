@@ -25,7 +25,7 @@ export default function App({ Component, pageProps }) {
     <ChakraProvider theme={extendTheme({ theme })}>
       <CSSReset />
       <UseWalletProvider
-        chainId={3}
+        chainId={process.env.CHAIN_ID}
         connectors={{
           walletconnect: { rpcUrl: 'https://mainnet.eth.aragon.network/' },
           walletlink: { url: 'https://mainnet.eth.aragon.network/' },
