@@ -1,6 +1,7 @@
 import { Contract, Provider } from 'ethers-multicall'
 import { ethers } from 'ethers'
 import contracts from '../contracts'
+const { GOVERNORALPHA, STAKE } = contracts
 import { web3 } from '../utils/ethers'
 
 const enumerateProposalState = (state) => {
@@ -24,18 +25,16 @@ export const fetchProposals = async () => {
 
   // Governor Single
   const gov = new ethers.Contract(
-    contracts.governor.address,
-    contracts.governor.abi,
+    GOVERNORALPHA.address,
+    GOVERNORALPHA.abi,
     web3
   )
   // Governor Multi
-  const govMulti = new Contract(
-    contracts.governor.address,
-    contracts.governor.abi
-  )
+  const govMulti = new Contract(GOVERNORALPHA.address, GOVERNORALPHA.abi)
 
   const proposalCount = parseInt(await gov.proposalCount())
-
+  console.log('Proposals Found: ', proposalCount)
+  if (proposalCount === 0) return []
   const proposalGets = []
   const proposalStateGets = []
   Array(proposalCount)
@@ -70,8 +69,8 @@ export const fetchProposals = async () => {
 export const fetchSingleProposal = async (id) => {
   // Governor Single
   const gov = new ethers.Contract(
-    contracts.governor.address,
-    contracts.governor.abi,
+    GOVERNORALPHA.address,
+    GOVERNORALPHA.abi,
     web3
   )
   // Get state via ID
@@ -91,9 +90,8 @@ export const fetchSingleProposal = async (id) => {
   const propFilter = gov.filters.ProposalCreated()
   const proposalCreatedEvents = await gov.queryFilter(propFilter, 0, 'latest')
   // Select the proposal from ID
-  let { description, calldatas, signatures, targets } = proposalCreatedEvents[
-    id - 1
-  ].args
+  let { description, calldatas, signatures, targets } =
+    proposalCreatedEvents[id - 1].args
 
   // Parse votes
   const for_votes = (parseFloat(forVotes) / 1e18).toFixed(2)
@@ -130,18 +128,14 @@ export const fetchDelegations = async () => {
   // Token contract single
   let voteChanged
   try {
-    const token = new ethers.Contract(
-      contracts.stake.address,
-      contracts.stake.abi,
-      web3
-    )
+    const token = new ethers.Contract(STAKE.address, STAKE.abi, web3)
 
     const block = await web3.getBlock()
 
     const filter = token.filters.DelegateVotesChanged()
     voteChanged = await token.queryFilter(
       filter,
-      block.number - 100000,
+      block.number - 1000000,
       'latest'
     )
   } catch (error) {
@@ -149,6 +143,8 @@ export const fetchDelegations = async () => {
   }
 
   let delegateAccounts = {}
+
+  if (!voteChanged) return []
 
   voteChanged.map((event) => {
     const { delegate, newBalance } = event.args
@@ -181,11 +177,7 @@ export const fetchDelegate = async (address) => {
   console.log('Fetching delegate for: ', address)
   // Token contract single
   try {
-    const token = new ethers.Contract(
-      contracts.stake.address,
-      contracts.stake.abi,
-      web3
-    )
+    const token = new ethers.Contract(STAKE.address, STAKE.abi, web3)
     return await token.delegates(address)
   } catch (e) {
     return false
@@ -195,11 +187,7 @@ export const fetchDelegate = async (address) => {
 export const setDelegate = async (address) => {
   const signer = web3.getSigner()
   // Token contract single
-  const token = new ethers.Contract(
-    contracts.stake.address,
-    contracts.stake.abi,
-    signer
-  )
+  const token = new ethers.Contract(STAKE.address, STAKE.abi, signer)
 
   try {
     const response = await token.delegate(address)
@@ -216,8 +204,8 @@ export const castVote = async (proposal, vote) => {
   const signer = web3.getSigner()
 
   const gov = new ethers.Contract(
-    contracts.governor.address,
-    contracts.governor.abi,
+    GOVERNORALPHA.address,
+    GOVERNORALPHA.abi,
     signer
   )
   try {
@@ -233,8 +221,8 @@ export const propose = async (targets, values, signatures, calldatas, desc) => {
 
   try {
     const gov = new ethers.Contract(
-      contracts.governor.address,
-      contracts.governor.abi,
+      GOVERNORALPHA.address,
+      GOVERNORALPHA.abi,
       signer
     )
     return await gov.propose(targets, values, signatures, calldatas, desc)
@@ -249,8 +237,8 @@ export const queue = async (id) => {
 
   try {
     const gov = new ethers.Contract(
-      contracts.governor.address,
-      contracts.governor.abi,
+      GOVERNORALPHA.address,
+      GOVERNORALPHA.abi,
       signer
     )
     return await gov.queue(id)
@@ -265,8 +253,8 @@ export const execute = async (id) => {
 
   try {
     const gov = new ethers.Contract(
-      contracts.governor.address,
-      contracts.governor.abi,
+      GOVERNORALPHA.address,
+      GOVERNORALPHA.abi,
       signer
     )
     return await gov.execute(id)

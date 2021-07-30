@@ -5,17 +5,17 @@ import { web3 } from '../utils/ethers'
 
 const BigNumber = ethers.BigNumber
 
-const { address, abi } = contracts.migrator
+const { address, abi } = contracts.MIGRATOR
 
 export const migrate = async (account) => {
   const oldDollar = new ethers.Contract(
-    contracts.oldDollar.address,
-    contracts.oldDollar.abi,
+    contracts.V1_DOLLAR.address,
+    contracts.V1_DOLLAR.abi,
     web3
   )
   const oldDao = new ethers.Contract(
-    contracts.oldDao.address,
-    contracts.oldDao.abi,
+    contracts.V1_DAO.address,
+    contracts.V1_DAO.abi,
     web3
   )
 

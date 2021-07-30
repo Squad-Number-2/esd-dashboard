@@ -5,7 +5,7 @@ import { web3 } from '../utils/ethers'
 
 const BigNumber = ethers.BigNumber
 
-const { address, abi } = contracts.reserve
+const { address, abi } = contracts.RESERVE
 
 export const mint = async (rawAmount) => {
   const signer = web3.getSigner()
