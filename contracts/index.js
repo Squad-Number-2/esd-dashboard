@@ -13,6 +13,7 @@ import StakeABI from './Stake.json'
 import TimelockABI from './Timelock.json'
 import VesterABI from './Vester.json'
 import usdcABI from './USDC.json'
+import curveABI from './curve_pool.json'
 
 import addresses from './addresses.json'
 
@@ -25,15 +26,24 @@ const abi = {
   PROXYIMPL: ProxyImplABI,
   PROXYROOT: ProxyRootABI,
   RESERVE: ReserveABI,
-  VESTER: VesterABI,
-  INCENTIVIZER: IncentivizerABI,
   V1_DAO: MockV1DAOABI,
   V1_DOLLAR: MockV1DollarABI,
   MIGRATOR: MigratorABI,
   USDC: usdcABI,
 }
-
-let contracts = {}
+// Hardcode Pools & Vestings
+let contracts = {
+  CURVE_DSU: { abi: curveABI, address: addresses['CURVE_DSU'] },
+  INCENTIVIZER_DSU: {
+    abi: IncentivizerABI,
+    address: addresses['INCENTIVIZER_DSU'],
+  },
+  UNISWAP_DSU_ESS: { abi: curveABI, address: addresses['UNISWAP_DSU_ESS'] },
+  INCENTIVIZER_DSU_ESS: {
+    abi: IncentivizerABI,
+    address: addresses['INCENTIVIZER_DSU_ESS'],
+  },
+}
 
 Object.keys(abi).map((i) => {
   contracts[i] = { address: addresses[i], abi: abi[i] }
