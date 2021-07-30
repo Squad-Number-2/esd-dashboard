@@ -142,4 +142,9 @@ export const fetchAllowance = async (
   return normalised
 }
 
+export const getSymbol = async (contract) => {
+  const cont = new ethers.Contract(contract.address, contract.abi, web3)
+  return await cont.symbol({ gasLimit: 100000 })
+}
+
 export const zeroAddress = ethers.constants.AddressZero
