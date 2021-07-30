@@ -21,6 +21,7 @@ import {
   InputRightAddon,
 } from '@chakra-ui/react'
 import contracts from '../../contracts'
+const { USDC, RESERVE } = contracts
 import useAlerts from '../../contexts/useAlerts'
 
 import { web3, setApproval } from '../../utils/ethers'
@@ -35,9 +36,13 @@ export default function Mint({ balance, allowance }) {
     setValue(parseFloat(balance))
   }
 
-  const executeFunc = async () => {
+  const executeApprove = async () => {
+    const response = await setApproval(USDC.address, RESERVE.address)
+    watchTx(response.hash, 'Approving USDC')
+  }
+  const executeMint = async () => {
     const response = await mint(value)
-    watchTx(response.hash, 'ESD mint')
+    watchTx(response.hash, 'Minting DSU')
     setValue('')
     onClose()
   }
@@ -45,7 +50,7 @@ export default function Mint({ balance, allowance }) {
   return (
     <>
       <Button colorScheme="green" onClick={onOpen}>
-        Mint ESD
+        Mint DSU
       </Button>
       <Modal
         isOpen={isOpen}
@@ -55,12 +60,12 @@ export default function Mint({ balance, allowance }) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Mint ESD tokens</ModalHeader>
+          <ModalHeader>Mint DSU tokens</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text color="grey" fontSize="sm">
-              ESD can be minted by depositing USDC into the DAOs reserve. The
-              ESD is redeemable for the contents of the reserve at the current
+              DSU can be minted by depositing USDC into the DAOs reserve. The
+              DSU is redeemable for the contents of the reserve at the current
               reserve ratio.
             </Text>
             <br />
@@ -86,9 +91,7 @@ export default function Mint({ balance, allowance }) {
               <Button
                 disabled={value > balance}
                 colorScheme="pink"
-                onClick={() =>
-                  setApproval(contracts.usdc.address, contracts.reserve.address)
-                }
+                onClick={() => executeApprove()}
               >
                 Approve USDC
               </Button>
@@ -96,9 +99,9 @@ export default function Mint({ balance, allowance }) {
               <Button
                 disabled={parseFloat(value) > parseFloat(balance)}
                 colorScheme="green"
-                onClick={() => executeFunc()}
+                onClick={() => executeMint()}
               >
-                Mint ESD
+                Mint DSU
               </Button>
             )}
 

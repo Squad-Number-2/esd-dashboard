@@ -24,12 +24,13 @@ import {
 
 import useContractAllowance from '../../hooks/useContractAllowance'
 
-import contracts from '../../contracts'
 import { ethers } from 'ethers'
 import { web3, setApproval, zeroAddress } from '../../utils/ethers'
 import { setDelegate } from '../../utils/governor'
+import useAlerts from '../../contexts/useAlerts'
 
 export default function Delegate({ account }) {
+  const { watchTx } = useAlerts()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [value, setValue] = useState('')
 
@@ -49,7 +50,7 @@ export default function Delegate({ account }) {
   return (
     <>
       <Button colorScheme="green" onClick={onOpen}>
-        Delegate your ESDS
+        Delegate your ESS
       </Button>
       <Modal
         isOpen={isOpen}
@@ -59,12 +60,12 @@ export default function Delegate({ account }) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Delegate your ESDS</ModalHeader>
+          <ModalHeader>Delegate your ESS</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text m="0 0 1em" fontSize="sm">
               In order to vote or submit governance proposals you must delegate
-              your ESDS. You can choose to delegate to yourself or another
+              your ESS. You can choose to delegate to yourself or another
               address to delegate on your behalf.
             </Text>
             <Box align="center" m="0 0 1em">
@@ -81,7 +82,7 @@ export default function Delegate({ account }) {
                 disabled={!ethers.utils.isAddress(value)}
                 onClick={() => executeDelegate()}
               >
-                Delegate ESDS to address
+                Delegate ESS to address
               </Button>
               <Divider m="1em 0" />
 
@@ -90,7 +91,7 @@ export default function Delegate({ account }) {
                 w="100%"
                 onClick={() => executeSelf()}
               >
-                Delegate ESDS to yourself
+                Delegate ESS to yourself
               </Button>
             </Box>
           </ModalBody>

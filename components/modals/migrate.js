@@ -27,6 +27,7 @@ import {
 import useContractAllowance from '../../hooks/useContractAllowance'
 
 import contracts from '../../contracts'
+const { V1_DOLLAR, MIGRATOR } = contracts
 import { web3, setApproval } from '../../utils/ethers'
 import { migrate } from '../../utils/migration'
 
@@ -37,12 +38,13 @@ export default function Mint({ account, esd, esds }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [value, setValue] = useState('')
 
-  const allowance = useContractAllowance(
-    contracts.oldDollar.address,
-    contracts.migrator.address
-  )
+  const allowance = useContractAllowance(V1_DOLLAR.address, MIGRATOR.address)
 
-  const executeFunc = async () => {
+  const executeApprove = async () => {
+    const response = await setApproval(V1_DOLLAR.address, MIGRATOR.address)
+    watchTx(response.hash, 'Approving ESD')
+  }
+  const executeMigrate = async () => {
     const response = await migrate(account)
     watchTx(response.hash, 'ESD V1 migration')
     setValue('')
@@ -89,19 +91,11 @@ export default function Mint({ account, esd, esds }) {
           </ModalBody>
           <ModalFooter>
             {parseInt(allowance) === 0 ? (
-              <Button
-                colorScheme="pink"
-                onClick={() =>
-                  setApproval(
-                    contracts.oldDollar.address,
-                    contracts.migrator.address
-                  )
-                }
-              >
+              <Button colorScheme="pink" onClick={() => executeApprove()}>
                 Approve ESD
               </Button>
             ) : (
-              <Button colorScheme="green" onClick={() => executeFunc()}>
+              <Button colorScheme="green" onClick={() => executeMigrate()}>
                 Migrate ESD & ESDS
               </Button>
             )}

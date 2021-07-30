@@ -21,6 +21,7 @@ import {
   InputRightAddon,
 } from '@chakra-ui/react'
 import contracts from '../../contracts'
+const { DOLLAR, RESERVE } = contracts
 import { web3, setApproval } from '../../utils/ethers'
 import { redeem } from '../../utils/reserve'
 import useAlerts from '../../contexts/useAlerts'
@@ -34,9 +35,14 @@ export default function Redeem({ balance, allowance }) {
     setValue(parseFloat(balance))
   }
 
-  const executeFunc = async () => {
+  const executeApprove = async () => {
+    const response = await setApproval(DOLLAR.address, RESERVE.address)
+    watchTx(response.hash, 'Approve DSU')
+  }
+
+  const executeRedeem = async () => {
     const response = await redeem(value)
-    watchTx(response.hash, 'ESD redeem')
+    watchTx(response.hash, 'Redeem DSU')
     setValue('')
     onClose()
   }
@@ -44,7 +50,7 @@ export default function Redeem({ balance, allowance }) {
   return (
     <>
       <Button colorScheme="green" onClick={onOpen}>
-        Redeem ESD
+        Redeem DSU
       </Button>
       <Modal
         isOpen={isOpen}
@@ -54,16 +60,16 @@ export default function Redeem({ balance, allowance }) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Redeem ESD tokens</ModalHeader>
+          <ModalHeader>Redeem DSU tokens</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text color="grey" fontSize="sm">
-              ESD can be redeemed for a share of assets DAOs reserve. The ESD is
+              DSU can be redeemed for a share of assets DAOs reserve. The DSU is
               redeemable at the current reserve ratio.
             </Text>
             <br />
             <Text color="grey" fontSize="sm">
-              Balance: {balance} ESD
+              Balance: {balance} DSU
             </Text>
             <InputGroup>
               <Input
@@ -81,24 +87,19 @@ export default function Redeem({ balance, allowance }) {
           <ModalFooter>
             {parseInt(allowance) === 0 ? (
               <Button
-                disabled={value > balance}
+                // disabled={ balance}
                 colorScheme="pink"
-                onClick={() =>
-                  setApproval(
-                    contracts.dollar.address,
-                    contracts.reserve.address
-                  )
-                }
+                onClick={() => executeApprove()}
               >
-                Approve USDC
+                Approve DSU
               </Button>
             ) : (
               <Button
                 colorScheme="green"
                 disabled={parseFloat(value) > parseFloat(balance)}
-                onClick={() => executeFunc()}
+                onClick={() => executeRedeem()}
               >
-                Redeem ESD
+                Redeem DSU
               </Button>
             )}
 
