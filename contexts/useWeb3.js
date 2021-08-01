@@ -66,6 +66,7 @@ export const Web3Provider = (props) => {
       account,
       status,
       web3,
+      ethereum,
     }),
     [web3, provider, account, status]
   )

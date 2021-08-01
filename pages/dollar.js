@@ -53,7 +53,7 @@ const {
 } = contracts
 
 export default function Dollar() {
-  const { web3, connectWallet, disconnectWallet, account, ethereum } = useWeb3()
+  const { web3, connectWallet, disconnectWallet, account } = useWeb3()
 
   const [loaded, setLoaded] = useState(false)
   const [reserveData, setReserveData] = useState({})
@@ -66,7 +66,6 @@ export default function Dollar() {
   const { width } = useViewport()
 
   useEffect(async () => {
-    console.log(web3)
     if (web3) {
       const reserve = await getData()
       const curveTVL = await getCurveTVL()
@@ -88,7 +87,7 @@ export default function Dollar() {
       setReserveData(reserve)
       setLoaded(true)
     }
-  }, [ethereum])
+  }, [web3])
 
   return (
     <Page
