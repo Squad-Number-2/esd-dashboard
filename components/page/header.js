@@ -20,14 +20,14 @@ function Header({ header, subheader }) {
 
   return (
     <>
-      {web3._network && web3._network.chainId === 3 ? (
+      {/* {web3._network && web3._network.chainId === 3 ? (
         <Box h="25px" bg="palevioletred" textAlign="center" color="white">
           You are using the{' '}
           {web3._network.name[0].toUpperCase() +
             web3._network.name.slice(1).toLowerCase()}{' '}
           network!
         </Box>
-      ) : null}
+      ) : null} */}
 
       <Flex
         bg="black"
