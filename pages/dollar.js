@@ -53,7 +53,7 @@ const {
 } = contracts
 
 export default function Dollar() {
-  const { web3, connectWallet, disconnectWallet, account } = useWeb3()
+  const { web3, connectWallet, disconnectWallet, account, ethereum } = useWeb3()
 
   const [loaded, setLoaded] = useState(false)
   const [reserveData, setReserveData] = useState({})
@@ -66,7 +66,8 @@ export default function Dollar() {
   const { width } = useViewport()
 
   useEffect(async () => {
-    if (account) {
+    console.log(web3)
+    if (web3) {
       const reserve = await getData()
       const curveTVL = await getCurveTVL()
       const uniTVL = await getUniPoolBalance()
@@ -87,7 +88,7 @@ export default function Dollar() {
       setReserveData(reserve)
       setLoaded(true)
     }
-  }, [account])
+  }, [ethereum])
 
   return (
     <Page
@@ -218,6 +219,7 @@ export default function Dollar() {
                         incentivizer={INCENTIVIZER_DSU_ESS}
                         symbol="UNI-V2"
                         user={poolData[0].user}
+                        poolLink="https://app.uniswap.org/#/add/v2/0x24aE124c4CC33D6791F8E8B63520ed7107ac8b3e/0x605D26FBd5be761089281d5cec2Ce86eeA667109"
                       />
                     </Th>
                   </Tr>
@@ -236,6 +238,7 @@ export default function Dollar() {
                         incentivizer={INCENTIVIZER_DSU}
                         symbol="DSU3CRV"
                         user={poolData[1].user}
+                        ppolLink="https://crv.to/pool"
                       />
                     </Th>
                   </Tr>

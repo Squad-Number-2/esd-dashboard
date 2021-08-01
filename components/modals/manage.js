@@ -39,7 +39,7 @@ import { commas } from '../../utils/helpers'
 
 import useAlerts from '../../contexts/useAlerts'
 
-export default function Manage({ pool, incentivizer, symbol, user }) {
+export default function Manage({ pool, incentivizer, symbol, user, poolLink }) {
   const { watchTx } = useAlerts()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [deposit, setDeposit] = useState('')
@@ -106,7 +106,13 @@ export default function Manage({ pool, incentivizer, symbol, user }) {
           <ModalBody>
             <Text color="grey" fontSize="sm">
               You can deposit your LP tokens into this pool to receive rewards.
-              You can get LP tokens by supplying tokens to a liquidity pool.
+            </Text>
+            <Text color="grey" fontSize="sm">
+              To receive LP token you can go to the pool{' '}
+              <Link href={poolLink} isExternal={true}>
+                <b>here</b>
+              </Link>{' '}
+              and add tokens.
             </Text>
             <br />
             <Text color="grey" fontSize="sm">
