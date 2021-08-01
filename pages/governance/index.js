@@ -9,6 +9,8 @@ import { commas } from '../../utils/helpers'
 import DelegateModal from '../../components/modals/delegate'
 import { useRouter } from 'next/router'
 
+import useViewport from '../../hooks/useViewport'
+
 import {
   fetchProposals,
   fetchDelegate,
@@ -37,15 +39,19 @@ import {
 export default function Home() {
   const { web3, connectWallet, disconnectWallet, account, status } = useWeb3()
   const router = useRouter()
+  const [loading, setLoading] = useState(true)
 
   const [delegations, setDelegations] = useState([])
   const [proposals, setProposals] = useState([])
   const [delegate, setDelegate] = useState(false)
 
+  const { width } = useViewport()
+
   useEffect(async () => {
     console.log('Fetching Proposals')
     setProposals((await fetchProposals()).reverse())
     setDelegations(await fetchDelegations())
+    setLoading(false)
   }, [])
 
   useEffect(async () => {
@@ -124,14 +130,14 @@ export default function Home() {
       }
     >
       <Box m={'-97px 0 20px'}>
-        <Flex>
+        <Flex flexDirection={['column', 'row']}>
           <Box
             bg="white"
             p="2em 4em"
             border="1px solid #e8e8e8"
             borderRadius="lg"
             h="fit-content"
-            w="40%"
+            w={['100%', '40%']}
           >
             <Heading fontSize="xl">Your Wallet</Heading>
             {delegate != zeroAddress && account ? (
@@ -145,17 +151,22 @@ export default function Home() {
                 <Skeleton isLoaded={delegate} mr="10px">
                   <Text m="0 0 .5em">{usersDelegate()}</Text>
                 </Skeleton>
-                <DelegateModal account={account} />
-                <br />
-                {account === delegate ? (
-                  <Button
-                    m=".5em 0"
-                    colorScheme="green"
-                    onClick={() => router.push('/governance/propose')}
-                  >
-                    Propose
-                  </Button>
-                ) : null}
+                <Flex
+                  justifyContent="space-between"
+                  flexDirection={['column', 'row']}
+                >
+                  <DelegateModal account={account} />
+                  {account === delegate ? (
+                    <Button
+                      mt={['.5em', 0]}
+                      colorScheme="green"
+                      isDisabled={width < 960 ? true : false}
+                      onClick={() => router.push('/governance/propose')}
+                    >
+                      Propose
+                    </Button>
+                  ) : null}
+                </Flex>
               </Box>
             ) : (
               <Box p="1em 0">
@@ -174,10 +185,10 @@ export default function Home() {
           <Box
             bg="white"
             p="2em 4em"
-            m="0 0 0 1em"
+            m={['1em 0 0 0', '0 0 0 1em']}
             border="1px solid #e8e8e8"
             borderRadius="lg"
-            w="60%"
+            w={['100%', '60%']}
           >
             <Heading fontSize="xl">Governance Proposals</Heading>
             {proposals[0] ? (
@@ -198,36 +209,28 @@ export default function Home() {
               ))
             ) : (
               <>
-                {Array(6)
-                  .fill(null)
-                  .map((_, i) => (
-                    <Box p=".5em 0" key={i + 'fake'}>
-                      <Skeleton mb="10px" w="80%" h="30px" />
-                      <Skeleton w="120px" h="20px" />
-                    </Box>
-                  ))}
+                {loading ? (
+                  Array(6)
+                    .fill(null)
+                    .map((_, i) => (
+                      <Box p=".5em 0" key={i + 'fake'}>
+                        <Skeleton mb="10px" w="80%" h="30px" />
+                        <Skeleton w="120px" h="20px" />
+                      </Box>
+                    ))
+                ) : (
+                  <Box p=".5em 0">
+                    <Text fontSize="md">No proposals yet. </Text>
+                    <Text color="grey" fontSize="sm">
+                      Delegate your ESS and then propose a vote!
+                    </Text>
+                  </Box>
+                )}
               </>
             )}
           </Box>
         </Flex>
       </Box>
-
-      {/* <ContentWrapper ai={'center'}>
-        <CardRow topRow>
-         
-          <Card wide>
-            <CardTitle>Governance Proposals</CardTitle>
-            {proposals.map((prop, id) => (
-              <Link key={id + 'prop'} href={`/governance/proposal/${prop.id}`}>
-                <a>
-                  <InfoTitle>{prop.title}</InfoTitle>
-                  <div>{prop.state}</div>
-                </a>
-              </Link>
-            ))}
-          </Card>
-        </CardRow>
-      </ContentWrapper> */}
     </Page>
   )
 }

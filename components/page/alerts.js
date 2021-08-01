@@ -7,7 +7,13 @@ import useAlerts from '../../contexts/useAlerts'
 const Alerts = () => {
   const { alerts } = useAlerts()
   return (
-    <Box position="fixed" bottom="130" right="0" p="10px 30px" zIndex="10">
+    <Box
+      position="fixed"
+      bottom="130"
+      right={['10', '0']}
+      p="10px 30px"
+      zIndex="10"
+    >
       {alerts.reverse().map((item, i) => {
         switch (item.type) {
           case 'pending':

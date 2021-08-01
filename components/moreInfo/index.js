@@ -6,36 +6,38 @@ export default function MoreInfo() {
       <Center>
         <Text fontSize="3xl">Need to know more?</Text>
       </Center>
-      <Flex>
-        <Box p="3">
-          <Image src={'/graphics/new.png'} width={'100%'} />
+      <Flex justifyContent="space-between" flexDirection={['column', 'row']}>
+        <Box p="3" justifyContent="center" maxWidth={'350px'}>
+          <Image src={'/graphics/new.png'} />
           <Heading align="center" fontSize="2xl" m="0 0 .5em">
-            Need to know more?
+            New to Empty Set?
           </Heading>
           <Text align="center">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-            luctus, velit ac tincidunt ultrices, mauris arcu imperdiet
+            Learn more about how the Empty Set protocol works, dive into the
+            architecture and find info on it's current configuration on the
+            documentation website.
           </Text>
         </Box>
 
-        <Box p="3">
-          <Image src={'/graphics/how.png'} width={'100%'} />
+        <Box p="3" maxWidth={'350px'}>
+          <Image src={'/graphics/how.png'} />
           <Heading align="center" fontSize="2xl" m="0 0 .5em">
-            How do you use the DAO/LP?
+            What are DSU & ESS?
           </Heading>
           <Text align="center">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-            luctus, velit ac tincidunt ultrices, mauris arcu imperdiet
+            The Empty Set protocol has two tokens. Learn about the role they
+            have in the operation of the protocol and how you can use them!
           </Text>
         </Box>
-        <Box p="3">
-          <Image src={'/graphics/risks.png'} width={'100%'} />
+        <Box p="3" maxWidth={'350px'}>
+          <Image src={'/graphics/risks.png'} />
           <Heading align="center" fontSize="2xl" m="0 0 .5em">
             Learn about the Risks?
           </Heading>
           <Text align="center">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-            luctus, velit ac tincidunt ultrices, mauris arcu imperdiet
+            All DeFi protocols share some risk. Whether it's smart contract,
+            protocol dependencies or external risks, protocols share some risks.
+            Learn about Empty Set's profile.
           </Text>
         </Box>
       </Flex>

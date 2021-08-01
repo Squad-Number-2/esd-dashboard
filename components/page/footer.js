@@ -14,7 +14,13 @@ const Footer = () => {
       align="center"
       p="30px 60px"
     >
-      <Flex w="100%" maxW={'1200px'} justify="space-between" align="center">
+      <Flex
+        flexDirection={['column', 'row']}
+        w="100%"
+        maxW={'1200px'}
+        justify="space-between"
+        align="center"
+      >
         <Box p="4">
           <Link onClick={() => router.push('/')}>
             <Image
@@ -25,7 +31,13 @@ const Footer = () => {
           </Link>
         </Box>
 
-        <Flex minW="md" p="4" justify="space-around" align="center">
+        <Flex
+          flexDirection={['column', 'row']}
+          minW={['none', 'md']}
+          p="4"
+          justify="space-around"
+          align="center"
+        >
           <Link href={'https://emptyset.finance/'} target={'_blank'}>
             Home
           </Link>

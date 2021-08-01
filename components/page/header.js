@@ -15,18 +15,12 @@ import {
 
 function Header({ header, subheader }) {
   const router = useRouter()
-  const {
-    connectWallet,
-    disconnectWallet,
-    account,
-    status,
-    balance,
-    web3,
-  } = useWeb3()
+  const { connectWallet, disconnectWallet, account, status, balance, web3 } =
+    useWeb3()
 
   return (
     <>
-      {web3._network && web3._network.chainId != 1 ? (
+      {web3._network && web3._network.chainId === 3 ? (
         <Box h="25px" bg="palevioletred" textAlign="center" color="white">
           You are using the{' '}
           {web3._network.name[0].toUpperCase() +
@@ -42,7 +36,13 @@ function Header({ header, subheader }) {
         align="center"
         p="30px 60px"
       >
-        <Flex w="100%" maxW={'1200px'} justify="space-between" align="center">
+        <Flex
+          flexDirection={['column', 'row']}
+          w="100%"
+          maxW={'1200px'}
+          justify="space-between"
+          align="center"
+        >
           <Link onClick={() => router.push('/')}>
             <Image
               src="/logo/logo_white.svg"
@@ -50,9 +50,19 @@ function Header({ header, subheader }) {
               alt="Empty Set Dollar"
             />
           </Link>
-          <Flex minW="sm" p="4" justify="space-around" align="center">
-            <Link onClick={() => router.push('/dollar')}>Dollar</Link>
-            <Link onClick={() => router.push('/governance')}>Governance</Link>
+          <Flex
+            flexDirection={['column', 'row']}
+            minW={['none', 'sm']}
+            p="4"
+            justify="space-around"
+            align="center"
+          >
+            <Link pb={['.7em', 0]} onClick={() => router.push('/dollar')}>
+              Dollar
+            </Link>
+            <Link pb={['.7em', 0]} onClick={() => router.push('/governance')}>
+              Governance
+            </Link>
             <WalletModal />
           </Flex>
         </Flex>

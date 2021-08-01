@@ -71,28 +71,6 @@ export default function Home() {
                 </Text>
               </Box>
               <Box w="50%">
-                <Heading fontSize="lg">Found V1 Balances:</Heading>
-                <Text>
-                  We've found ESD balances on a number of other protocols.
-                  Please withdraw them to your wallet before migrating.
-                </Text>
-                <Flex m="1em 0em 0em">
-                  <Stat w="fit-content">
-                    <StatLabel>ESD/ETH Sushi: {0.0032} LP</StatLabel>
-                  </Stat>
-                  <Stat w="fit-content">
-                    <StatLabel>ESD/USDC Uniswap V2: {0.0232} LP</StatLabel>
-                  </Stat>
-                </Flex>
-                <Flex m=".5em 0em 0em">
-                  <Stat w="fit-content">
-                    <StatLabel>Cream.Fi: {commas(150087.32)} ESD</StatLabel>
-                  </Stat>
-                  <Stat w="fit-content">
-                    <StatLabel>Saffron Finance: {0.0232} LP</StatLabel>
-                  </Stat>
-                </Flex>
-                <br />
                 <Heading fontSize="lg">Your V1 Balance</Heading>
                 <Flex m="1em 0em 0em">
                   <Stat w="fit-content">
@@ -119,7 +97,7 @@ export default function Home() {
           </Box>
         ) : null}
 
-        <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+        <Grid templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap={4}>
           <Box
             bg="white"
             p="2em 4em"
@@ -160,7 +138,7 @@ export default function Home() {
             </Link>
             <Link onClick={() => router.push('/governance')}>
               <Text fontSize="lg" m="0em 0em 0.25em">
-                Make a proposal or vote in the governance process &rarr;
+                Propose or vote in the governance process &rarr;
               </Text>
             </Link>
             <Link href="https://docs.emptyset.finance" isExternal={true}>

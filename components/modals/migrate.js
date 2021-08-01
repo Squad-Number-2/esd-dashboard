@@ -64,19 +64,18 @@ export default function Mint({ account, esd, esds }) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Migrate your ESD/ESDS from V1</ModalHeader>
+          <ModalHeader>Migrate your ESD/ESDS to ESS</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text m="0 0 5px" fontSize="sm">
-              ESD has recently upgraded and now users need to migrate their
-              tokens to the next version of the protocol. The migrator will take
-              ESD in your wallet and ESDS from the DAO and return you ESDS V1.5,
-              a tradable ERC20 token. This action is irreversible.
+              The migrator will take ESD in your wallet and ESDS from the DAO
+              and return you ESS, a tradable ERC20 token. This token is the
+              governance token for Empty Set V2.
             </Text>
             <Text m="0 0 5px" color="red" fontSize="sm">
-              Note: The migrator will <b>not</b> migrate ESD in the LP or
-              coupons. These need to be withdrawn or redeemed to be migrated
-              successfully.
+              The migrator will <b>not</b> migrate ESD in the Liquidity Pools,
+              Coupons or staked on other protocols. Tokens on these platforms
+              need to withdrawn to be migrated successfully.
             </Text>
             <Flex>
               <Stat>
