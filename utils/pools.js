@@ -40,6 +40,7 @@ export const getUniPoolBalance = async () => {
 }
 
 export const getIncentivizerBalance = async (contract, account, fixed) => {
+  if (!account) return { reward: 0, underlying: 0 }
   const curve = new ethers.Contract(contract.address, contract.abi, web3)
 
   const rewardResp = await curve.balanceOfReward(account, { gasLimit: 100000 })
