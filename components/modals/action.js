@@ -26,6 +26,7 @@ import {
 import useContractAllowance from '../../hooks/useContractAllowance'
 
 import contracts from '../../contracts'
+const { STAKE, DOLLAR, RESERVE, TIMELOCK, GOVERNORALPHA } = contracts
 import { ethers } from 'ethers'
 import { web3, setApproval, zeroAddress } from '../../utils/ethers'
 import { setDelegate } from '../../utils/governor'
@@ -39,9 +40,13 @@ export default function Delegate({ addAction }) {
   const [func, setFunc] = useState(false)
   const [values, setValues] = useState([])
 
-  const governableContracts = Object.values(contracts).filter(
-    (value) => value.name != undefined
-  )
+  const governableContracts = {
+    STAKE,
+    DOLLAR,
+    RESERVE,
+    TIMELOCK,
+    GOVERNORALPHA,
+  }
 
   const onTarget = (i) => {
     setSelectTarget(i)
@@ -145,8 +150,8 @@ export default function Delegate({ addAction }) {
                 value={selectTarget}
               >
                 <option value={false}>Select Target</option>
-                {governableContracts.map((item, i) => (
-                  <option value={i}>{item.name}</option>
+                {Object.entries(governableContracts).map((item) => (
+                  <option value={item[0]}>{item[0]}</option>
                 ))}
               </Select>
             </Box>
