@@ -45,7 +45,7 @@ export default function Home() {
   return (
     <Page
       header={'Welcome to the Empty Set Dollar DAO'}
-      subheader={'Manage, trade, and govern the DSU'}
+      subheader={'Manage, trade, and govern the Empty Set Protocol'}
     >
       <Box m={'-97px 0 20px'}>
         {oldDaoBalance > 0 || oldDollarBalance > 0 ? (
@@ -59,28 +59,25 @@ export default function Home() {
             <Flex>
               <Box w="50%" pr="10px">
                 <Heading fontSize="2xl">
-                  Migrate your ESD V1 to ESD V1.5
+                  Migrate ESD V1 tokens to Empty Set V2.
                 </Heading>
                 <Text m="1em 0em 0em">
-                  Empty Set has recently upgraded. Connect your wallet and click
-                  the migrate button to burn your ESD V1 tokens and receive the
-                  equivalent ESS.
-                </Text>
-                <Text m="1em 0em 0em">
-                  Learn more about the transition on <Link>our blog</Link>.
+                  Empty Set has recently upgraded. Click the migrate button to
+                  burn your ESD V1 tokens and receive the equivalent ESS. This
+                  process is irreversible.
                 </Text>
               </Box>
               <Box w="50%">
                 <Heading fontSize="lg">Your V1 Balance</Heading>
                 <Flex m="1em 0em 0em">
                   <Stat w="fit-content">
-                    <StatLabel>Dollar (DSU)</StatLabel>
+                    <StatLabel>Wallet ESD</StatLabel>
                     <Skeleton isLoaded={oldDollarBalance} mr="10px">
                       <StatNumber>ø {commas(oldDollarBalance)}</StatNumber>
                     </Skeleton>
                   </Stat>
                   <Stat>
-                    <StatLabel>Share (ESS)</StatLabel>
+                    <StatLabel>Bonded ESD (ESDS)</StatLabel>
                     <Skeleton isLoaded={oldDaoBalance} mr="10px">
                       <StatNumber>ø {commas(oldDaoBalance)}</StatNumber>
                     </Skeleton>
@@ -108,13 +105,13 @@ export default function Home() {
             <Heading fontSize="2xl">Your Balance</Heading>
             <Flex m=".5em 0 0">
               <Stat>
-                <StatLabel>Dollar (ESD)</StatLabel>
+                <StatLabel>Digital Stable Unit (DSU)</StatLabel>
                 <Skeleton isLoaded={dollarBalance} mr="10px">
                   <StatNumber>ø {commas(dollarBalance)}</StatNumber>
                 </Skeleton>
               </Stat>
               <Stat>
-                <StatLabel>Stake (ESDS)</StatLabel>
+                <StatLabel>Empty Set Share (ESS)</StatLabel>
                 <Skeleton isLoaded={stakeBalance} mr="10px">
                   <StatNumber>ø {commas(stakeBalance)}</StatNumber>
                 </Skeleton>
@@ -129,11 +126,11 @@ export default function Home() {
             w="auto"
           >
             <Heading fontSize="2xl" m="0em 0em 0.5em">
-              Get Started with ESD
+              Get Started with Empty Set
             </Heading>
             <Link onClick={() => router.push('/dollar')}>
               <Text fontSize="lg" m="0em 0em 0.25em">
-                Mint & Redeem ESD tokens &rarr;
+                Mint & Redeem DSU tokens &rarr;
               </Text>
             </Link>
             <Link onClick={() => router.push('/governance')}>
