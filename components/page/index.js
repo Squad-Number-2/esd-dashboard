@@ -20,7 +20,7 @@ const Page = ({ children, header, subheader, back }) => {
   return (
     <Flex direction="column" minHeight="100vh">
       <Head>
-        <title>Empty Set Dollar</title>
+        <title>Empty Set</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
