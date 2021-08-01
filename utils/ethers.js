@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 // Set provider for pre-render operations where no wallet is present.
 // let provider = new ethers.providers.JsonRpcProvider(atob(ETH_NODE))
 export let web3 = new ethers.providers.InfuraProvider(
-  process.env.CHAIN_ID === 1 ? 'homestead' : 'ropsten',
+  process.env.CHAIN_ID === 3 ? 'ropsten' : 'mainnet',
   '0de24f0d71624f808c0cf9941e07ddd7'
 )
 
