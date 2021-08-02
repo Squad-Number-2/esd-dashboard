@@ -44,17 +44,17 @@ const Footer = () => {
           <Link href={'https://docs.emptyset.finance/'} target={'_blank'}>
             Documentation
           </Link>
-          <Link
+          {/* <Link
             href={
               'https://explore.duneanalytics.com/dashboard/empty-set-dollar'
             }
             target={'_blank'}
           >
             Analytics
-          </Link>
+          </Link> */}
           <Link
             href={
-              'https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0x36f3fd68e7325a35eb768f1aedaae9ea0689d723'
+              'https://app.uniswap.org/#/swap?inputCurrency=0x24aE124c4CC33D6791F8E8B63520ed7107ac8b3e&outputCurrency=0x605D26FBd5be761089281d5cec2Ce86eeA667109&use=V2'
             }
             target={'_blank'}
           >

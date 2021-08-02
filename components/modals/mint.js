@@ -41,7 +41,7 @@ export default function Mint({ balance, allowance }) {
     watchTx(response.hash, 'Approving USDC')
   }
   const executeMint = async () => {
-    const response = await mint(value)
+    const response = await mint(value.toString())
     watchTx(response.hash, 'Minting DSU')
     setValue('')
     onClose()

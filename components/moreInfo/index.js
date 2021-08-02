@@ -14,7 +14,7 @@ export default function MoreInfo() {
           </Heading>
           <Text align="center">
             Learn more about how the Empty Set protocol works, dive into the
-            architecture and find info on it's current configuration on the
+            architecture and find info on its current configuration on the
             documentation website.
           </Text>
         </Box>

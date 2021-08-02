@@ -41,7 +41,7 @@ export default function Redeem({ balance, allowance }) {
   }
 
   const executeRedeem = async () => {
-    const response = await redeem(value)
+    const response = await redeem(value.toString())
     watchTx(response.hash, 'Redeem DSU')
     setValue('')
     onClose()

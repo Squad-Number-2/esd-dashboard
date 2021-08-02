@@ -50,7 +50,7 @@ export default function Manage({ pool, incentivizer, symbol, user, poolLink }) {
     incentivizer.address
   )
 
-  const walletBalance = useContractBalance(pool.address)
+  const walletBalance = useContractBalance(pool.address, 18, 4)
 
   const setMaxDeposit = () => {
     setDeposit(parseFloat(walletBalance))
