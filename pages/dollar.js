@@ -91,7 +91,7 @@ export default function Dollar() {
 
   return (
     <Page
-      header={'⊙ Digital Standard Unit (DSU)'}
+      header={'⊙ Digital Stable Unit (DSU)'}
       subheader={'Mint, redeem and stake your DSU.'}
     >
       <Box m={'-97px 0 20px'}>
@@ -136,42 +136,75 @@ export default function Dollar() {
               </Stat> */}
             </Grid>
           </Box>
-          <Box
-            bg="white"
-            p={['2em 2.5em', '2em 4em']}
-            border="1px solid #e8e8e8"
-            borderRadius="lg"
-            w="auto"
-          >
-            <Heading fontSize="2xl" m="0em 0em 0.5em">
-              Mint & Redeem DSU
-            </Heading>
-            <Grid
-              templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']}
-              gap="4"
-              m=".5em 0 0"
-              align="baseline"
+          {account ? (
+            <Box
+              bg="white"
+              p={['2em 2.5em', '2em 4em']}
+              border="1px solid #e8e8e8"
+              borderRadius="lg"
+              w="auto"
             >
-              <Stat>
-                <StatLabel>USDC Balance</StatLabel>
-                <Skeleton isLoaded={loaded} mr="10px">
-                  <StatNumber>${commas(usdcBalance)}</StatNumber>
-                </Skeleton>
-              </Stat>
-              <Stat>
-                <StatLabel>DSU Balance</StatLabel>
-                <Skeleton isLoaded={loaded} mr="10px">
-                  <StatNumber>ø {commas(dollarBalance)}</StatNumber>
-                </Skeleton>
-              </Stat>
-              <MintModal balance={usdcBalance} allowance={usdcAllowance} />
+              <Heading fontSize="2xl" m="0em 0em 0.5em">
+                Mint & Redeem DSU
+              </Heading>
+              <Grid
+                templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']}
+                gap="4"
+                m=".5em 0 0"
+                align="baseline"
+              >
+                <Stat>
+                  <StatLabel>USDC Balance</StatLabel>
+                  <Skeleton isLoaded={loaded} mr="10px">
+                    <StatNumber>${commas(usdcBalance)}</StatNumber>
+                  </Skeleton>
+                </Stat>
+                <Stat>
+                  <StatLabel>DSU Balance</StatLabel>
+                  <Skeleton isLoaded={loaded} mr="10px">
+                    <StatNumber>ø {commas(dollarBalance)}</StatNumber>
+                  </Skeleton>
+                </Stat>
+                <MintModal balance={usdcBalance} allowance={usdcAllowance} />
 
-              <RedeemModal
-                balance={dollarBalance}
-                allowance={dollarAllowance}
-              />
-            </Grid>
-          </Box>
+                <RedeemModal
+                  balance={dollarBalance}
+                  allowance={dollarAllowance}
+                />
+              </Grid>
+            </Box>
+          ) : (
+            <Box
+              bg="white"
+              p={['2em 2.5em', '2em 4em']}
+              border="1px solid #e8e8e8"
+              borderRadius="lg"
+              w="auto"
+            >
+              <Heading fontSize="2xl" m="0em 0em 0.5em">
+                Connect your wallet.
+              </Heading>
+              <Grid
+                templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']}
+                gap="4"
+                m=".5em 0 0"
+                align="baseline"
+              >
+                <Stat>
+                  <StatLabel>USDC Balance</StatLabel>
+                  <Skeleton isLoaded={false} mr="10px">
+                    <StatNumber>${commas(usdcBalance)}</StatNumber>
+                  </Skeleton>
+                </Stat>
+                <Stat>
+                  <StatLabel>DSU Balance</StatLabel>
+                  <Skeleton isLoaded={false} mr="10px">
+                    <StatNumber>ø {commas(dollarBalance)}</StatNumber>
+                  </Skeleton>
+                </Stat>
+              </Grid>
+            </Box>
+          )}
         </Grid>
         <Box
           bg="white"
@@ -207,7 +240,7 @@ export default function Dollar() {
                     <Td>
                       <Flex align="center">
                         <Image src="/logo/uni.svg" w="24px" m="0 10px 0 0" />
-                        Uniswap ESD-USDC
+                        Uniswap ESS-DSU
                       </Flex>
                     </Td>
                     <Td isNumeric>${commas(poolData[0].tvl)} USD</Td>
@@ -226,7 +259,7 @@ export default function Dollar() {
                     <Td>
                       <Flex>
                         <Image src="/logo/crv.svg" w="24px" m="0 10px 0 0" />{' '}
-                        Curve ESD-3CRV
+                        Curve DSU-3CRV
                       </Flex>
                     </Td>
                     <Td isNumeric>${commas(poolData[1].tvl)} USD</Td>
@@ -237,7 +270,7 @@ export default function Dollar() {
                         incentivizer={INCENTIVIZER_DSU}
                         symbol="DSU3CRV"
                         user={poolData[1].user}
-                        ppolLink="https://crv.to/pool"
+                        poolLink="https://crv.to/pool"
                       />
                     </Th>
                   </Tr>

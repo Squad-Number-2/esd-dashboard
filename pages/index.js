@@ -44,7 +44,7 @@ export default function Home() {
 
   return (
     <Page
-      header={'Welcome to the Empty Set Dollar DAO'}
+      header={'Welcome to the Empty Set DAO'}
       subheader={'Manage, trade, and govern the Empty Set Protocol'}
     >
       <Box m={'-97px 0 20px'}>
@@ -95,29 +95,67 @@ export default function Home() {
         ) : null}
 
         <Grid templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap={4}>
-          <Box
-            bg="white"
-            p="2em 4em"
-            border="1px solid #e8e8e8"
-            borderRadius="lg"
-            flexGrow="1"
-          >
-            <Heading fontSize="2xl">Your Balance</Heading>
-            <Flex m=".5em 0 0">
-              <Stat>
-                <StatLabel>Digital Stable Unit (DSU)</StatLabel>
-                <Skeleton isLoaded={dollarBalance} mr="10px">
-                  <StatNumber>ø {commas(dollarBalance)}</StatNumber>
-                </Skeleton>
-              </Stat>
-              <Stat>
-                <StatLabel>Empty Set Share (ESS)</StatLabel>
-                <Skeleton isLoaded={stakeBalance} mr="10px">
-                  <StatNumber>ø {commas(stakeBalance)}</StatNumber>
-                </Skeleton>
-              </Stat>
-            </Flex>
-          </Box>
+          {account ? (
+            <Box
+              bg="white"
+              p="2em 4em"
+              border="1px solid #e8e8e8"
+              borderRadius="lg"
+              flexGrow="1"
+            >
+              {' '}
+              <Heading fontSize="2xl">Your Balance</Heading>
+              <Flex m=".5em 0 0">
+                <Stat>
+                  <StatLabel>Digital Stable Unit (DSU)</StatLabel>
+                  <Skeleton isLoaded={dollarBalance} mr="10px">
+                    <StatNumber>ø {commas(dollarBalance)}</StatNumber>
+                  </Skeleton>
+                </Stat>
+                <Stat>
+                  <StatLabel>Empty Set Share (ESS)</StatLabel>
+                  <Skeleton isLoaded={stakeBalance} mr="10px">
+                    <StatNumber>ø {commas(stakeBalance)}</StatNumber>
+                  </Skeleton>
+                </Stat>
+              </Flex>
+            </Box>
+          ) : (
+            <Box
+              bg="white"
+              p="2em 4em"
+              border="1px solid #e8e8e8"
+              borderRadius="lg"
+              flexGrow="1"
+            >
+              <Heading fontSize="2xl">Connect your wallet.</Heading>
+              <Flex m=".5em 0 0">
+                <Stat>
+                  <Skeleton isLoaded={false} mr="10px">
+                    <StatNumber>ø {commas(dollarBalance)}</StatNumber>
+                  </Skeleton>
+                </Stat>
+                <Stat>
+                  <Skeleton isLoaded={false} mr="10px">
+                    <StatNumber>ø {commas(stakeBalance)}</StatNumber>
+                  </Skeleton>
+                </Stat>
+              </Flex>
+              <Flex m=".5em 0 0">
+                <Stat>
+                  <Skeleton isLoaded={false} mr="10px">
+                    <StatNumber>ø {commas(dollarBalance)}</StatNumber>
+                  </Skeleton>
+                </Stat>
+                <Stat>
+                  <Skeleton isLoaded={false} mr="10px">
+                    <StatNumber>ø {commas(stakeBalance)}</StatNumber>
+                  </Skeleton>
+                </Stat>
+              </Flex>
+            </Box>
+          )}
+
           <Box
             bg="white"
             p="2em 4em"
@@ -140,7 +178,7 @@ export default function Home() {
             </Link>
             <Link href="https://docs.emptyset.finance" isExternal={true}>
               <Text fontSize="lg" m="0em 0em 0.25em">
-                Get stuck into the documentation &rarr;
+                Check out the documentation &rarr;
               </Text>
             </Link>
           </Box>
