@@ -1,6 +1,7 @@
 import { Contract, Provider } from 'ethers-multicall'
 import { ethers } from 'ethers'
 import { web3 } from '../utils/ethers'
+import { toDecimals } from '../utils/helpers'
 import contracts from '../contracts'
 const { CURVE_DSU, INCENTIVIZER_DSU, UNISWAP_DSU_ESS, STAKE, DOLLAR } =
   contracts
@@ -13,7 +14,7 @@ export const getCurveTVL = async (fixed) => {
 
   const normalised = parseFloat(
     ethers.utils.formatUnits(dsu.add(threeCrv), 18)
-  ).toFixed(fixed ? fixed : 2)
+  ).toFixedNoRounding(fixed ? fixed : 2)
   return normalised
 }
 
@@ -48,12 +49,12 @@ export const getIncentivizerBalance = async (contract, account, fixed) => {
     gasLimit: 100000,
   })
 
-  const reward = parseFloat(ethers.utils.formatUnits(rewardResp, 18)).toFixed(
-    fixed ? fixed : 2
-  )
+  const reward = parseFloat(
+    ethers.utils.formatUnits(rewardResp, 18)
+  ).toFixedNoRounding(fixed ? fixed : 4)
   const underlying = parseFloat(
     ethers.utils.formatUnits(underlyingResp, 18)
-  ).toFixed(fixed ? fixed : 2)
+  ).toFixedNoRounding(fixed ? fixed : 4)
   return { reward, underlying }
 }
 

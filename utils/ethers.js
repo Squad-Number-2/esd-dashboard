@@ -94,7 +94,7 @@ export const fetchBalance = async (contract, account, digits, fixed) => {
   const rawNum = await erc20.balanceOf(account)
   const normalised = parseFloat(
     ethers.utils.formatUnits(rawNum, digits || 18)
-  ).toFixed(fixed ? fixed : 2)
+  ).toFixedNoRounding(fixed ? fixed : 2)
   return normalised
 }
 
@@ -138,7 +138,7 @@ export const fetchAllowance = async (
   const rawNum = await erc20.allowance(account, spender)
   const normalised = parseFloat(
     ethers.utils.formatUnits(rawNum, digits || 18)
-  ).toFixed(fixed ? fixed : 4)
+  ).toFixedNoRounding(fixed ? fixed : 4)
   return normalised
 }
 

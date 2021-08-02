@@ -166,7 +166,7 @@ export const fetchDelegations = async () => {
   })
 
   delegates.forEach((d) => {
-    d.vote_weight = (d.vote_weight / 1e18).toFixed(2)
+    d.vote_weight = (d.vote_weight / 1e18).toFixedNoRounding(2)
     // d.vote_weight = (100 * (d.vote_weight / 1e18 / 10000000)).toFixed(6) + '%'
   })
 
