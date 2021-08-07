@@ -46,7 +46,7 @@ function Header({ header, subheader }) {
           <Link onClick={() => router.push('/')}>
             <Image
               src="/logo/logo_white.svg"
-              height="40px"
+              height="30px"
               alt="Empty Set Dollar"
             />
           </Link>
