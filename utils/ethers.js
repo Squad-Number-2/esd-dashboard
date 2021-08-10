@@ -146,5 +146,13 @@ export const getSymbol = async (contract) => {
   const cont = new ethers.Contract(contract.address, contract.abi, web3)
   return await cont.symbol({ gasLimit: 100000 })
 }
+export const getSupply = async (contract, digits, fixed) => {
+  const cont = new ethers.Contract(contract.address, contract.abi, web3)
+  const rawNum = await cont.totalSupply()
+  const normalised = parseFloat(
+    ethers.utils.formatUnits(rawNum, digits || 18)
+  ).toFixedNoRounding(fixed ? fixed : 4)
+  return normalised
+}
 
 export const zeroAddress = ethers.constants.AddressZero
