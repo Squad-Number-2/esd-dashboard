@@ -58,6 +58,39 @@ export const getIncentivizerBalance = async (contract, account, fixed) => {
   return { reward, underlying }
 }
 
+export const getIncentivizeRewards = async (contract) => {
+  const incentivizer = new ethers.Contract(contract.address, contract.abi, web3)
+
+  const rewardRate = await incentivizer.rewardRate()
+  const rewardComplete = await incentivizer.rewardComplete()
+
+  return {
+    rewardRate: parseFloat(ethers.utils.formatUnits(rewardRate, 18)),
+    rewardComplete: parseFloat(ethers.utils.formatUnits(rewardComplete, 18)),
+  }
+}
+
+export const getESSPrice = async () => {
+  const dollarContract = new ethers.Contract(DOLLAR.address, DOLLAR.abi, web3)
+  const stakeContract = new ethers.Contract(STAKE.address, STAKE.abi, web3)
+
+  const dollarBal = ethers.utils.formatUnits(
+    await dollarContract.balanceOf(UNISWAP_DSU_ESS.address, {
+      gasLimit: 100000,
+    }),
+    18
+  )
+  const stakeBal = ethers.utils.formatUnits(
+    await stakeContract.balanceOf(UNISWAP_DSU_ESS.address, {
+      gasLimit: 100000,
+    }),
+    18
+  )
+
+  const essPrice = parseInt(dollarBal) / parseInt(stakeBal)
+  return essPrice
+}
+
 export const depositToCrvPool = async (contract, value) => {
   const signer = web3.getSigner()
   const cont = new ethers.Contract(contract.address, contract.abi, signer)

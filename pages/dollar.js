@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 
 import { useWeb3 } from '../contexts/useWeb3'
-import { web3, setApproval } from '../utils/ethers'
+import { web3, setApproval, getSupply } from '../utils/ethers'
 import { getData } from '../utils/reserve'
 import {
   getCurveTVL,
   getIncentivizerBalance,
   getUniPoolBalance,
+  getESSPrice,
+  getIncentivizeRewards,
 } from '../utils/pools'
 import { commas } from '../utils/helpers'
 
@@ -68,21 +70,30 @@ export default function Dollar() {
   useEffect(async () => {
     if (web3) {
       const reserve = await getData()
+
+      const ess = await getESSPrice()
       const curveTVL = await getCurveTVL()
       const uniTVL = await getUniPoolBalance()
+
+      const uniRewards = await getIncentivizeRewards(INCENTIVIZER_DSU_ESS)
+      const uniApr = (uniRewards.rewardRate * 31556952 * ess) / uniTVL
+
+      const curveRewards = await getIncentivizeRewards(INCENTIVIZER_DSU)
+      const curveApr = (curveRewards.rewardRate * 31556952 * ess) / curveTVL
 
       const uniBalance = await getIncentivizerBalance(
         INCENTIVIZER_DSU_ESS,
         account
       )
+
       const curveBalance = await getIncentivizerBalance(
         INCENTIVIZER_DSU,
         account
       )
 
       setPoolData([
-        { id: 'uni', tvl: uniTVL, user: uniBalance },
-        { id: 'curve', tvl: curveTVL, user: curveBalance },
+        { id: 'uni', tvl: uniTVL, apr: uniApr, user: uniBalance },
+        { id: 'curve', tvl: curveTVL, apr: curveApr, user: curveBalance },
       ])
       setReserveData(reserve)
       setLoaded(true)
@@ -107,7 +118,7 @@ export default function Dollar() {
             borderRadius="lg"
             flexGrow="1"
           >
-            <Heading fontSize="2xl">Reserve Info</Heading>
+            <Heading fontSize="2xl">Reserve Information</Heading>
             <Grid
               templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']}
               gap="4"
@@ -115,7 +126,20 @@ export default function Dollar() {
               align="baseline"
             >
               <Stat>
-                <StatLabel>Reserve Ratio</StatLabel>
+                <StatLabel>Underlying Asset</StatLabel>
+                <Skeleton isLoaded={loaded} mr="10px">
+                  <StatNumber>USDC</StatNumber>
+                </Skeleton>
+              </Stat>
+              <Stat>
+                <StatLabel>Reserve AUM (USD)</StatLabel>
+                <Skeleton isLoaded={loaded} mr="10px">
+                  <StatNumber>${commas(reserveData.balance)}</StatNumber>
+                </Skeleton>
+              </Stat>
+
+              <Stat>
+                <StatLabel>Collateral Ratio</StatLabel>
                 <Skeleton isLoaded={loaded} mr="10px">
                   <StatNumber>
                     {(reserveData.ratio * 100).toFixed(2)}%
@@ -123,9 +147,9 @@ export default function Dollar() {
                 </Skeleton>
               </Stat>
               <Stat>
-                <StatLabel>Assets in USDC</StatLabel>
+                <StatLabel>Protocol Revenue (USD)</StatLabel>
                 <Skeleton isLoaded={loaded} mr="10px">
-                  <StatNumber>${commas(reserveData.balance)}</StatNumber>
+                  <StatNumber>${commas(reserveData.revenue)}</StatNumber>
                 </Skeleton>
               </Stat>
               {/* <Stat>
@@ -230,7 +254,7 @@ export default function Dollar() {
                 <Tr>
                   <Th>Liquidity Pool</Th>
                   <Th isNumeric>Total Value Locked (TVL)</Th>
-                  <Th isNumeric>APY</Th>
+                  <Th isNumeric>APR</Th>
                   <Th isNumeric> </Th>
                 </Tr>
               </Thead>
@@ -244,7 +268,7 @@ export default function Dollar() {
                       </Flex>
                     </Td>
                     <Td isNumeric>${commas(poolData[0].tvl)} USD</Td>
-                    <Td isNumeric>??</Td>
+                    <Td isNumeric>{(poolData[0].apr * 100).toFixed(2)}%</Td>
                     <Th isNumeric>
                       <ManageModal
                         pool={UNISWAP_DSU_ESS}
@@ -263,7 +287,7 @@ export default function Dollar() {
                       </Flex>
                     </Td>
                     <Td isNumeric>${commas(poolData[1].tvl)} USD</Td>
-                    <Td isNumeric>??</Td>
+                    <Td isNumeric>{(poolData[1].apr * 100).toFixed(2)}%</Td>
                     <Th isNumeric>
                       <ManageModal
                         pool={CURVE_DSU}
