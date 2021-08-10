@@ -177,7 +177,7 @@ export default function Manage({ pool, incentivizer, symbol, user, poolLink }) {
                   0 === parseFloat(user.underlying)
                 }
                 colorScheme="green"
-                onClick={() => executeDeposit()}
+                onClick={() => executeWithdraw()}
                 ml="10px"
               >
                 Withdraw
