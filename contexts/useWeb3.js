@@ -17,7 +17,7 @@ const atob = (a) => Buffer.from(a, 'base64').toString('binary')
 export const UseWeb3Context = createContext()
 
 export const Web3Provider = (props) => {
-  const { account, connect, status, ethereum, reset } = useWallet()
+  const { account, connect, status, ethereum, reset, balance } = useWallet()
   // Remember provider preference
   const [provider, setProvider] = useLocalStorage('provider', false)
 
@@ -57,6 +57,8 @@ export const Web3Provider = (props) => {
     initProvider()
   }, [])
 
+  const ethBalance = balance ? balance / 1e18 : 0
+
   const tools = useMemo(
     () => ({
       provider,
@@ -66,9 +68,10 @@ export const Web3Provider = (props) => {
       account,
       status,
       web3,
+      balance: ethBalance,
       ethereum,
     }),
-    [web3, provider, account, status]
+    [web3, provider, account, status, balance]
   )
 
   // pass the value in provider and return
