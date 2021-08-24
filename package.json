@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "build": "next build",
     "start": "next start"
   },
   "dependencies": {
@@ -32,10 +32,6 @@
   "description": "A UI for the Empty Set Dollar protocol v1.5",
   "main": "index.js",
   "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/l3wi/web3-starter.git"
-  },
   "keywords": [
     "web3",
     "nextjs",
@@ -44,9 +40,5 @@
     "useWallet"
   ],
   "author": "l3wi",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/l3wi/web3-starter/issues"
-  },
-  "homepage": "https://github.com/l3wi/web3-starter#readme"
+  "license": "MIT"
 }
