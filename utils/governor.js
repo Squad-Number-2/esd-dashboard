@@ -1,5 +1,6 @@
 import { Contract, Provider } from 'ethers-multicall'
 import { ethers } from 'ethers'
+import fetch from 'isomorphic-fetch'
 import contracts from '../contracts'
 const { GOVERNORALPHA, STAKE } = contracts
 import { web3 } from '../utils/ethers'
@@ -124,26 +125,39 @@ export const fetchSingleProposal = async (id) => {
   }
 }
 
+export const fetchAddressProfile = async (address) => {
+  const data = await fetch('/api/delegate/' + address).then((res) => res.json())
+  if (data.status) {
+    return false
+  } else {
+    return data
+  }
+}
+
+export const setAddressProfile = async (address, profile) => {
+  const message = JSON.stringify(profile)
+  const signer = web3.getSigner()
+  const signature = await signer.signMessage(message)
+  const response = await fetch('/api/delegate/set', {
+    method: 'POST',
+    body: JSON.stringify({ message, address, signature }),
+  }).then((res) => res.json())
+
+  return response
+}
+
 export const fetchDelegations = async () => {
   // Token contract single
   let voteChanged
   try {
     const token = new ethers.Contract(STAKE.address, STAKE.abi, web3)
-
-    const block = await web3.getBlock()
-
     const filter = token.filters.DelegateVotesChanged()
-    voteChanged = await token.queryFilter(
-      filter,
-      block.number - 1000000,
-      'latest'
-    )
+    voteChanged = await token.queryFilter(filter, 12909390, 'latest')
   } catch (error) {
     console.log(error)
   }
 
   let delegateAccounts = {}
-
   if (!voteChanged) return []
 
   voteChanged.map((event) => {
@@ -151,7 +165,7 @@ export const fetchDelegations = async () => {
     delegateAccounts[delegate] = newBalance
   })
 
-  const delegates = []
+  let delegates = []
   Object.keys(delegateAccounts).map((account) => {
     const voteWeight = +delegateAccounts[account]
     if (voteWeight === 0) return
@@ -166,10 +180,13 @@ export const fetchDelegations = async () => {
   })
 
   delegates.forEach((d) => {
-    d.vote_weight = (d.vote_weight / 1e18).toFixedNoRounding(2)
-    // d.vote_weight = (100 * (d.vote_weight / 1e18 / 10000000)).toFixed(6) + '%'
+    d.vote_weight = parseFloat((d.vote_weight / 1e18).toFixedNoRounding(2))
   })
 
+  const profiles = await Promise.all(
+    delegates.map(async (item, i) => fetchAddressProfile(item.delegate))
+  )
+  profiles.map((prof, i) => (delegates[i].profile = prof))
   return delegates
 }
 
