@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-
+import { commas } from './helpers'
 // Set provider for pre-render operations where no wallet is present.
 // let provider = new ethers.providers.JsonRpcProvider(atob(ETH_NODE))
 export let web3 = new ethers.providers.InfuraProvider(
