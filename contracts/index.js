@@ -14,6 +14,7 @@ import TimelockABI from './Timelock.json'
 import VesterABI from './Vester.json'
 import usdcABI from './USDC.json'
 import curveABI from './curve_pool.json'
+import prop1init from './prop1init.json'
 
 import addresses from './addresses.json'
 
@@ -30,6 +31,7 @@ const abi = {
   V1_DOLLAR: MockV1DollarABI,
   MIGRATOR: MigratorABI,
   USDC: usdcABI,
+  PROP1_INIT: prop1init,
 }
 // Hardcode Pools & Vestings
 let contracts = {
@@ -48,4 +50,5 @@ let contracts = {
 Object.keys(abi).map((i) => {
   contracts[i] = { address: addresses[i], abi: abi[i] }
 })
+console.log(contracts.PROP1_INIT)
 export default contracts

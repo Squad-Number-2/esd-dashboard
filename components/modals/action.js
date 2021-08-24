@@ -26,7 +26,8 @@ import {
 import useContractAllowance from '../../hooks/useContractAllowance'
 
 import contracts from '../../contracts'
-const { STAKE, DOLLAR, RESERVE, TIMELOCK, GOVERNORALPHA } = contracts
+const { STAKE, DOLLAR, RESERVE, TIMELOCK, GOVERNORALPHA, PROP1_INIT } =
+  contracts
 import { ethers } from 'ethers'
 import { web3, setApproval, zeroAddress } from '../../utils/ethers'
 import { setDelegate } from '../../utils/governor'
@@ -46,6 +47,7 @@ export default function Delegate({ addAction }) {
     RESERVE,
     TIMELOCK,
     GOVERNORALPHA,
+    PROP1_INIT,
   }
 
   const onTarget = (i) => {
@@ -62,15 +64,12 @@ export default function Delegate({ addAction }) {
       setValues([])
     } else {
       const obj = target.abi.filter(
-        (item) =>
-          item.type === 'function' &&
-          item.constant === false &&
-          item.inputs.length > 0
+        (item) => item.type === 'function' && item.inputs
       )[i]
       setSelectFunc(i)
       setFunc(obj)
       // Pre-fill array for values)
-      setValues(Array(obj.inputs.length).fill(null))
+      setValues(obj.inputs[0] ? Array(obj.inputs.length).fill(null) : [null])
     }
   }
   const reset = () => {
@@ -109,12 +108,16 @@ export default function Delegate({ addAction }) {
 
   const add = () => {
     let data
-    try {
-      data = encodeValues(func.inputs, values)
-    } catch (error) {
-      return alert(
-        'Error encoding data. Please check your inputs are correct and try again'
-      )
+    if (func.inputs[0]) {
+      try {
+        data = encodeValues(func.inputs, values)
+      } catch (error) {
+        return alert(
+          'Error encoding data. Please check your inputs are correct and try again'
+        )
+      }
+    } else {
+      data = '0x'
     }
 
     addAction({
@@ -164,12 +167,7 @@ export default function Delegate({ addAction }) {
                 >
                   <option value={false}>Select Function</option>
                   {target.abi
-                    .filter(
-                      (item) =>
-                        item.type === 'function' &&
-                        item.constant === false &&
-                        item.inputs.length > 0
-                    )
+                    .filter((item) => item.type === 'function')
                     .map((item, i) => (
                       <option value={i}>{item.name}</option>
                     ))}
@@ -181,17 +179,23 @@ export default function Delegate({ addAction }) {
               <>
                 <Divider m="1em 0" />
                 <Box>
-                  <Text>Inputs: {generateSignature()}</Text>
-                  {func.inputs.map((input, i) => (
-                    <Box p="0.5em 0 0" key={i + 'input'}>
-                      <Text fontSize="sm">{`${input.name}(${input.type})`}</Text>
-                      <Input
-                        placeholder="New value..."
-                        value={values[i]}
-                        onChange={(e) => changeValue(i, e.target.value)}
-                      />
-                    </Box>
-                  ))}
+                  {func.inputs[0] ? (
+                    <>
+                      <Text>Inputs: {generateSignature()}</Text>
+                      {func.inputs.map((input, i) => (
+                        <Box p="0.5em 0 0" key={i + 'input'}>
+                          <Text fontSize="sm">{`${input.name}(${input.type})`}</Text>
+                          <Input
+                            placeholder="New value..."
+                            value={values[i]}
+                            onChange={(e) => changeValue(i, e.target.value)}
+                          />
+                        </Box>
+                      ))}
+                    </>
+                  ) : (
+                    <Text>No Inputs</Text>
+                  )}
                 </Box>
               </>
             ) : null}
