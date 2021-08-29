@@ -20,8 +20,22 @@ const Page = ({ children, header, subheader, back }) => {
   return (
     <Flex direction="column" minHeight="100vh">
       <Head>
-        <title>Empty Set</title>
+        <title>Empty Set - {header}</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@emptysetdollar" />
+        <meta
+          property="og:title"
+          content={`Empty Set ${header ? ' - ' + header : null}`}
+        />
+        <meta
+          property="og:description"
+          content="Empty Set issues a decentralized, censorship resistant, community owned stablecoin."
+        />
+        <meta
+          property="og:image"
+          content="https://app.emptyset.finance/image.png"
+        />
       </Head>
       <Header />
       <Flex bg="black" color="white" p="5em 3em 10em" justify="center">

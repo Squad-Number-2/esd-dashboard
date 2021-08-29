@@ -19,13 +19,13 @@ const theme = {
     },
   },
 }
-
+const chainID = process.env.CHAIN_ID ? parseInt(process.env.CHAIN_ID) : 1
 export default function App({ Component, pageProps }) {
   return (
     <ChakraProvider theme={extendTheme({ theme })}>
       <CSSReset />
       <UseWalletProvider
-        chainId={process.env.CHAIN_ID}
+        chainId={chainID}
         connectors={{
           walletconnect: { rpcUrl: 'https://mainnet.eth.aragon.network/' },
           walletlink: { url: 'https://mainnet.eth.aragon.network/' },

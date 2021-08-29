@@ -103,13 +103,12 @@ export default function Home() {
               borderRadius="lg"
               flexGrow="1"
             >
-              {' '}
               <Heading fontSize="2xl">Your Balance</Heading>
               <Flex m=".5em 0 0">
                 <Stat>
-                  <StatLabel>Digital Stable Unit (DSU)</StatLabel>
+                  <StatLabel>Digital Standard Unit (DSU)</StatLabel>
                   <Skeleton isLoaded={dollarBalance} mr="10px">
-                    <StatNumber>ø {commas(dollarBalance)}</StatNumber>
+                    <StatNumber>⊙ {commas(dollarBalance)}</StatNumber>
                   </Skeleton>
                 </Stat>
                 <Stat>

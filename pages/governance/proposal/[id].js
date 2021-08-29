@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { useRouter } from 'next/router'
+import ChakraUIRenderer from 'chakra-ui-markdown-renderer'
 
 import { format, formatDistance } from 'date-fns'
-
 import { useWeb3 } from '../../../contexts/useWeb3'
 import useCurrentBlock from '../../../hooks/useCurrentBlock'
 
@@ -13,8 +12,9 @@ import {
   castVote,
   queue,
   execute,
+  fetchAddressProfile,
 } from '../../../utils/governor'
-
+import { commas } from '../../../utils/helpers'
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 
@@ -26,31 +26,25 @@ import {
   Heading,
   Text,
   Button,
-  Stat,
-  StatLabel,
-  StatNumber,
-  Input,
-  InputGroup,
-  InputRightAddon,
   Divider,
   Center,
   Skeleton,
-  IconButton,
-  Tooltip,
+  Avatar,
 } from '@chakra-ui/react'
 
-export default function Proposal() {
+export default function Proposal({ prop }) {
   const router = useRouter()
-  const { id } = router.query
   const { web3, connectWallet, disconnectWallet, account, status } = useWeb3()
-
-  const [proposal, setProposal] = useState({})
+  const [proposal, setProposal] = useState(prop)
+  const [proposer, setProposer] = useState({})
 
   const loadData = async () => {
-    if (web3 && id) {
+    if (web3 && prop) {
       console.log('Fetching Proposal')
-      const prop = await fetchSingleProposal(id)
-      setProposal(prop)
+      console.log(prop)
+
+      const user = await fetchAddressProfile(prop.proposer)
+      setProposer(user)
     }
   }
 
@@ -66,7 +60,7 @@ export default function Proposal() {
   // wait for required items on cold load
   useEffect(async () => {
     loadData()
-  }, [web3, id])
+  }, [web3, prop])
 
   const subheading = (proposal) => {
     switch (proposal.state) {
@@ -99,11 +93,24 @@ export default function Proposal() {
         return 'Expired'
         break
       case 'Executed':
-        return 'Executed - Executed on '
+        return 'Executed - Proposal has been executed'
         break
       default:
         break
     }
+  }
+
+  const newTheme = {
+    a: (props) => {
+      const { children } = props
+      return (
+        <Link isExternal={true} {...props}>
+          <Text as="span" color="gray.600" borderBottom="1px solid gray">
+            {children}
+          </Text>
+        </Link>
+      )
+    },
   }
 
   return (
@@ -126,7 +133,11 @@ export default function Proposal() {
               Proposal Details
             </Heading>
             {proposal.description ? (
-              <ReactMarkdown plugins={[gfm]} children={proposal.details} />
+              <ReactMarkdown
+                plugins={[gfm]}
+                components={ChakraUIRenderer(newTheme)}
+                children={proposal.details}
+              />
             ) : (
               <Box>
                 <Skeleton h="20px" mb="5px" w="89%" />
@@ -136,6 +147,7 @@ export default function Proposal() {
                 <Skeleton h="20px" mb="5px" w="73%" />
               </Box>
             )}
+            <Divider m="1em 0 0" />
 
             <Heading fontSize="md" m="1em 0 0.5em">
               Proposal Actions
@@ -168,26 +180,60 @@ export default function Proposal() {
             borderRadius="lg"
             w="30%"
           >
-            <Heading fontSize="xl">Information</Heading>
-            <Box p="1em 0">
-              <Heading fontSize="lg">Votes For</Heading>
-              <Text>{proposal.for_votes} ESDS</Text>
-              <Divider m=".5em 0" />
-              <Heading fontSize="lg">Votes Against</Heading>
-              <Text>{proposal.against_votes} ESDS</Text>
+            <Heading fontSize="xl">Vote Information</Heading>
+            <Divider m=".5em 0 0" />
+            <Flex p=".5em 0 0">
+              <Avatar
+                size={'lg'}
+                src={proposer.image}
+                alt={'Team Avatar'}
+                pos={'relative'}
+              />
+              <Flex mx=".5em" flexDirection="column" justifyContent="center">
+                <Heading fontSize={'2xl'} fontFamily={'body'} mb="1">
+                  {proposer.name}
+                </Heading>
+                <Link
+                  isExternal="true"
+                  src={'https://twitter.com/' + proposer.twitter}
+                >
+                  <Text fontWeight={600} color={'gray.500'}>
+                    {proposer.twitter}
+                  </Text>
+                </Link>
+              </Flex>
+            </Flex>
+            <Divider m=".5em 0 0" />
+
+            <Box p=".5em 0">
+              <Heading fontSize="lg">Votes for:</Heading>
+              <Text>{commas(proposal.for_votes)} ESS</Text>
+              <Heading fontSize="lg">Votes against:</Heading>
+              <Text>{commas(proposal.against_votes)} ESS</Text>
             </Box>
+
             {proposal.state === 'Active' ? (
               <>
-                <Button w="100%" m=".5em 0" onClick={() => vote(true)}>
+                <Button
+                  colorScheme="green"
+                  w="100%"
+                  m=".5em 0"
+                  onClick={() => vote(true)}
+                >
                   Vote for Proposal
                 </Button>
-                <Button w="100%" m=".5em 0" onClick={() => vote(false)}>
+                <Button
+                  colorScheme="red"
+                  w="100%"
+                  m=".5em 0"
+                  onClick={() => vote(false)}
+                >
                   Vote against Proposal
                 </Button>
               </>
             ) : null}
             {proposal.state === 'Succeeded' ? (
-              <Button w="100%" m=".5em 0" onClick={() => queue(id)}>
+              <Button w="100%" m=".5em 0" onClick={() => queue(prop.id)}>
                 Queue Proposal
               </Button>
             ) : null}
@@ -207,27 +253,19 @@ export default function Proposal() {
         </Flex>
       </Box>
     </Page>
-    // <Page>
-    //   <Wrapper>
-    //     <Column w={'100%'} style={{ maxWidth: '1200px' }} m={'50px 0 0'}>
-    //       <Title>{proposal.title}</Title>
-    //       <Subtitle>{proposal.state} |</Subtitle>
-    //     </Column>
-    //   </Wrapper>
-
-    //   <ContentWrapper ai={'center'}>
-    //     <CardRow topRow>
-    //       <Card wide>
-    //         <CardTitle>Proposal Details</CardTitle>
-    //         {proposal.description ? (
-    //           <ReactMarkdown plugins={[gfm]} children={proposal.details} />
-    //         ) : null}
-    //       </Card>
-    //       <Card thin>
-
-    //       </Card>
-    //     </CardRow>
-    //   </ContentWrapper>
-    // </Page>
   )
+}
+
+export async function getServerSideProps({ query: { id } }) {
+  const prop = await fetchSingleProposal(id)
+
+  if (!prop) {
+    return {
+      notFound: true,
+    }
+  }
+
+  return {
+    props: { prop }, // will be passed to the page component as props
+  }
 }

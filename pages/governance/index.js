@@ -1,14 +1,30 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
-
-import Page from '../../components/page'
+import { useRouter } from 'next/router'
 
 import { useWeb3 } from '../../contexts/useWeb3'
-import { zeroAddress } from '../../utils/ethers'
-import { commas } from '../../utils/helpers'
+
+import {
+  Flex,
+  Grid,
+  Box,
+  Link,
+  Heading,
+  Text,
+  Button,
+  Divider,
+  Center,
+  Skeleton,
+  Badge,
+} from '@chakra-ui/react'
+import ChakraUIRenderer from 'chakra-ui-markdown-renderer'
+import { ExternalLinkIcon } from '@chakra-ui/icons'
+import { format, formatDistance } from 'date-fns'
+
+import Page from '../../components/page'
 import DelegateModal from '../../components/modals/delegate'
 import ProfileModal from '../../components/modals/profile'
-import { useRouter } from 'next/router'
+import { zeroAddress } from '../../utils/ethers'
+import { commas } from '../../utils/helpers'
 
 import useViewport from '../../hooks/useViewport'
 
@@ -19,25 +35,6 @@ import {
   fetchAddressProfile,
 } from '../../utils/governor'
 
-import {
-  Flex,
-  Grid,
-  Box,
-  Link,
-  Heading,
-  Text,
-  Button,
-  Stat,
-  StatLabel,
-  StatNumber,
-  Input,
-  InputGroup,
-  InputRightAddon,
-  Divider,
-  Center,
-  Skeleton,
-} from '@chakra-ui/react'
-import { ExternalLinkIcon } from '@chakra-ui/icons'
 export default function Home() {
   const { web3, connectWallet, disconnectWallet, account, status } = useWeb3()
   const router = useRouter()
@@ -46,11 +43,13 @@ export default function Home() {
   const [delegations, setDelegations] = useState([])
   const [proposals, setProposals] = useState([])
   const [delegate, setDelegate] = useState(false)
+  const [block, setBlock] = useState(false)
 
   const { width } = useViewport()
 
   useEffect(async () => {
     console.log('Fetching Proposals')
+    setBlock(await web3.getBlock())
     setProposals((await fetchProposals()).reverse())
     const delegates = await fetchDelegations()
     const totalVotes = delegates
@@ -71,10 +70,10 @@ export default function Home() {
   }, [account, status])
 
   const voteWeight = () => {
-    if (account && delegate) {
+    if (account) {
       try {
         return parseFloat(
-          delegations.find((item) => delegate === item.delegate).vote_weight
+          delegations.find((item) => account === item.delegate).vote_weight
         )
       } catch (error) {
         return 0.0
@@ -93,6 +92,8 @@ export default function Home() {
   }
 
   const subheading = (proposal) => {
+    const now = new Date().getTime()
+
     switch (proposal.state) {
       case 'Cancelled':
         return 'Cancelled'
@@ -101,20 +102,32 @@ export default function Home() {
         return `Pending - Starts at #${proposal.startBlock}`
         break
       case 'Active':
-        return `Active - Voting ends at #${proposal.endBlock}`
+        return block && proposal ? (
+          <Text color="grey" fontSize="sm">
+            <Badge colorScheme="green">Active</Badge>{' '}
+            {`Voting ends in ${formatDistance(
+              now + (proposal.endBlock - block.number) * 13000,
+              now
+            )}`}
+          </Text>
+        ) : (
+          ''
+        )
         break
       case 'Defeated':
         return (
-          'Defeated by ' +
-          commas(proposal.against_votes - proposal.for_votes) +
-          ' votes'
+          <Text color="grey" fontSize="sm">
+            <Badge colorScheme="red">Defeated</Badge>
+            {` - Defeated by 
+          ${commas(proposal.against_votes - proposal.for_votes)}
+           votes`}
+          </Text>
         )
         break
       case 'Succeeded':
         return 'Succeeded - Waiting for proposal to be Queued'
         break
       case 'Queued':
-        const now = new Date().getTime()
         return proposal.eta * 1000 > now
           ? `Queued - Executable in ${formatDistance(proposal.eta * 1000, now)}`
           : `Queued - Ready to Execute`
@@ -123,7 +136,7 @@ export default function Home() {
         return 'Expired'
         break
       case 'Executed':
-        return 'Executed - Executed on '
+        return 'Executed '
         break
       default:
         break
@@ -165,8 +178,7 @@ export default function Home() {
                   </Box>
                   <Box>
                     <Heading fontSize="sm">Delegating to:</Heading>
-
-                    <Skeleton isLoaded={delegate} mr="10px">
+                    <Skeleton isLoaded={delegate}>
                       <Text fontSize="sm" m="0 0 .5em">
                         {usersDelegate(delegate)}
                       </Text>
@@ -259,7 +271,13 @@ export default function Home() {
                       </Flex>
                     </Box>
                   ))
-                : null}
+                : Array(10)
+                    .fill(null)
+                    .map((_, i) => (
+                      <Box p=".5em 0" key={i + 'fake'}>
+                        <Skeleton h="30px" w="80%" />
+                      </Box>
+                    ))}
             </Box>
           </Box>
           <Box
@@ -281,9 +299,7 @@ export default function Home() {
                 >
                   <Box p=".5em 0">
                     <Text fontSize="md">{`${prop.id + 1}. ${prop.title}`}</Text>
-                    <Text color="grey" fontSize="sm">
-                      {subheading(prop)}
-                    </Text>
+                    {subheading(prop)}
                   </Box>
                 </Link>
               ))
@@ -310,41 +326,6 @@ export default function Home() {
             )}
           </Box>
         </Flex>
-        {/* <Flex mt={2} flexDirection={['column', 'row']}>
-          <Box w={['100%', '40%']}></Box>
-          <Box
-            bg="white"
-            p="2em 4em"
-            m={['1em 0 0 0', '0 0 0 1em']}
-            border="1px solid #e8e8e8"
-            borderRadius="lg"
-            w={['100%', '60%']}
-          >
-            <Heading fontSize="xl">Top Voting Addresses</Heading>
-            
-            ) : (
-              <>
-                {loading ? (
-                  Array(6)
-                    .fill(null)
-                    .map((_, i) => (
-                      <Box p=".5em 0" key={i + 'fake'}>
-                        <Skeleton mb="10px" w="80%" h="30px" />
-                        <Skeleton w="120px" h="20px" />
-                      </Box>
-                    ))
-                ) : (
-                  <Box p=".5em 0">
-                    <Text fontSize="md">No proposals yet. </Text>
-                    <Text color="grey" fontSize="sm">
-                      Delegate your ESS and then propose a vote!
-                    </Text>
-                  </Box>
-                )}
-              </>
-            )}
-          </Box>
-        </Flex> */}
       </Box>
     </Page>
   )

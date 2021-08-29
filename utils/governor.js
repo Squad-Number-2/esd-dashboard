@@ -61,6 +61,8 @@ export const fetchProposals = async () => {
     prop.for_votes = (parseFloat(p.forVotes) / 1e18).toFixed(2)
     prop.against_votes = (parseFloat(p.againstVotes) / 1e18).toFixed(2)
     prop.id = i
+    prop.eta = parseInt(p.eta)
+    prop.endBlock = p.endBlock.toNumber()
     data.push(prop)
   })
 
