@@ -15,6 +15,10 @@ import VesterABI from './Vester.json'
 import usdcABI from './USDC.json'
 import curveABI from './curve_pool.json'
 import prop1init from './prop1init.json'
+import batcher from './erc721batcher.json'
+import univ3Positions from './univ3positions.json'
+import univ3Pool from './univ3Pool.json'
+import univ3Staker from './univ3Staker.json'
 
 import addresses from './addresses.json'
 
@@ -32,9 +36,14 @@ const abi = {
   MIGRATOR: MigratorABI,
   USDC: usdcABI,
   PROP1_INIT: prop1init,
+  BATCHER: batcher,
+  UNIV3_POSITIONS: univ3Positions,
+  UNIV3_STAKER: univ3Staker,
 }
 // Hardcode Pools & Vestings
 let contracts = {
+  UNIV3_DSU_USDC: { abi: univ3Pool, address: addresses['UNIV3_DSU_USDC'] },
+  UNIV3_ESS_WETH: { abi: univ3Pool, address: addresses['UNIV3_ESS_WETH'] },
   CURVE_DSU: { abi: curveABI, address: addresses['CURVE_DSU'] },
   INCENTIVIZER_DSU: {
     abi: IncentivizerABI,
@@ -50,5 +59,5 @@ let contracts = {
 Object.keys(abi).map((i) => {
   contracts[i] = { address: addresses[i], abi: abi[i] }
 })
-console.log(contracts.PROP1_INIT)
+
 export default contracts
