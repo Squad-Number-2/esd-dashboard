@@ -3,13 +3,7 @@ import { useEffect, useState } from 'react'
 import { useWeb3 } from '../contexts/useWeb3'
 import { web3, setApproval, getSupply } from '../utils/ethers'
 import { getData } from '../utils/reserve'
-import {
-  getCurveTVL,
-  getIncentivizerBalance,
-  getUniPoolBalance,
-  getESSPrice,
-  getIncentivizeRewards,
-} from '../utils/pools'
+
 import { commas } from '../utils/helpers'
 
 import useCurrentBlock from '../hooks/useCurrentBlock'
@@ -42,6 +36,17 @@ import Page from '../components/page'
 import MintModal from '../components/modals/mint'
 import RedeemModal from '../components/modals/redeem'
 import ManageModal from '../components/modals/manage'
+import ManageV3Modal from '../components/modals/managev3'
+import {
+  getCurveTVL,
+  getIncentivizerBalance,
+  getUniPoolBalance,
+  getESSPrice,
+  getIncentivizeRewards,
+  findNFTByPool,
+  findV3Incentives,
+  getV3DsuTvl,
+} from '../utils/pools'
 
 import contracts from '../contracts'
 const {
@@ -52,6 +57,8 @@ const {
   UNISWAP_DSU_ESS,
   INCENTIVIZER_DSU,
   INCENTIVIZER_DSU_ESS,
+  UNIV3_DSU_USDC,
+  UNIV3_ESS_WETH,
 } = contracts
 
 export default function Dollar() {
@@ -60,6 +67,7 @@ export default function Dollar() {
   const [loaded, setLoaded] = useState(false)
   const [reserveData, setReserveData] = useState({})
   const [poolData, setPoolData] = useState([])
+  const [v3Incentives, setV3Incentives] = useState({})
 
   const dollarBalance = useContractBalance(DOLLAR.address)
   const usdcBalance = useContractBalance(USDC.address, 6)
@@ -74,7 +82,7 @@ export default function Dollar() {
       const ess = await getESSPrice()
       const curveTVL = await getCurveTVL()
       const uniTVL = await getUniPoolBalance()
-
+      const v3dsu = await getV3DsuTvl()
       const uniRewards = await getIncentivizeRewards(INCENTIVIZER_DSU_ESS)
       const uniApr = (uniRewards.rewardRate * 31556952 * ess) / uniTVL
 
@@ -94,15 +102,23 @@ export default function Dollar() {
       setPoolData([
         { id: 'uni', tvl: uniTVL, apr: uniApr, user: uniBalance },
         { id: 'curve', tvl: curveTVL, apr: curveApr, user: curveBalance },
+        { id: 'v3Dsu', tvl: v3dsu },
       ])
       setReserveData(reserve)
       setLoaded(true)
     }
   }, [web3])
 
+  useEffect(async () => {
+    if (account) {
+      const programs = await findV3Incentives()
+      setV3Incentives(programs)
+    }
+  }, [account])
+
   return (
     <Page
-      header={'⊙ Digital Stable Unit (DSU)'}
+      header={'⊙ Digital Standard Unit (DSU)'}
       subheader={'Mint, redeem and stake your DSU.'}
     >
       <Box m={'-97px 0 20px'}>
@@ -295,6 +311,44 @@ export default function Dollar() {
                         symbol="DSU3CRV"
                         user={poolData[1].user}
                         poolLink="https://crv.to/pool"
+                      />
+                    </Th>
+                  </Tr>
+                  <Tr>
+                    <Td>
+                      <Flex>
+                        <Image src="/logo/uni.svg" w="24px" m="0 10px 0 0" />{' '}
+                        Uniswap V3 DSU/USDC
+                      </Flex>
+                    </Td>
+                    <Td isNumeric>${commas(poolData[2].tvl)} USD</Td>
+                    <Td isNumeric>?? %</Td>
+                    <Th isNumeric>
+                      <ManageV3Modal
+                        account={account}
+                        pool={UNIV3_DSU_USDC}
+                        symbol="DSU"
+                        program={v3Incentives.dsu}
+                        poolLink="https://app.uniswap.org/#/add/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/0x605D26FBd5be761089281d5cec2Ce86eeA667109/500"
+                      />
+                    </Th>
+                  </Tr>
+                  <Tr>
+                    <Td>
+                      <Flex>
+                        <Image src="/logo/uni.svg" w="24px" m="0 10px 0 0" />{' '}
+                        Uniswap V3 ESS/ETH
+                      </Flex>
+                    </Td>
+                    <Td isNumeric>${commas(poolData[1].tvl)} USD</Td>
+                    <Td isNumeric>?? %</Td>
+                    <Th isNumeric>
+                      <ManageV3Modal
+                        account={account}
+                        pool={UNIV3_ESS_WETH}
+                        symbol="ESS"
+                        program={v3Incentives.ess}
+                        poolLink="https://app.uniswap.org/#/add/ETH/0x24aE124c4CC33D6791F8E8B63520ed7107ac8b3e/3000"
                       />
                     </Th>
                   </Tr>
