@@ -5,14 +5,7 @@ import Header from './header'
 import Footer from './footer'
 import Alerts from './alerts'
 
-import {
-  Flex,
-  Box,
-  Text,
-  Heading,
-  Skeleton,
-  IconButton,
-} from '@chakra-ui/react'
+import { Flex, Box, Text, Container, IconButton } from '@chakra-ui/react'
 import { ArrowBackIcon } from '@chakra-ui/icons'
 
 const Page = ({ children, header, subheader, back }) => {
@@ -20,7 +13,7 @@ const Page = ({ children, header, subheader, back }) => {
   return (
     <Flex direction="column" minHeight="100vh">
       <Head>
-        <title>Empty Set - {header}</title>
+        <title>{`Empty Set ${header ? ' - ' + header : ''}`}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@emptysetdollar" />
@@ -38,31 +31,9 @@ const Page = ({ children, header, subheader, back }) => {
         />
       </Head>
       <Header />
-      <Flex bg="black" color="white" p="5em 3em 10em" justify="center">
-        {back ? (
-          <IconButton
-            icon={<ArrowBackIcon w={8} h={8} />}
-            variant="ghost"
-            colorScheme="white"
-            onClick={() => router.back()}
-            mt="3px"
-          />
-        ) : null}
 
-        <Box width="100%" maxW={'1200px'}>
-          <Skeleton isLoaded={header} mb="20px">
-            <Heading fontSize="4xl">{header}</Heading>
-          </Skeleton>
-          <Skeleton isLoaded={subheader}>
-            <Text fontSize="lg">{subheader}</Text>
-          </Skeleton>
-        </Box>
-      </Flex>
-      <Flex flexGrow="1" p="0em 3em 0em" justify="center">
-        <Box maxW={'1200px'} w="100%">
-          {children}
-        </Box>
-      </Flex>
+      {children}
+
       <Alerts />
       <Footer />
     </Flex>

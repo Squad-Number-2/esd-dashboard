@@ -18,8 +18,9 @@ import {
   Button,
   Input,
   InputGroup,
-  InputRightAddon,
+  InputRightAddon
 } from '@chakra-ui/react'
+
 import contracts from '../../contracts'
 const { USDC, RESERVE } = contracts
 import useAlerts from '../../contexts/useAlerts'

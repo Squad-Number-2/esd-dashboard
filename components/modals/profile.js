@@ -7,19 +7,13 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Flex,
-  Box,
-  Center,
-  Image,
   Link,
-  Heading,
+  Box,
   Text,
   useDisclosure,
   Button,
   Input,
-  InputGroup,
-  InputRightAddon,
-  Divider,
+  InputGroup
 } from '@chakra-ui/react'
 
 import useContractAllowance from '../../hooks/useContractAllowance'
@@ -47,9 +41,7 @@ export default function Delegate({ account }) {
 
   return (
     <>
-      <Button size="xs" variant="outline" onClick={onOpen}>
-        Edit Profile
-      </Button>
+      <Link onClick={onOpen}>Edit Profile</Link>
       <Modal
         isOpen={isOpen}
         onClose={onClose}

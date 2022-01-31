@@ -14,13 +14,14 @@ import {
   Divider,
   Center,
   Skeleton,
-  Badge,
+  Badge
 } from '@chakra-ui/react'
 import ChakraUIRenderer from 'chakra-ui-markdown-renderer'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { format, formatDistance } from 'date-fns'
 
 import Page from '../../components/page'
+import Section from '../../components/section'
 import DelegateModal from '../../components/modals/delegate'
 import ProfileModal from '../../components/modals/profile'
 import { zeroAddress } from '../../utils/ethers'
@@ -32,7 +33,7 @@ import {
   fetchProposals,
   fetchDelegate,
   fetchDelegations,
-  fetchAddressProfile,
+  fetchAddressProfile
 } from '../../utils/governor'
 
 export default function Home() {
@@ -85,7 +86,7 @@ export default function Home() {
 
   const usersDelegate = (address) => {
     if (account === address) {
-      return address.slice(0, 5) + '...' + address.slice(-6, -1) + ' (Yourself)'
+      return address.slice(0, 5) + '...' + ' (Yourself)'
     } else if (address != '') {
       return address.slice(0, 5) + '...' + address.slice(-6, -1)
     }
@@ -128,15 +129,32 @@ export default function Home() {
         return 'Succeeded - Waiting for proposal to be Queued'
         break
       case 'Queued':
-        return proposal.eta * 1000 > now
-          ? `Queued - Executable in ${formatDistance(proposal.eta * 1000, now)}`
-          : `Queued - Ready to Execute`
+        return proposal.eta * 1000 > now ? (
+          <Text fontSize="sm">
+            <Badge colorScheme="pink">{`Executable in ${formatDistance(
+              proposal.eta * 1000,
+              now
+            )}`}</Badge>
+          </Text>
+        ) : (
+          <Text fontSize="sm">
+            <Badge colorScheme="pink">Ready to Execute</Badge>
+          </Text>
+        )
         break
       case 'Expired':
-        return 'Expired'
+        return (
+          <Text fontSize="sm">
+            <Badge colorScheme="grey">Expired</Badge>
+          </Text>
+        )
         break
       case 'Executed':
-        return 'Executed '
+        return (
+          <Text fontSize="sm">
+            <Badge colorScheme="blue">Executed</Badge>
+          </Text>
+        )
         break
       default:
         break
@@ -150,65 +168,53 @@ export default function Home() {
         'Propose & vote for governance actions that effect the protocol.'
       }
     >
-      <Box m={'-97px 0 20px'}>
-        <Flex flexDirection={['column', 'row']}>
+      <Section>
+        <Flex flexDirection={{ base: 'column', md: 'row' }}>
           <Box
-            bg="white"
-            p="2em 4em"
-            border="1px solid #e8e8e8"
-            borderRadius="lg"
             h="fit-content"
-            w={['100%', '40%']}
+            w={{ base: '100%', md: '390px' }}
+            minW={{ base: 'auto', md: '390px' }}
           >
-            <>
-              <Flex justifyContent="space-between">
-                <Heading fontSize="lg">Your Wallet</Heading>
-                <ProfileModal account={account} />
+            <Box mb="12">
+              <Flex justifyContent="space-between" alignItems={'flex-end'}>
+                <Heading fontSize="3xl" fontWeight={'400'}>
+                  Your Wallet
+                </Heading>
+                {delegate && <ProfileModal account={account} />}
               </Flex>
+              <Divider mt="2" mb="4" borderWidth={1} borderColor={'black'} />
+
               <Box p=".5em 0 1em">
                 <Flex
                   justifyContent="space-between"
                   flexDirection={['column', 'column', 'row']}
                 >
                   <Box>
-                    <Heading fontSize="sm">Voting Weight:</Heading>
+                    <Text fontSize={'lg'}>Voting Weight:</Text>
                     <Skeleton isLoaded={delegations[0]} mr="10px">
-                      <Text fontSize="sm">{commas(voteWeight())} ESS</Text>
-                    </Skeleton>
-                  </Box>
-                  <Box>
-                    <Heading fontSize="sm">Delegating to:</Heading>
-                    <Skeleton isLoaded={delegate}>
-                      <Text fontSize="sm" m="0 0 .5em">
-                        {usersDelegate(delegate)}
+                      <Text fontSize={'xl'} fontWeight={'600'}>
+                        {commas(voteWeight())} ESS
                       </Text>
                     </Skeleton>
                   </Box>
+                  <Box>
+                    <Text fontSize={'lg'}>Delegating to:</Text>
+                    <Skeleton isLoaded={delegate} mr="10px">
+                      <Text fontSize={'xl'} fontWeight={'600'}>
+                        {usersDelegate(delegate)}
+                      </Text>
+                    </Skeleton>
+                    <DelegateModal account={account} />
+                  </Box>
                 </Flex>
-
-                <Flex
-                  justifyContent="space-between"
-                  flexDirection={['column', 'column', 'row']}
-                  pt="3"
-                >
-                  <DelegateModal account={account} />
-
-                  <Button
-                    mt={['.5em', 0]}
-                    colorScheme="green"
-                    isDisabled={width < 960 ? true : false}
-                    onClick={() => router.push('/governance/propose')}
-                  >
-                    Create Proposal
-                  </Button>
-                </Flex>
-                <Divider m="1em" />
               </Box>
-            </>
+            </Box>
 
             <Box>
-              <Heading fontSize="lg">Top Wallets by Vote Weight</Heading>
-
+              <Heading fontSize="3xl" fontWeight={'400'}>
+                Highest Voting Weight
+              </Heading>
+              <Divider mt="2" mb="4" borderWidth={1} borderColor={'black'} />
               {delegations[0]
                 ? delegations.slice(0, 10).map((user, i) => (
                     <Box
@@ -280,28 +286,30 @@ export default function Home() {
                     ))}
             </Box>
           </Box>
-          <Box
-            bg="white"
-            p="2em 4em"
-            m={['1em 0 0 0', '0 0 0 1em']}
-            border="1px solid #e8e8e8"
-            borderRadius="lg"
-            w={['100%', '60%']}
-          >
-            <Heading fontSize="xl">Governance Proposals</Heading>
+          <Box w={{ base: '100%', md: 'full' }} ml={{ base: 0, md: '60px' }}>
+            <Flex justifyContent="space-between" alignItems={'flex-end'}>
+              <Heading fontSize="3xl" fontWeight={'400'}>
+                Governance Proposals
+              </Heading>
+              <Link onClick={() => router.push('/governance/propose')}>
+                New Proposal
+              </Link>
+            </Flex>
+            <Divider mt="2" mb="4" borderWidth={1} borderColor={'black'} />
+
             {proposals[0] ? (
               proposals.map((prop, id) => (
-                <Link
-                  key={'prop' + prop.id}
-                  onClick={() =>
-                    router.push(`/governance/proposal/${prop.id + 1}`)
-                  }
-                >
-                  <Box p=".5em 0">
+                <Box p=".5em 0">
+                  <Link
+                    key={'prop' + prop.id}
+                    onClick={() =>
+                      router.push(`/governance/proposal/${prop.id + 1}`)
+                    }
+                  >
                     <Text fontSize="md">{`${prop.id + 1}. ${prop.title}`}</Text>
-                    {subheading(prop)}
-                  </Box>
-                </Link>
+                  </Link>
+                  {subheading(prop)}
+                </Box>
               ))
             ) : (
               <>
@@ -326,7 +334,7 @@ export default function Home() {
             )}
           </Box>
         </Flex>
-      </Box>
+      </Section>
     </Page>
   )
 }

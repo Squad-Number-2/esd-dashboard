@@ -20,7 +20,7 @@ import {
   InputGroup,
   InputRightAddon,
   Divider,
-  Select,
+  Select
 } from '@chakra-ui/react'
 
 import useContractAllowance from '../../hooks/useContractAllowance'
@@ -47,7 +47,7 @@ export default function Delegate({ addAction }) {
     RESERVE,
     TIMELOCK,
     GOVERNORALPHA,
-    PROP1_INIT,
+    PROP1_INIT
   }
 
   const onTarget = (i) => {
@@ -124,7 +124,7 @@ export default function Delegate({ addAction }) {
       target: target.address,
       signature: generateSignature(),
       callData: data,
-      values,
+      values
     })
     reset()
     onClose()
@@ -132,7 +132,7 @@ export default function Delegate({ addAction }) {
 
   return (
     <>
-      <Button colorScheme="green" onClick={onOpen}>
+      <Button colorScheme="black" variant={'outline'} onClick={onOpen}>
         Choose a new action
       </Button>
       <Modal

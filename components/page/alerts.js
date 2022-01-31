@@ -6,7 +6,7 @@ import {
   Link,
   Icon,
   useColorModeValue,
-  chakra,
+  chakra
 } from '@chakra-ui/react'
 import { CheckCircleIcon, WarningTwoIcon, TimeIcon } from '@chakra-ui/icons'
 
@@ -17,10 +17,10 @@ const Alerts = () => {
   return (
     <Box
       position="fixed"
-      bottom="130"
-      right={['10', '0']}
+      bottom="40px"
+      right={['10px', '20px']}
       p="10px 30px"
-      zIndex="10"
+      zIndex="1500"
       minWidth="300px"
     >
       {alerts.reverse().map((item, i) => {
@@ -36,6 +36,7 @@ const Alerts = () => {
                 rounded="lg"
                 overflow="hidden"
                 mt="10px"
+                key={item.text}
               >
                 <Flex
                   justifyContent="center"
@@ -76,6 +77,7 @@ const Alerts = () => {
                 rounded="lg"
                 overflow="hidden"
                 mt="10px"
+                key={item.text}
               >
                 <Flex
                   justifyContent="center"
@@ -116,6 +118,7 @@ const Alerts = () => {
                 rounded="lg"
                 overflow="hidden"
                 mt="10px"
+                key={item.text}
               >
                 <Flex
                   justifyContent="center"

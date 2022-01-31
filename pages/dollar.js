@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 
-import { useWeb3 } from '../contexts/useWeb3'
-import { web3, setApproval, getSupply } from '../utils/ethers'
-import { getData } from '../utils/reserve'
+import { useWeb3 } from "../contexts/useWeb3"
+import { web3, setApproval, getSupply } from "../utils/ethers"
+import { getData } from "../utils/reserve"
 
-import { commas } from '../utils/helpers'
+import { commas } from "../utils/helpers"
 
-import useCurrentBlock from '../hooks/useCurrentBlock'
-import useContractBalance from '../hooks/useContractBalance'
-import useContractAllowance from '../hooks/useContractAllowance'
-import useViewport from '../hooks/useViewport'
+import useCurrentBlock from "../hooks/useCurrentBlock"
+import useContractBalance from "../hooks/useContractBalance"
+import useContractAllowance from "../hooks/useContractAllowance"
+import useViewport from "../hooks/useViewport"
 
 import {
   Box,
@@ -30,13 +30,13 @@ import {
   Th,
   Td,
   TableCaption,
-  Skeleton,
-} from '@chakra-ui/react'
-import Page from '../components/page'
-import MintModal from '../components/modals/mint'
-import RedeemModal from '../components/modals/redeem'
-import ManageModal from '../components/modals/manage'
-import ManageV3Modal from '../components/modals/managev3'
+  Skeleton
+} from "@chakra-ui/react"
+import Page from "../components/page"
+import MintModal from "../components/modals/mint"
+import RedeemModal from "../components/modals/redeem"
+import ManageModal from "../components/modals/manage"
+import ManageV3Modal from "../components/modals/managev3"
 import {
   getCurveTVL,
   getIncentivizerBalance,
@@ -46,9 +46,10 @@ import {
   findNFTByPool,
   findV3Incentives,
   getV3DsuTvl,
-} from '../utils/pools'
+  getV3EssTvl
+} from "../utils/pools"
 
-import contracts from '../contracts'
+import contracts from "../contracts"
 const {
   DOLLAR,
   USDC,
@@ -58,7 +59,7 @@ const {
   INCENTIVIZER_DSU,
   INCENTIVIZER_DSU_ESS,
   UNIV3_DSU_USDC,
-  UNIV3_ESS_WETH,
+  UNIV3_ESS_WETH
 } = contracts
 
 export default function Dollar() {
@@ -83,6 +84,13 @@ export default function Dollar() {
       const curveTVL = await getCurveTVL()
       const uniTVL = await getUniPoolBalance()
       const v3dsu = await getV3DsuTvl()
+      const v3ess = await getV3EssTvl()
+
+      const dsuRewards = 8000000
+
+      const dsuApr = (dsuRewards * ess * 4) / v3dsu
+      const essRewards = 4000000
+      const essApr = (essRewards * ess * 4) / v3ess
       const uniRewards = await getIncentivizeRewards(INCENTIVIZER_DSU_ESS)
       const uniApr = (uniRewards.rewardRate * 31556952 * ess) / uniTVL
 
@@ -100,9 +108,10 @@ export default function Dollar() {
       )
 
       setPoolData([
-        { id: 'uni', tvl: uniTVL, apr: uniApr, user: uniBalance },
-        { id: 'curve', tvl: curveTVL, apr: curveApr, user: curveBalance },
-        { id: 'v3Dsu', tvl: v3dsu },
+        { id: "uni", tvl: uniTVL, apr: uniApr, user: uniBalance },
+        { id: "curve", tvl: curveTVL, apr: curveApr, user: curveBalance },
+        { id: "v3Dsu", tvl: v3dsu, apr: dsuApr },
+        { id: "v3Ess", tvl: v3ess, apr: essApr }
       ])
       setReserveData(reserve)
       setLoaded(true)
@@ -113,30 +122,31 @@ export default function Dollar() {
     if (account) {
       const programs = await findV3Incentives()
       setV3Incentives(programs)
+      console.log(programs)
     }
   }, [account])
 
   return (
     <Page
-      header={'⊙ Digital Standard Unit (DSU)'}
-      subheader={'Mint, redeem and stake your DSU.'}
+      header={"⊙ Digital Standard Unit (DSU)"}
+      subheader={"Mint, redeem and stake your DSU."}
     >
-      <Box m={'-97px 0 20px'}>
+      <Box m={"-97px 0 20px"}>
         <Grid
-          templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']}
+          templateColumns={["repeat(1, 1fr)", "repeat(2, 1fr)"]}
           gap={4}
           m="0 0 1em"
         >
           <Box
             bg="white"
-            p={['2em 2.5em', '2em 4em']}
+            p={["2em 2.5em", "2em 4em"]}
             border="1px solid #e8e8e8"
             borderRadius="lg"
             flexGrow="1"
           >
             <Heading fontSize="2xl">Reserve Information</Heading>
             <Grid
-              templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']}
+              templateColumns={["repeat(1, 1fr)", "repeat(2, 1fr)"]}
               gap="4"
               m=".5em 0 0"
               align="baseline"
@@ -179,7 +189,7 @@ export default function Dollar() {
           {account ? (
             <Box
               bg="white"
-              p={['2em 2.5em', '2em 4em']}
+              p={["2em 2.5em", "2em 4em"]}
               border="1px solid #e8e8e8"
               borderRadius="lg"
               w="auto"
@@ -188,7 +198,7 @@ export default function Dollar() {
                 Mint & Redeem DSU
               </Heading>
               <Grid
-                templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']}
+                templateColumns={["repeat(1, 1fr)", "repeat(2, 1fr)"]}
                 gap="4"
                 m=".5em 0 0"
                 align="baseline"
@@ -216,7 +226,7 @@ export default function Dollar() {
           ) : (
             <Box
               bg="white"
-              p={['2em 2.5em', '2em 4em']}
+              p={["2em 2.5em", "2em 4em"]}
               border="1px solid #e8e8e8"
               borderRadius="lg"
               w="auto"
@@ -225,7 +235,7 @@ export default function Dollar() {
                 Connect your wallet.
               </Heading>
               <Grid
-                templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']}
+                templateColumns={["repeat(1, 1fr)", "repeat(2, 1fr)"]}
                 gap="4"
                 m=".5em 0 0"
                 align="baseline"
@@ -248,7 +258,7 @@ export default function Dollar() {
         </Grid>
         <Box
           bg="white"
-          p={['2em 2.5em', '2em 4em']}
+          p={["2em 2.5em", "2em 4em"]}
           border="1px solid #e8e8e8"
           borderRadius="lg"
           m="0em 0em 1em"
@@ -262,7 +272,7 @@ export default function Dollar() {
           </Box>
           {960 < width ? (
             <Table
-              visibility={['hidden', 'visible']}
+              visibility={["hidden", "visible"]}
               m="1em -1.3em 0 "
               variant="simple"
             >
@@ -298,7 +308,7 @@ export default function Dollar() {
                   <Tr>
                     <Td>
                       <Flex>
-                        <Image src="/logo/crv.svg" w="24px" m="0 10px 0 0" />{' '}
+                        <Image src="/logo/crv.svg" w="24px" m="0 10px 0 0" />{" "}
                         Curve DSU-3CRV
                       </Flex>
                     </Td>
@@ -317,12 +327,12 @@ export default function Dollar() {
                   <Tr>
                     <Td>
                       <Flex>
-                        <Image src="/logo/uni.svg" w="24px" m="0 10px 0 0" />{' '}
+                        <Image src="/logo/uni.svg" w="24px" m="0 10px 0 0" />{" "}
                         Uniswap V3 DSU/USDC
                       </Flex>
                     </Td>
                     <Td isNumeric>${commas(poolData[2].tvl)} USD</Td>
-                    <Td isNumeric>?? %</Td>
+                    <Td isNumeric>{(poolData[2].apr * 100).toFixed(2)}%</Td>
                     <Th isNumeric>
                       <ManageV3Modal
                         account={account}
@@ -336,12 +346,12 @@ export default function Dollar() {
                   <Tr>
                     <Td>
                       <Flex>
-                        <Image src="/logo/uni.svg" w="24px" m="0 10px 0 0" />{' '}
+                        <Image src="/logo/uni.svg" w="24px" m="0 10px 0 0" />{" "}
                         Uniswap V3 ESS/ETH
                       </Flex>
                     </Td>
-                    <Td isNumeric>${commas(poolData[1].tvl)} USD</Td>
-                    <Td isNumeric>?? %</Td>
+                    <Td isNumeric>${commas(poolData[3].tvl)} USD</Td>
+                    <Td isNumeric>{(poolData[3].apr * 100).toFixed(2)}%</Td>
                     <Th isNumeric>
                       <ManageV3Modal
                         account={account}

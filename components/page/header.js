@@ -3,15 +3,9 @@ import { useRouter } from 'next/router'
 import { useWeb3 } from '../../contexts/useWeb3'
 import WalletModal from '../modals/wallet'
 
-import {
-  Flex,
-  Box,
-  Image,
-  Link,
-  Text,
-  Button,
-  useColorModeValue,
-} from '@chakra-ui/react'
+import { Flex, Image, Link, HStack } from '@chakra-ui/react'
+
+import Section from '../section'
 
 function Header({ header, subheader }) {
   const router = useRouter()
@@ -29,44 +23,40 @@ function Header({ header, subheader }) {
         </Box>
       ) : null} */}
 
-      <Flex
-        bg="black"
-        color="white"
-        justify="center"
-        align="center"
-        p="30px 60px"
-      >
+      <Section>
         <Flex
-          flexDirection={['column', 'row']}
-          w="100%"
-          maxW={'1200px'}
-          justify="space-between"
-          align="center"
+          justify={'space-between'}
+          align={'center'}
+          direction={{ base: 'column', md: 'row' }}
         >
-          <Link onClick={() => router.push('/')}>
-            <Image
-              src="/logo/logo_white.svg"
-              height="30px"
-              alt="Empty Set Dollar"
-            />
-          </Link>
           <Flex
-            flexDirection={['column', 'row']}
-            minW={['none', 'sm']}
-            p="4"
-            justify="space-around"
-            align="center"
+            align={{ base: 'center', md: 'flex-end' }}
+            justify={'space-between'}
+            direction={{ base: 'column', md: 'row' }}
           >
-            <Link pb={['.7em', 0]} onClick={() => router.push('/dollar')}>
-              Dollar
+            <Link onClick={() => router.push('/')}>
+              <Image
+                src="/logo/black.svg"
+                width="250px"
+                alt="Empty Set Dollar"
+              />
             </Link>
-            <Link pb={['.7em', 0]} onClick={() => router.push('/governance')}>
-              Governance
-            </Link>
-            <WalletModal />
+            <HStack pl={'30px'} mb="5px" py={{ base: '20px', md: '0' }}>
+              {/* <Link onClick={() => router.push('/dollar')}>liquidity</Link> */}
+              <Link onClick={() => router.push('/governance')}>governance</Link>
+              <Link
+                href="https://docs.emptyset.finance"
+                target="_blank"
+                isExternal
+              >
+                docs →
+              </Link>
+            </HStack>
           </Flex>
+
+          <WalletModal />
         </Flex>
-      </Flex>
+      </Section>
     </>
   )
 }

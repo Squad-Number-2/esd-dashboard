@@ -19,7 +19,7 @@ import {
   Input,
   InputGroup,
   InputRightAddon,
-  Divider,
+  Divider
 } from '@chakra-ui/react'
 
 import useContractAllowance from '../../hooks/useContractAllowance'
@@ -49,9 +49,9 @@ export default function Delegate({ account }) {
 
   return (
     <>
-      <Button colorScheme="green" onClick={onOpen}>
-        Delegate your ESS
-      </Button>
+      <Link onClick={onOpen} fontSize={'smaller'}>
+        Change Delegate →
+      </Link>
       <Modal
         isOpen={isOpen}
         onClose={onClose}

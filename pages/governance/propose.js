@@ -4,17 +4,13 @@ import { useWeb3 } from '../../contexts/useWeb3'
 import { zeroAddress } from '../../utils/ethers'
 import { commas } from '../../utils/helpers'
 import ActionModal from '../../components/modals/action'
+import Section from '../../components/section'
 
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 
-import {
-  fetchProposals,
-  fetchDelegate,
-  fetchDelegations,
-  propose,
-} from '../../utils/governor'
-
+import { propose } from '../../utils/governor'
+import Back from '../../components/back'
 import {
   Flex,
   Grid,
@@ -30,7 +26,7 @@ import {
   Textarea,
   Divider,
   Center,
-  IconButton,
+  IconButton
 } from '@chakra-ui/react'
 import { CloseIcon } from '@chakra-ui/icons'
 
@@ -77,16 +73,17 @@ export default function Home() {
       }
       back
     >
-      <Box m={'-97px 0 20px'}>
+      <Section>
         <Flex>
-          <Box
-            bg="white"
-            p="2em 4em"
-            border="1px solid #e8e8e8"
-            borderRadius="lg"
-            w="60%"
-          >
-            <Heading fontSize="xl">Proposal Information</Heading>
+          <Box pr="4em" w="60%">
+            <Flex alignItems={'flex-end'}>
+              <Back />
+              <Heading fontSize="3xl" fontWeight={'400'}>
+                Proposal Information
+              </Heading>
+            </Flex>
+
+            <Divider mt="2" mb="4" borderWidth={1} borderColor={'black'} />
             {!preview ? (
               <>
                 <Text fontSize="lg" m="1em 0 .5em">
@@ -109,7 +106,8 @@ export default function Home() {
                 />
                 <Button
                   m="1em 0 0"
-                  colorScheme="green"
+                  colorScheme="black"
+                  variant="outline"
                   size="md"
                   onClick={() => setPreview(true)}
                 >
@@ -124,7 +122,7 @@ export default function Home() {
                 <ReactMarkdown plugins={[gfm]} children={description} />
                 <Button
                   m="1em 0 0"
-                  colorScheme="green"
+                  colorScheme="black"
                   size="md"
                   variant="outline"
                   onClick={() => setPreview(false)}
@@ -133,8 +131,9 @@ export default function Home() {
                 </Button>
                 <Button
                   m="1em 0 0 .5em"
-                  colorScheme="green"
+                  colorScheme="pink"
                   size="md"
+                  variant="outline"
                   onClick={() => submit()}
                 >
                   Submit Proposal
@@ -142,18 +141,12 @@ export default function Home() {
               </>
             )}
           </Box>
-          <Box
-            bg="white"
-            p="2em 4em"
-            ml="1em"
-            border="1px solid #e8e8e8"
-            borderRadius="lg"
-            h="fit-content"
-            w="40%"
-          >
-            <Heading fontSize="xl" mb="1em">
+          <Box h="fit-content" w="40%">
+            <Heading fontSize="3xl" fontWeight={'400'}>
               Proposal Actions
             </Heading>
+            <Divider mt="2" mb="4" borderWidth={1} borderColor={'black'} />
+
             {actions
               ? actions.map((action, i) => (
                   <Box mb=".5em" key={i + 'action'}>
@@ -172,7 +165,7 @@ export default function Home() {
             <ActionModal addAction={addAction} />
           </Box>
         </Flex>
-      </Box>
+      </Section>
     </Page>
   )
 }

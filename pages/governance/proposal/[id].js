@@ -7,12 +7,15 @@ import { useWeb3 } from '../../../contexts/useWeb3'
 import useCurrentBlock from '../../../hooks/useCurrentBlock'
 
 import Page from '../../../components/page'
+import Section from '../../../components/section'
+import Back from '../../../components/back'
+
 import {
   fetchSingleProposal,
   castVote,
   queue,
   execute,
-  fetchAddressProfile,
+  fetchAddressProfile
 } from '../../../utils/governor'
 import { commas } from '../../../utils/helpers'
 import ReactMarkdown from 'react-markdown'
@@ -29,7 +32,7 @@ import {
   Divider,
   Center,
   Skeleton,
-  Avatar,
+  Avatar
 } from '@chakra-ui/react'
 
 export default function Proposal({ prop }) {
@@ -110,7 +113,7 @@ export default function Proposal({ prop }) {
           </Text>
         </Link>
       )
-    },
+    }
   }
 
   return (
@@ -119,19 +122,17 @@ export default function Proposal({ prop }) {
       subheader={proposal.title ? subheading(proposal) : null}
       back
     >
-      <Box m={'-97px 0 20px'}>
+      <Section>
         <Flex>
-          <Box
-            bg="white"
-            p="2em 4em"
-            border="1px solid #e8e8e8"
-            borderRadius="lg"
-            h="fit-content"
-            w="70%"
-          >
-            <Heading fontSize="xl" m="0 0 0.5em">
-              Proposal Details
-            </Heading>
+          <Box pr="2em" h="fit-content" w="70%">
+            <Flex alignItems={'flex-end'}>
+              <Back />
+              <Heading fontSize="3xl" fontWeight={'400'}>
+                {proposal.title}
+              </Heading>
+            </Flex>
+            <Divider mt="2" mb="4" borderWidth={1} borderColor={'black'} />
+
             {proposal.description ? (
               <ReactMarkdown
                 plugins={[gfm]}
@@ -172,16 +173,11 @@ export default function Proposal({ prop }) {
               </>
             )}
           </Box>
-          <Box
-            bg="white"
-            p="2em 2em"
-            m="0 0 0 1em"
-            border="1px solid #e8e8e8"
-            borderRadius="lg"
-            w="30%"
-          >
-            <Heading fontSize="xl">Vote Information</Heading>
-            <Divider m=".5em 0 0" />
+          <Box m="0 0 0 1em" w="30%">
+            <Heading fontSize="3xl" fontWeight={'400'}>
+              Vote Information
+            </Heading>
+            <Divider mt="2" mb="4" borderWidth={1} borderColor={'black'} />
             <Flex p=".5em 0 0">
               <Avatar
                 size={'lg'}
@@ -251,7 +247,7 @@ export default function Proposal({ prop }) {
             ) : null}
           </Box>
         </Flex>
-      </Box>
+      </Section>
     </Page>
   )
 }
@@ -261,11 +257,11 @@ export async function getServerSideProps({ query: { id } }) {
 
   if (!prop) {
     return {
-      notFound: true,
+      notFound: true
     }
   }
 
   return {
-    props: { prop }, // will be passed to the page component as props
+    props: { prop } // will be passed to the page component as props
   }
 }

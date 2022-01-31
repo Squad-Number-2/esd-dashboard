@@ -1,7 +1,8 @@
 import { Contract, Provider } from 'ethers-multicall'
 import { ethers } from 'ethers'
 import { web3 } from '../utils/ethers'
-import { toDecimals } from '../utils/helpers'
+import { Pool } from '@uniswap/v3-sdk'
+import { Token } from '@uniswap/sdk-core'
 import contracts from '../contracts'
 const {
   CURVE_DSU,
@@ -9,11 +10,13 @@ const {
   UNISWAP_DSU_ESS,
   STAKE,
   DOLLAR,
+  USDC,
   BATCHER,
   PROP1_INIT,
   UNIV3_POSITIONS,
   UNIV3_DSU_USDC,
-  UNIV3_STAKER,
+  UNIV3_ESS_WETH,
+  UNIV3_STAKER
 } = contracts
 
 const dsu = [
@@ -21,14 +24,14 @@ const dsu = [
   '0x3432ef874A39BB3013e4d574017e0cCC6F937efD',
   1630272524,
   1638048524,
-  '0xD05aCe63789cCb35B9cE71d01e4d632a0486Da4B',
+  '0xD05aCe63789cCb35B9cE71d01e4d632a0486Da4B'
 ]
 const ess = [
   '0x24aE124c4CC33D6791F8E8B63520ed7107ac8b3e',
   '0xd2Ef54450ec52347bde3dab7B086bf2a005601d8',
   1630272524,
   1638048524,
-  '0xD05aCe63789cCb35B9cE71d01e4d632a0486Da4B',
+  '0xD05aCe63789cCb35B9cE71d01e4d632a0486Da4B'
 ]
 export const findV3Incentives = async () => {
   const Prop1 = new ethers.Contract(PROP1_INIT.address, PROP1_INIT.abi, web3)
@@ -51,7 +54,7 @@ export const findIncentiveProgram = async () => {
       item.args.pool,
       item.args.startTime.toNumber(),
       item.args.endTime.toNumber(),
-      item.args.refundee,
+      item.args.refundee
     ])
   )
 
@@ -104,6 +107,29 @@ export const stakeV3Token = async (program, tokenId) => {
   const tx = await staking.stakeToken(program === 'DSU' ? dsu : ess, tokenId)
   return tx
 }
+export const unstakeV3Token = async (program, tokenId) => {
+  const signer = web3.getSigner()
+  const staking = new ethers.Contract(
+    UNIV3_STAKER.address,
+    UNIV3_STAKER.abi,
+    signer
+  )
+
+  const tx = await staking.unstakeToken(program === 'DSU' ? dsu : ess, tokenId)
+  return tx
+}
+
+export const withdrawV3Token = async (tokenId, address) => {
+  const signer = web3.getSigner()
+  const staking = new ethers.Contract(
+    UNIV3_STAKER.address,
+    UNIV3_STAKER.abi,
+    signer
+  )
+
+  const tx = await staking.withdrawToken(tokenId, address, [])
+  return tx
+}
 
 export const claimReward = async (address, amount) => {
   const signer = web3.getSigner()
@@ -115,6 +141,17 @@ export const claimReward = async (address, amount) => {
 
   const tx = await staking.claimReward(STAKE.address, address, amount)
   return tx
+}
+
+export const userRewards = async (address) => {
+  const staking = new ethers.Contract(
+    UNIV3_STAKER.address,
+    UNIV3_STAKER.abi,
+    web3
+  )
+
+  const tx = await staking.rewards(STAKE.address, address)
+  return tx.toString()
 }
 
 export const findNFTByPool = async (address, pool, program) => {
@@ -169,7 +206,7 @@ export const findNFTByPool = async (address, pool, program) => {
       id,
       deposited,
       reward,
-      staked,
+      staked
     }
   }
 
@@ -199,7 +236,7 @@ export const getV3DsuTvl = async () => {
 
   const dollarBal = ethers.utils.formatUnits(
     await dollarContract.balanceOf(UNIV3_DSU_USDC.address, {
-      gasLimit: 100000,
+      gasLimit: 100000
     }),
     18
   )
@@ -214,13 +251,13 @@ export const getUniPoolBalance = async () => {
 
   const dollarBal = ethers.utils.formatUnits(
     await dollarContract.balanceOf(UNISWAP_DSU_ESS.address, {
-      gasLimit: 100000,
+      gasLimit: 100000
     }),
     18
   )
   const stakeBal = ethers.utils.formatUnits(
     await stakeContract.balanceOf(UNISWAP_DSU_ESS.address, {
-      gasLimit: 100000,
+      gasLimit: 100000
     }),
     18
   )
@@ -235,7 +272,7 @@ export const getIncentivizerBalance = async (contract, account, fixed) => {
 
   const rewardResp = await curve.balanceOfReward(account, { gasLimit: 100000 })
   const underlyingResp = await curve.balanceOfUnderlying(account, {
-    gasLimit: 100000,
+    gasLimit: 100000
   })
 
   const reward = parseFloat(
@@ -255,12 +292,13 @@ export const getIncentivizeRewards = async (contract) => {
 
   return {
     rewardRate: parseFloat(ethers.utils.formatUnits(rewardRate, 18)),
-    rewardComplete: parseFloat(ethers.utils.formatUnits(rewardComplete, 18)),
+    rewardComplete: parseFloat(ethers.utils.formatUnits(rewardComplete, 18))
   }
 }
 
 export const getV3EssTvl = async () => {
   const essPrice = await getESSPrice()
+  const wethPrice = await getWETHPrice()
 
   const stakeContract = new ethers.Contract(STAKE.address, STAKE.abi, web3)
   const wethContract = new ethers.Contract(
@@ -270,39 +308,108 @@ export const getV3EssTvl = async () => {
   )
   const stakeBal = ethers.utils.formatUnits(
     await stakeContract.balanceOf(UNIV3_ESS_WETH.address, {
-      gasLimit: 100000,
+      gasLimit: 100000
     }),
     18
   )
 
   const wethBal = ethers.utils.formatUnits(
     await wethContract.balanceOf(UNIV3_ESS_WETH.address, {
-      gasLimit: 100000,
+      gasLimit: 100000
     }),
     18
   )
-  //finsh me pls
+
+  const tvl = parseInt(stakeBal) * essPrice + parseInt(wethBal) * wethPrice
+  console.log(tvl)
+  return tvl
 }
 
+export const getWETHPrice = async () => {
+  const usdcContract = new ethers.Contract(
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    DOLLAR.abi,
+    web3
+  )
+  const wethContract = new ethers.Contract(
+    '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    STAKE.abi,
+    web3
+  )
+
+  const dollarBal = ethers.utils.formatUnits(
+    await usdcContract.balanceOf('0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc', {
+      gasLimit: 100000
+    }),
+    6
+  )
+  const wethBal = ethers.utils.formatUnits(
+    await wethContract.balanceOf('0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc', {
+      gasLimit: 100000
+    }),
+    18
+  )
+
+  const wethPrice = parseInt(dollarBal) / parseInt(wethBal)
+  console.log('WETH Price', wethPrice)
+  return wethPrice
+}
+
+// V2 Price fetch
 export const getESSPrice = async () => {
   const dollarContract = new ethers.Contract(DOLLAR.address, DOLLAR.abi, web3)
   const stakeContract = new ethers.Contract(STAKE.address, STAKE.abi, web3)
 
   const dollarBal = ethers.utils.formatUnits(
     await dollarContract.balanceOf(UNISWAP_DSU_ESS.address, {
-      gasLimit: 100000,
+      gasLimit: 100000
     }),
     18
   )
   const stakeBal = ethers.utils.formatUnits(
     await stakeContract.balanceOf(UNISWAP_DSU_ESS.address, {
-      gasLimit: 100000,
+      gasLimit: 100000
     }),
     18
   )
 
   const essPrice = parseInt(dollarBal) / parseInt(stakeBal)
   return essPrice
+}
+
+// V3 price fetch
+export const getDSUPrice = async () => {
+  const poolContract = new ethers.Contract(
+    UNIV3_DSU_USDC.address,
+    UNIV3_DSU_USDC.abi,
+    web3
+  )
+
+  const [fee, liquidity, slot0] = await Promise.all([
+    poolContract.fee(),
+    poolContract.liquidity(),
+    poolContract.slot0()
+  ])
+
+  const TokenA = new Token(3, USDC.address, 6, 'USDC', 'USD Coin')
+  const TokenB = new Token(
+    3,
+    DOLLAR.address,
+    18,
+    'DSU',
+    'Digital Standard Unit'
+  )
+
+  const poolExample = new Pool(
+    TokenA,
+    TokenB,
+    fee,
+    slot0[0].toString(),
+    liquidity.toString(),
+    slot0[1]
+  )
+
+  return poolExample.token0Price
 }
 
 export const depositToCrvPool = async (contract, value) => {
