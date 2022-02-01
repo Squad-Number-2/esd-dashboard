@@ -9,7 +9,7 @@ import { setApproval } from '../../utils/ethers'
 import { commas } from '../../utils/helpers'
 import { redeem } from '../../utils/reserve'
 
-export default function Mint({ balance, allowance }) {
+export default function Mint({ balance, allowance, estimates }) {
   const { watchTx } = useAlerts()
   const [value, setValue] = useState('')
 
@@ -67,7 +67,9 @@ export default function Mint({ balance, allowance }) {
         <Box>
           <Text fontSize={'sm'}>Estimated Fee:</Text>
           <Text fontSize={'xl'} fontWeight={500}>
-            $37.34
+            {parseInt(allowance) === 0
+              ? `$${estimates.approve.toFixed(2)}`
+              : `$${estimates.redeem.toFixed(2)}`}
           </Text>
         </Box>
         {parseInt(allowance) === 0 ? (

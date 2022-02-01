@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import { useWeb3 } from '../contexts/useWeb3'
 import { commas } from '../utils/helpers'
-import { getData } from '../utils/reserve'
+import { getData, gasEstimates } from '../utils/reserve'
 import { getESSPrice, getDSUPrice } from '../utils/pools'
 
 import Page from '../components/page'
@@ -38,6 +38,7 @@ export default function Home() {
 
   const { web3, connectWallet, disconnectWallet, account } = useWeb3()
   const [reserveData, setReserveData] = useState({})
+  const [estimates, setEstimates] = useState({ mint: 0, redeem: 0, approve: 0 })
 
   const dollarBalance = useContractBalance(DOLLAR.address)
   const stakeBalance = useContractBalance(STAKE.address)
@@ -53,7 +54,9 @@ export default function Home() {
       const reserve = await getData()
       const essPrice = await getESSPrice()
       const dsuPrice = await getDSUPrice()
+      const estimates = await gasEstimates()
       setReserveData({ ...reserve, ess: essPrice, dsu: dsuPrice })
+      setEstimates(estimates)
     }
     if (web3) {
       setReserve()
@@ -137,8 +140,16 @@ export default function Home() {
           </Heading>
           <Divider mt="2" mb="4" borderWidth={1} borderColor={'black'} />
           <Flex direction={{ base: 'column', md: 'row' }}>
-            <Mint balance={usdcBalance} allowance={usdcAllowance} />
-            <Redeem balance={dollarBalance} allowance={dollarAllowance} />
+            <Mint
+              balance={usdcBalance}
+              allowance={usdcAllowance}
+              estimates={estimates}
+            />
+            <Redeem
+              balance={dollarBalance}
+              allowance={dollarAllowance}
+              estimates={estimates}
+            />
           </Flex>
         </Box>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Flex, Box, Text, Button, Input } from '@chakra-ui/react'
 
 import contracts from '../../contracts'
@@ -9,7 +9,7 @@ import { setApproval } from '../../utils/ethers'
 import { commas } from '../../utils/helpers'
 import { mint } from '../../utils/reserve'
 
-export default function Mint({ balance, allowance }) {
+export default function Mint({ balance, allowance, estimates }) {
   const { watchTx } = useAlerts()
   const [value, setValue] = useState('')
 
@@ -62,7 +62,9 @@ export default function Mint({ balance, allowance }) {
         <Box>
           <Text fontSize={'sm'}>Estimated Fee:</Text>
           <Text fontSize={'xl'} fontWeight={500}>
-            $37.34
+            {parseInt(allowance) === 0
+              ? `$${estimates.approve.toFixed(2)}`
+              : `$${estimates.mint.toFixed(2)}`}
           </Text>
         </Box>
         {parseInt(allowance) === 0 ? (

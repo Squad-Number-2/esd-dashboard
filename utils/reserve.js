@@ -2,10 +2,29 @@ import { Contract, Provider } from 'ethers-multicall'
 import { ethers } from 'ethers'
 import contracts from '../contracts'
 import { web3 } from '../utils/ethers'
+import fetch from 'isomorphic-fetch'
+
+const fetcher = (url) => fetch(url).then((res) => res.json())
 
 const BigNumber = ethers.BigNumber
 
 const { address, abi } = contracts.RESERVE
+
+export const gasEstimates = async () => {
+  const gas = await fetcher(
+    'https://api.anyblock.tools/ethereum/ethereum/mainnet/gasprice'
+  )
+  const price = await fetcher(
+    'https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD'
+  )
+
+  const gasPrice = ethers.utils.parseUnits(gas.fast.toString(), 'gwei')
+  const redeem = ethers.utils.formatEther(gasPrice.mul('260000')) * price.USD
+  const mint = ethers.utils.formatEther(gasPrice.mul('280000')) * price.USD
+  const approve = ethers.utils.formatEther(gasPrice.mul('20000')) * price.USD
+
+  return { mint, redeem, approve }
+}
 
 export const mint = async (rawAmount) => {
   const signer = web3.getSigner()
@@ -55,7 +74,7 @@ export const getData = async (rawAmount) => {
       ratio: ethers.utils.formatUnits(rrResponse.value, 18),
       balance: ethers.utils.formatUnits(rbResponse, 6),
       price: ethers.utils.formatUnits(rpResponse.value, 18),
-      revenue,
+      revenue
     }
   } catch (e) {
     // Parse Error & hit notification lib
