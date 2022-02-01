@@ -11,13 +11,13 @@ const theme = {
         minHeight: '100vh',
         fontSize: 'sm',
         color: 'gray.600',
-        lineHeight: 'tall',
+        lineHeight: 'tall'
       },
       a: {
-        color: 'teal.500',
-      },
-    },
-  },
+        color: 'teal.500'
+      }
+    }
+  }
 }
 const chainID = process.env.CHAIN_ID ? parseInt(process.env.CHAIN_ID) : 1
 export default function App({ Component, pageProps }) {
@@ -28,7 +28,7 @@ export default function App({ Component, pageProps }) {
         chainId={chainID}
         connectors={{
           walletconnect: { rpcUrl: 'https://mainnet.eth.aragon.network/' },
-          walletlink: { url: 'https://mainnet.eth.aragon.network/' },
+          walletlink: { url: 'https://mainnet.eth.aragon.network/' }
         }}
       >
         <AlertProvider>

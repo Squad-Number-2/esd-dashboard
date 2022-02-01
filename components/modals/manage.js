@@ -21,7 +21,7 @@ import {
   InputRightAddon,
   Stat,
   StatLabel,
-  StatNumber,
+  StatNumber
 } from '@chakra-ui/react'
 
 import useContractAllowance from '../../hooks/useContractAllowance'
@@ -32,7 +32,7 @@ import {
   depositToCrvPool,
   withdrawFromCrvPool,
   claimFromCrvPool,
-  exitFromCrvPool,
+  exitFromCrvPool
 } from '../../utils/pools'
 import { migrate } from '../../utils/migration'
 import { commas } from '../../utils/helpers'
@@ -90,9 +90,7 @@ export default function Manage({ pool, incentivizer, symbol, user, poolLink }) {
 
   return (
     <>
-      <Button colorScheme="green" onClick={onOpen}>
-        Manage LP
-      </Button>
+      <Link onClick={onOpen}>Manage →</Link>
       <Modal
         isOpen={isOpen}
         onClose={onClose}

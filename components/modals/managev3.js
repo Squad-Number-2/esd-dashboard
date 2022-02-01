@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -19,7 +19,7 @@ import {
   Th,
   Td,
   Image
-} from "@chakra-ui/react"
+} from '@chakra-ui/react'
 
 import {
   findNFTByPool,
@@ -31,15 +31,15 @@ import {
   unstakeV3Token,
   withdrawV3Token,
   userRewards
-} from "../../utils/pools"
+} from '../../utils/pools'
 
-import { commas } from "../../utils/helpers"
-import useAlerts from "../../contexts/useAlerts"
+import { commas } from '../../utils/helpers'
+import useAlerts from '../../contexts/useAlerts'
 
 export default function Manage({ account, pool, symbol, program, poolLink }) {
   const { watchTx, alerts } = useAlerts()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [rewards, setRewards] = useState("0")
+  const [rewards, setRewards] = useState('0')
   const [approval, setApproval] = useState(false)
   const [positions, setPositions] = useState([])
 
@@ -56,35 +56,34 @@ export default function Manage({ account, pool, symbol, program, poolLink }) {
 
   const executeApproveTransfer = async () => {
     const response = await approveV3Staker()
-    watchTx(response.hash, "Approving contract")
+    watchTx(response.hash, 'Approving contract')
   }
   const executeTransfer = async (id) => {
     const response = await transferNft(account, id)
-    watchTx(response.hash, "Transfering NFT")
+    watchTx(response.hash, 'Transfering NFT')
   }
 
   const executeStake = async (id) => {
     const response = await stakeV3Token(symbol, id)
-    watchTx(response.hash, "Staking NFT")
+    watchTx(response.hash, 'Staking NFT')
   }
   const executeUnstake = async (id) => {
     const response = await unstakeV3Token(symbol, id)
-    watchTx(response.hash, "Unstaking NFT")
+    watchTx(response.hash, 'Unstaking NFT')
   }
   const executeWithdraw = async (id) => {
     const response = await withdrawV3Token(id, account)
-    watchTx(response.hash, "Withdrawing NFT")
+    watchTx(response.hash, 'Withdrawing NFT')
   }
   const executeClaim = async (amount) => {
     const response = await claimReward(account, amount)
-    watchTx(response.hash, "Claiming ESS")
+    watchTx(response.hash, 'Claiming ESS')
   }
 
   return (
     <>
-      <Button colorScheme="green" onClick={onOpen}>
-        Manage V3 LP
-      </Button>
+      <Link onClick={onOpen}>Manage →</Link>
+
       <Modal
         isOpen={isOpen}
         onClose={onClose}
@@ -101,10 +100,10 @@ export default function Manage({ account, pool, symbol, program, poolLink }) {
             </Text>
             <Text color="grey" fontSize="sm">
               To earn rewards deposit your LP NFTs into the staker to receive
-              rewards. To create an LP position token you can go to the pool{" "}
+              rewards. To create an LP position token you can go to the pool{' '}
               <Link href={poolLink} isExternal={true}>
                 <b>here</b>
-              </Link>{" "}
+              </Link>{' '}
               and provide tokens.
             </Text>
             <br />
@@ -118,7 +117,7 @@ export default function Manage({ account, pool, symbol, program, poolLink }) {
               claimed at once.
             </Text>
 
-            <Table visibility={["hidden", "visible"]} variant="simple">
+            <Table visibility={['hidden', 'visible']} variant="simple">
               <Thead>
                 <Tr>
                   <Th>Token ID</Th>

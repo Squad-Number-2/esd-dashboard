@@ -289,7 +289,7 @@ export const getIncentivizeRewards = async (contract) => {
 
   const rewardRate = await incentivizer.rewardRate()
   const rewardComplete = await incentivizer.rewardComplete()
-
+  console.log(parseFloat(ethers.utils.formatUnits(rewardRate, 18)))
   return {
     rewardRate: parseFloat(ethers.utils.formatUnits(rewardRate, 18)),
     rewardComplete: parseFloat(ethers.utils.formatUnits(rewardComplete, 18))

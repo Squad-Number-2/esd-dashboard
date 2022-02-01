@@ -42,7 +42,7 @@ function Header({ header, subheader }) {
               />
             </Link>
             <HStack pl={'30px'} mb="5px" py={{ base: '20px', md: '0' }}>
-              {/* <Link onClick={() => router.push('/dollar')}>liquidity</Link> */}
+              <Link onClick={() => router.push('/liquidity')}>liquidity</Link>
               <Link onClick={() => router.push('/governance')}>governance</Link>
               <Link
                 href="https://docs.emptyset.finance"
