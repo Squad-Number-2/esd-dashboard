@@ -33,7 +33,7 @@ export default function Mint({ balance, allowance, estimates }) {
       <Text fontSize={'lg'} fontWeight={500}>
         {'Redeem USDC'}
       </Text>
-      <Text>
+      <Text maxW="330px">
         {
           'Your DSU can be redeemed for the underlying USDC collateral at a 1-to-1 ratio.'
         }

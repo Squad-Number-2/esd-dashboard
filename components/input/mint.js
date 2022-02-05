@@ -32,7 +32,9 @@ export default function Mint({ balance, allowance, estimates }) {
       <Text fontSize={'lg'} fontWeight={500}>
         {'Mint DSU'}
       </Text>
-      <Text>{'You can mint DSU with USDC at a 1-to-1 ratio.'}</Text>
+      <Text maxW="330px">
+        {'You can mint DSU with USDC at a 1-to-1 ratio.'}
+      </Text>
       <Box my="2">
         <Text w="full" textAlign="right" fontSize={'sm'} color={'gray.500'}>
           {`Wallet: ${commas(balance)} USDC`}
