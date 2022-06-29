@@ -21,13 +21,13 @@ import {
   InputRightAddon,
   Stat,
   StatLabel,
-  StatNumber,
+  StatNumber
 } from '@chakra-ui/react'
 
 import useContractAllowance from '../../hooks/useContractAllowance'
 
 import contracts from '../../contracts'
-const { V1_DOLLAR, MIGRATOR } = contracts
+const { V1_DOLLAR, MIGRATOR } = contracts()
 import { web3, setApproval } from '../../utils/ethers'
 import { migrate } from '../../utils/migration'
 

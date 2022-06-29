@@ -2,7 +2,7 @@ import { Contract, Provider } from 'ethers-multicall'
 import { ethers } from 'ethers'
 import fetch from 'isomorphic-fetch'
 import contracts from '../contracts'
-const { GOVERNORALPHA, STAKE } = contracts
+const { GOVERNORALPHA, STAKE } = contracts()
 import { web3 } from '../utils/ethers'
 
 const enumerateProposalState = (state) => {
@@ -14,7 +14,7 @@ const enumerateProposalState = (state) => {
     'Succeeded',
     'Queued',
     'Expired',
-    'Executed',
+    'Executed'
   ]
   return proposalStates[state]
 }
@@ -85,7 +85,7 @@ export const fetchSingleProposal = async (id) => {
     executed,
     forVotes,
     proposer,
-    startBlock,
+    startBlock
   } = await gov.proposals(id)
   const propState = await gov.state(id)
 
@@ -105,7 +105,7 @@ export const fetchSingleProposal = async (id) => {
     return {
       target: targets[i],
       calldata: calldatas[i],
-      signature: signatures[i],
+      signature: signatures[i]
     }
   })
 
@@ -123,7 +123,7 @@ export const fetchSingleProposal = async (id) => {
     state: enumerateProposalState(propState),
     for_votes,
     against_votes,
-    actions,
+    actions
   }
 }
 
@@ -142,7 +142,7 @@ export const setAddressProfile = async (address, profile) => {
   const signature = await signer.signMessage(message)
   const response = await fetch('/api/delegate/set', {
     method: 'POST',
-    body: JSON.stringify({ message, address, signature }),
+    body: JSON.stringify({ message, address, signature })
   }).then((res) => res.json())
 
   return response
@@ -173,7 +173,7 @@ export const fetchDelegations = async () => {
     if (voteWeight === 0) return
     delegates.push({
       delegate: account,
-      vote_weight: voteWeight,
+      vote_weight: voteWeight
     })
   })
 

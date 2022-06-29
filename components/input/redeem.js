@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Flex, Box, Text, Button, Input } from '@chakra-ui/react'
 
 import contracts from '../../contracts'
-const { USDC, RESERVE } = contracts
+
 import useAlerts from '../../contexts/useAlerts'
 
 import { setApproval } from '../../utils/ethers'
@@ -18,7 +18,10 @@ export default function Mint({ balance, allowance, estimates }) {
   }
 
   const executeApprove = async () => {
-    const response = await setApproval(DOLLAR.address, RESERVE.address)
+    const response = await setApproval(
+      contracts().DOLLAR.address,
+      contracts().RESERVE.address
+    )
     watchTx(response.hash, 'Approve DSU')
   }
 

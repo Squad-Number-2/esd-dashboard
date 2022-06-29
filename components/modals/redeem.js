@@ -18,10 +18,10 @@ import {
   Button,
   Input,
   InputGroup,
-  InputRightAddon,
+  InputRightAddon
 } from '@chakra-ui/react'
 import contracts from '../../contracts'
-const { DOLLAR, RESERVE } = contracts
+const { DOLLAR, RESERVE } = contracts()
 import { web3, setApproval } from '../../utils/ethers'
 import { redeem } from '../../utils/reserve'
 import useAlerts from '../../contexts/useAlerts'

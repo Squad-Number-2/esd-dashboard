@@ -49,7 +49,7 @@ const {
   INCENTIVIZER_DSU_ESS,
   UNIV3_DSU_USDC,
   UNIV3_ESS_WETH
-} = contracts
+} = contracts()
 
 export default function Dollar() {
   const { web3, connectWallet, disconnectWallet, account } = useWeb3()
@@ -61,54 +61,60 @@ export default function Dollar() {
 
   const { width } = useViewport()
 
-  useEffect(async () => {
-    if (web3) {
-      const reserve = await getData()
+  useEffect(() => {
+    const func = async () => {
+      if (web3) {
+        const reserve = await getData()
 
-      const ess = await getESSPrice()
-      const curveTVL = await getCurveTVL()
-      const uniTVL = await getUniPoolBalance()
-      const v3dsu = await getV3DsuTvl()
-      const v3ess = await getV3EssTvl()
+        const ess = await getESSPrice()
+        const curveTVL = await getCurveTVL()
+        const uniTVL = await getUniPoolBalance()
+        const v3dsu = await getV3DsuTvl()
+        const v3ess = await getV3EssTvl()
 
-      const dsuRewards = 8000000
+        const dsuRewards = 8000000
 
-      const dsuApr = (dsuRewards * ess * 4) / v3dsu
-      const essRewards = 4000000
-      const essApr = (essRewards * ess * 4) / v3ess
-      const uniRewards = await getIncentivizeRewards(INCENTIVIZER_DSU_ESS)
-      const uniApr = (uniRewards.rewardRate * 31556952 * ess) / uniTVL
+        const dsuApr = (dsuRewards * ess * 4) / v3dsu
+        const essRewards = 4000000
+        const essApr = (essRewards * ess * 4) / v3ess
+        const uniRewards = await getIncentivizeRewards(INCENTIVIZER_DSU_ESS)
+        const uniApr = (uniRewards.rewardRate * 31556952 * ess) / uniTVL
 
-      const curveRewards = await getIncentivizeRewards(INCENTIVIZER_DSU)
-      const curveApr = (curveRewards.rewardRate * 31556952 * ess) / curveTVL
+        const curveRewards = await getIncentivizeRewards(INCENTIVIZER_DSU)
+        const curveApr = (curveRewards.rewardRate * 31556952 * ess) / curveTVL
 
-      const uniBalance = await getIncentivizerBalance(
-        INCENTIVIZER_DSU_ESS,
-        account
-      )
+        const uniBalance = await getIncentivizerBalance(
+          INCENTIVIZER_DSU_ESS,
+          account
+        )
 
-      const curveBalance = await getIncentivizerBalance(
-        INCENTIVIZER_DSU,
-        account
-      )
+        const curveBalance = await getIncentivizerBalance(
+          INCENTIVIZER_DSU,
+          account
+        )
 
-      setPoolData([
-        { id: 'uni', tvl: uniTVL, apr: uniApr, user: uniBalance },
-        { id: 'curve', tvl: curveTVL, apr: curveApr, user: curveBalance },
-        { id: 'v3Dsu', tvl: v3dsu, apr: dsuApr },
-        { id: 'v3Ess', tvl: v3ess, apr: essApr }
-      ])
-      setReserveData(reserve)
-      setLoaded(true)
+        setPoolData([
+          { id: 'uni', tvl: uniTVL, apr: uniApr, user: uniBalance },
+          { id: 'curve', tvl: curveTVL, apr: curveApr, user: curveBalance },
+          { id: 'v3Dsu', tvl: v3dsu, apr: dsuApr },
+          { id: 'v3Ess', tvl: v3ess, apr: essApr }
+        ])
+        setReserveData(reserve)
+        setLoaded(true)
+      }
     }
+    func()
   }, [web3])
 
-  useEffect(async () => {
-    if (account) {
-      const programs = await findV3Incentives()
-      setV3Incentives(programs)
-      console.log(programs)
+  useEffect(() => {
+    const func = async () => {
+      if (account) {
+        const programs = await findV3Incentives()
+        setV3Incentives(programs)
+        console.log(programs)
+      }
     }
+    func()
   }, [account])
 
   return (

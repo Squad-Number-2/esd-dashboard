@@ -48,26 +48,34 @@ export default function Home() {
 
   const { width } = useViewport()
 
-  useEffect(async () => {
-    console.log('Fetching Proposals')
-    setBlock(await web3.getBlock())
-    setProposals((await fetchProposals()).reverse())
-    const delegates = await fetchDelegations()
-    const totalVotes = delegates
-      .map((i) => parseFloat(i.vote_weight))
-      .reduce((a, c) => a + c)
-    setDelegations(delegates)
-    setTotalVoteWeight(totalVotes)
-    setLoading(false)
-  }, [])
-
-  useEffect(async () => {
-    if (account && status === 'connected') {
-      console.log('Fetching Delegate')
-      const info = await fetchDelegate(account)
-      const profile = await fetchAddressProfile(account)
-      setDelegate(info)
+  useEffect(() => {
+    const func = async () => {
+      if (web3) {
+        console.log('Fetching Proposals')
+        setBlock(await web3.getBlock())
+        setProposals((await fetchProposals()).reverse())
+        const delegates = await fetchDelegations()
+        const totalVotes = delegates
+          .map((i) => parseFloat(i.vote_weight))
+          .reduce((a, c) => a + c)
+        setDelegations(delegates)
+        setTotalVoteWeight(totalVotes)
+        setLoading(false)
+      }
     }
+    func()
+  }, [web3])
+
+  useEffect(() => {
+    const func = async () => {
+      if (account && status === 'connected') {
+        console.log('Fetching Delegate')
+        const info = await fetchDelegate(account)
+        const profile = await fetchAddressProfile(account)
+        setDelegate(info)
+      }
+    }
+    func()
   }, [account, status])
 
   const voteWeight = () => {
@@ -218,7 +226,7 @@ export default function Home() {
               {delegations[0]
                 ? delegations.slice(0, 10).map((user, i) => (
                     <Box
-                      key={'prop' + user.delegate}
+                      key={'prop' + i}
                       borderBottom="1px solid rbga(255,255,255,0.5)"
                       p=".5em 0"
                     >

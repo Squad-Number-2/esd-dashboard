@@ -31,37 +31,49 @@ import {
 } from '@chakra-ui/react'
 
 import contracts from '../contracts'
-const { DOLLAR, STAKE, V1_DAO, V1_DOLLAR, USDC, RESERVE } = contracts
+const { DOLLAR, STAKE, V1_DAO, V1_DOLLAR, USDC, RESERVE } = contracts()
 
 export default function Home() {
   const router = useRouter()
 
-  const { web3, connectWallet, disconnectWallet, account } = useWeb3()
-  const [reserveData, setReserveData] = useState({})
+  const { web3, isConnected, account } = useWeb3()
+  const [reserveData, setReserveData] = useState({
+    ratio: null,
+    balance: null,
+    revenue: null,
+    ess: null,
+    dsu: null,
+    outstanding: null
+  })
   const [estimates, setEstimates] = useState({ mint: 0, redeem: 0, approve: 0 })
 
-  const dollarBalance = useContractBalance(DOLLAR.address)
-  const stakeBalance = useContractBalance(STAKE.address)
-  const usdcBalance = useContractBalance(USDC.address, 6)
-  const oldDaoBalance = useContractBalance(V1_DAO.address)
-  const oldDollarBalance = useContractBalance(V1_DOLLAR.address)
+  const dollarBalance = useContractBalance('DOLLAR')
+  const stakeBalance = useContractBalance('STAKE')
+  const usdcBalance = useContractBalance('USDC', 6)
+  const oldDaoBalance = useContractBalance('V1_DAO')
+  const oldDollarBalance = useContractBalance('V1_DOLLAR')
 
-  const usdcAllowance = useContractAllowance(USDC.address, RESERVE.address)
-  const dollarAllowance = useContractAllowance(DOLLAR.address, RESERVE.address)
+  const usdcAllowance = useContractAllowance('USDC', 'RESERVE')
+  const dollarAllowance = useContractAllowance('DOLLAR', 'RESERVE')
 
   useEffect(() => {
     const setReserve = async () => {
       const reserve = await getData()
-      const essPrice = await getESSPrice()
-      const dsuPrice = await getDSUPrice()
-      const estimates = await gasEstimates()
+      console.log(reserve)
+
+      const essPrice = web3._network.chainId === 1 ? await getESSPrice() : 0
+      const dsuPrice = web3._network.chainId === 1 ? await getDSUPrice() : 0
       setReserveData({ ...reserve, ess: essPrice, dsu: dsuPrice })
+      const estimates = await gasEstimates()
       setEstimates(estimates)
     }
-    if (web3) {
+    if (web3 && isConnected) {
       setReserve()
     }
-  }, [web3])
+    return () => {
+      console.log('This will be logged on unmount')
+    }
+  }, [web3, isConnected])
 
   return (
     <Page>
@@ -168,19 +180,22 @@ export default function Home() {
               {(reserveData.ratio * 100).toFixed(2)}%
             </DataBox>
             <DataBox title="DSU Price">
-              {' '}
-              ${reserveData.dsu ? reserveData.dsu.toFixed(4) : 0}
+              {reserveData.dsu ? `$${reserveData.dsu.toFixed(4)}` : '--'}
             </DataBox>
             <DataBox title="ESS Price">
-              ${reserveData.ess ? reserveData.ess.toFixed(4) : 0}
+              {reserveData.ess ? `$${reserveData.ess.toFixed(4)}` : '--'}
             </DataBox>
             <DataBox title="Protocol Collateral">
-              ${commas(reserveData.balance)}
+              {reserveData.balance ? `$${commas(reserveData.balance)}` : '--'}
             </DataBox>
             <DataBox title="Protocol Revenue">
-              ${commas(reserveData.revenue)}
+              {reserveData.revenue ? `$${commas(reserveData.revenue)}` : '--'}
             </DataBox>
-            <DataBox title="Approved DSU">--</DataBox>
+            <DataBox title="Approved DSU">
+              {reserveData.outstanding
+                ? `${commas(reserveData.outstanding)}`
+                : '--'}
+            </DataBox>
             <DataBox title="Outstanding Assets">--</DataBox>
           </Grid>
         </Box>

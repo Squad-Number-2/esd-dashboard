@@ -20,7 +20,10 @@ export default function WalletModal() {
     useWeb3()
 
   useEffect(() => {
-    if (account) onClose()
+    const func = () => {
+      if (account) onClose()
+    }
+    func()
   }, [account])
 
   return (

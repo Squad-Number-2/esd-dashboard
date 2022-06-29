@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  useState,
-  useContext,
-  useMemo,
-  useEffect,
-  useCallback,
-} from 'react'
+import React, { createContext, useState, useContext, useMemo } from 'react'
 
 import { web3 } from '../utils/ethers'
 
@@ -54,7 +47,7 @@ export const AlertProvider = (props) => {
       alerts,
       addAlert,
       removeAlert,
-      watchTx,
+      watchTx
     }),
     [alerts]
   )
@@ -63,7 +56,7 @@ export const AlertProvider = (props) => {
   return (
     <UseAlertContext.Provider
       value={{
-        tools,
+        tools
       }}
     >
       {props.children}

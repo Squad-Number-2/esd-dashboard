@@ -2,12 +2,12 @@ import { ethers } from 'ethers'
 import { commas } from './helpers'
 // Set provider for pre-render operations where no wallet is present.
 // let provider = new ethers.providers.JsonRpcProvider(atob(ETH_NODE))
-export let web3 = new ethers.providers.InfuraProvider(
-  process.env.CHAIN_ID === 3 ? 'ropsten' : 'mainnet',
-  '0de24f0d71624f808c0cf9941e07ddd7'
-)
-
+export let web3 = null
 const MaxUint = ethers.constants.MaxUint256
+
+export const apiProvider = () => {
+  web3 = new ethers.providers.InfuraProvider('homestead', process.env.INFURA)
+}
 
 export const registerProvider = (wallet) => {
   if (wallet) {
@@ -18,6 +18,7 @@ export const registerProvider = (wallet) => {
     } catch (error) {
       console.log(error)
     }
+    console.log(web3)
   } else if (window && window.ethereum) {
     console.log('Using Window provider')
     web3 = new ethers.providers.Web3Provider(window.ethereum)
@@ -36,24 +37,24 @@ export const setApproval = async (contract, spender, amount) => {
         inputs: [
           {
             name: '_spender',
-            type: 'address',
+            type: 'address'
           },
           {
             name: '_value',
-            type: 'uint256',
-          },
+            type: 'uint256'
+          }
         ],
         name: 'approve',
         outputs: [
           {
             name: '',
-            type: 'bool',
-          },
+            type: 'bool'
+          }
         ],
         payable: false,
         stateMutability: 'nonpayable',
-        type: 'function',
-      },
+        type: 'function'
+      }
     ],
     signer
   )
@@ -73,29 +74,35 @@ export const fetchBalance = async (contract, account, digits, fixed) => {
         inputs: [
           {
             name: '_owner',
-            type: 'address',
-          },
+            type: 'address'
+          }
         ],
         name: 'balanceOf',
         outputs: [
           {
             name: 'balance',
-            type: 'uint256',
-          },
+            type: 'uint256'
+          }
         ],
         payable: false,
         stateMutability: 'view',
-        type: 'function',
-      },
+        type: 'function'
+      }
     ],
     web3
   )
 
-  const rawNum = await erc20.balanceOf(account)
-  const normalised = parseFloat(
-    ethers.utils.formatUnits(rawNum, digits || 18)
-  ).toFixedNoRounding(fixed ? fixed : 2)
-  return normalised
+  try {
+    const rawNum = await erc20.balanceOf(account)
+    const normalised = parseFloat(
+      ethers.utils.formatUnits(rawNum, digits || 18)
+    ).toFixedNoRounding(fixed ? fixed : 2)
+    return normalised
+  } catch (error) {
+    console.log(error)
+    console.log(contract)
+    return 0
+  }
 }
 
 export const fetchAllowance = async (
@@ -113,33 +120,38 @@ export const fetchAllowance = async (
         inputs: [
           {
             name: '_owner',
-            type: 'address',
+            type: 'address'
           },
           {
             name: '_spender',
-            type: 'address',
-          },
+            type: 'address'
+          }
         ],
         name: 'allowance',
         outputs: [
           {
             name: '',
-            type: 'uint256',
-          },
+            type: 'uint256'
+          }
         ],
         payable: false,
         stateMutability: 'view',
-        type: 'function',
-      },
+        type: 'function'
+      }
     ],
     web3
   )
-
-  const rawNum = await erc20.allowance(account, spender)
-  const normalised = parseFloat(
-    ethers.utils.formatUnits(rawNum, digits || 18)
-  ).toFixedNoRounding(fixed ? fixed : 4)
-  return normalised
+  try {
+    const rawNum = await erc20.allowance(account, spender)
+    const normalised = parseFloat(
+      ethers.utils.formatUnits(rawNum, digits || 18)
+    ).toFixedNoRounding(fixed ? fixed : 4)
+    return normalised
+  } catch (error) {
+    console.log(error)
+    console.log(contract)
+    return 0
+  }
 }
 
 export const getSymbol = async (contract) => {

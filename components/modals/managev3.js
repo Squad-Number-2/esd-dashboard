@@ -43,15 +43,18 @@ export default function Manage({ account, pool, symbol, program, poolLink }) {
   const [approval, setApproval] = useState(false)
   const [positions, setPositions] = useState([])
 
-  useEffect(async () => {
-    if (account) {
-      const lpPositions = await findNFTByPool(account, pool.address, symbol)
-      const approval = await getNFTApproval(account)
-      const reward = await userRewards(account)
-      setApproval(approval)
-      setPositions(lpPositions)
-      setRewards(reward)
+  useEffect(() => {
+    const func = async () => {
+      if (account) {
+        const lpPositions = await findNFTByPool(account, pool.address, symbol)
+        const approval = await getNFTApproval(account)
+        const reward = await userRewards(account)
+        setApproval(approval)
+        setPositions(lpPositions)
+        setRewards(reward)
+      }
     }
+    func()
   }, [account, alerts])
 
   const executeApproveTransfer = async () => {

@@ -17,7 +17,7 @@ const {
   UNIV3_DSU_USDC,
   UNIV3_ESS_WETH,
   UNIV3_STAKER
-} = contracts
+} = contracts()
 
 const dsu = [
   '0x24aE124c4CC33D6791F8E8B63520ed7107ac8b3e',

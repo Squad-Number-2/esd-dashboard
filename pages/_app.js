@@ -27,8 +27,16 @@ export default function App({ Component, pageProps }) {
       <UseWalletProvider
         chainId={chainID}
         connectors={{
-          walletconnect: { rpcUrl: 'https://mainnet.eth.aragon.network/' },
-          walletlink: { url: 'https://mainnet.eth.aragon.network/' }
+          injected: {
+            chainId: [1, 42]
+          },
+          walletconnect: {
+            chainId: [1, 42],
+            rpc: {
+              1: 'https://eth-mainnet.alchemyapi.io/v2/B6PbmuuGJ3KNQXSmN_WB3FGzAxCtCttS',
+              42: 'https://kovan.infura.io/v3/0de24f0d71624f808c0cf9941e07ddd7'
+            }
+          }
         }}
       >
         <AlertProvider>

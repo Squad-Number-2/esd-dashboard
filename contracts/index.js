@@ -20,7 +20,9 @@ import univ3Positions from './univ3positions.json'
 import univ3Pool from './univ3Pool.json'
 import univ3Staker from './univ3Staker.json'
 
-import addresses from './addresses.json'
+import mainnet_addresses from './addresses.json'
+import testnet_addresses from './kovan_addresses.json'
+import { web3 } from '../utils/ethers'
 
 const abi = {
   DOLLAR: DollarABI,
@@ -38,26 +40,70 @@ const abi = {
   PROP1_INIT: prop1init,
   BATCHER: batcher,
   UNIV3_POSITIONS: univ3Positions,
-  UNIV3_STAKER: univ3Staker,
+  UNIV3_STAKER: univ3Staker
 }
 // Hardcode Pools & Vestings
-let contracts = {
-  UNIV3_DSU_USDC: { abi: univ3Pool, address: addresses['UNIV3_DSU_USDC'] },
-  UNIV3_ESS_WETH: { abi: univ3Pool, address: addresses['UNIV3_ESS_WETH'] },
-  CURVE_DSU: { abi: curveABI, address: addresses['CURVE_DSU'] },
+let mainnet = {
+  UNIV3_DSU_USDC: {
+    abi: univ3Pool,
+    address: mainnet_addresses['UNIV3_DSU_USDC']
+  },
+  UNIV3_ESS_WETH: {
+    abi: univ3Pool,
+    address: mainnet_addresses['UNIV3_ESS_WETH']
+  },
+  CURVE_DSU: { abi: curveABI, address: mainnet_addresses['CURVE_DSU'] },
   INCENTIVIZER_DSU: {
     abi: IncentivizerABI,
-    address: addresses['INCENTIVIZER_DSU'],
+    address: mainnet_addresses['INCENTIVIZER_DSU']
   },
-  UNISWAP_DSU_ESS: { abi: curveABI, address: addresses['UNISWAP_DSU_ESS'] },
+  UNISWAP_DSU_ESS: {
+    abi: curveABI,
+    address: mainnet_addresses['UNISWAP_DSU_ESS']
+  },
   INCENTIVIZER_DSU_ESS: {
     abi: IncentivizerABI,
-    address: addresses['INCENTIVIZER_DSU_ESS'],
-  },
+    address: mainnet_addresses['INCENTIVIZER_DSU_ESS']
+  }
 }
 
 Object.keys(abi).map((i) => {
-  contracts[i] = { address: addresses[i], abi: abi[i] }
+  mainnet[i] = { address: mainnet_addresses[i], abi: abi[i] }
 })
+
+let testnet = {
+  UNIV3_DSU_USDC: {
+    abi: univ3Pool,
+    address: 'mock'
+  },
+  UNIV3_ESS_WETH: {
+    abi: univ3Pool,
+    address: 'mock'
+  },
+  CURVE_DSU: { abi: curveABI, address: 'mock' },
+  INCENTIVIZER_DSU: {
+    abi: IncentivizerABI,
+    address: 'mock'
+  },
+  UNISWAP_DSU_ESS: {
+    abi: curveABI,
+    address: 'mock'
+  },
+  INCENTIVIZER_DSU_ESS: {
+    abi: IncentivizerABI,
+    address: 'mock'
+  }
+}
+Object.keys(abi).map((i) => {
+  testnet[i] = {
+    address: testnet_addresses[i] ? testnet_addresses[i] : 'mock',
+    abi: abi[i]
+  }
+})
+
+const contracts = () => {
+  if (web3 && web3._network && web3._network.chainId === 42) return testnet
+  return mainnet
+}
 
 export default contracts

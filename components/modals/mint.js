@@ -22,7 +22,7 @@ import {
 } from '@chakra-ui/react'
 
 import contracts from '../../contracts'
-const { USDC, RESERVE } = contracts
+const { USDC, RESERVE } = contracts()
 import useAlerts from '../../contexts/useAlerts'
 
 import { web3, setApproval } from '../../utils/ethers'

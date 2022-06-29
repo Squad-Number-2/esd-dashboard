@@ -4,7 +4,7 @@ import ChakraUIRenderer from 'chakra-ui-markdown-renderer'
 
 import { format, formatDistance } from 'date-fns'
 import { useWeb3 } from '../../../contexts/useWeb3'
-import useCurrentBlock from '../../../hooks/useCurrentBlock'
+import useAlerts from '../../../contexts/useAlerts'
 
 import Page from '../../../components/page'
 import Section from '../../../components/section'
@@ -34,16 +34,23 @@ import {
   Skeleton,
   Avatar
 } from '@chakra-ui/react'
+import { isCommunityResourcable } from '@ethersproject/providers'
 
-export default function Proposal({ prop }) {
+export default function Proposal() {
   const router = useRouter()
   const { web3, connectWallet, disconnectWallet, account, status } = useWeb3()
-  const [proposal, setProposal] = useState(prop)
+  const { watchTx } = useAlerts()
+
+  const [proposal, setProposal] = useState({})
   const [proposer, setProposer] = useState({})
 
   const loadData = async () => {
-    if (web3 && prop) {
+    if (web3 && router.query.id) {
       console.log('Fetching Proposal')
+      console.log(router.query)
+      const id = router.query.id
+      const prop = await fetchSingleProposal(id)
+      setProposal(prop)
       console.log(prop)
 
       const user = await fetchAddressProfile(prop.proposer)
@@ -52,18 +59,16 @@ export default function Proposal({ prop }) {
   }
 
   const vote = async (bool) => {
-    const response = await castVote(id, bool)
-    alert('Vote pending.')
+    const response = await castVote(router.query.id, bool)
+    watchTx(response.hash, 'Casting Vote')
   }
 
-  useEffect(async () => {
-    loadData()
-  }, [])
-
-  // wait for required items on cold load
-  useEffect(async () => {
-    loadData()
-  }, [web3, prop])
+  useEffect(() => {
+    const func = async () => {
+      if (web3) await loadData()
+    }
+    func()
+  }, [web3, router])
 
   const subheading = (proposal) => {
     switch (proposal.state) {
@@ -250,18 +255,4 @@ export default function Proposal({ prop }) {
       </Section>
     </Page>
   )
-}
-
-export async function getServerSideProps({ query: { id } }) {
-  const prop = await fetchSingleProposal(id)
-
-  if (!prop) {
-    return {
-      notFound: true
-    }
-  }
-
-  return {
-    props: { prop } // will be passed to the page component as props
-  }
 }

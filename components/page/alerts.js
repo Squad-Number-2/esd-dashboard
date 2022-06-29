@@ -36,7 +36,7 @@ const Alerts = () => {
                 rounded="lg"
                 overflow="hidden"
                 mt="10px"
-                key={item.text}
+                key={item.text + i}
               >
                 <Flex
                   justifyContent="center"

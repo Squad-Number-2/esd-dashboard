@@ -21,6 +21,7 @@ export const Web3Provider = (props) => {
   // Remember provider preference
   const [provider, setProvider] = useLocalStorage('provider', false)
   const [ens, setEns] = useState(false)
+  const [isMainnet, setIsMainnet] = useState(true)
 
   const fetchENS = async (address) => {
     setEns(await web3.lookupAddress(address))
@@ -47,23 +48,32 @@ export const Web3Provider = (props) => {
   }
 
   // Once we've connected a wallet, switch to wallet provider
-  useEffect(async () => {
-    if (status === 'connected') {
-      registerProvider(ethereum)
-      console.log('Connected!')
-      if (!account) {
-        initProvider()
+  useEffect(() => {
+    const func = async () => {
+      if (status === 'connected') {
+        registerProvider(ethereum)
+        console.log('Connected!')
+        if (!account) {
+          initProvider()
+        }
       }
     }
+    func()
   }, [status])
 
   useEffect(() => {
-    if (account) fetchENS(account)
+    const func = async () => {
+      if (account && web3 && web3._network.chainId === 1) fetchENS(account)
+    }
+    func()
   }, [account])
 
   // Once loaded, initalise the provider
   useEffect(() => {
-    initProvider()
+    const func = async () => {
+      await initProvider()
+    }
+    func()
   }, [])
 
   const ethBalance = balance ? balance / 1e18 : 0
@@ -76,6 +86,7 @@ export const Web3Provider = (props) => {
       disconnectWallet,
       account,
       status,
+      isConnected: status === 'connected',
       web3,
       balance: ethBalance,
       ethereum,

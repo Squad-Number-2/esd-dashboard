@@ -27,7 +27,7 @@ import useContractAllowance from '../../hooks/useContractAllowance'
 
 import contracts from '../../contracts'
 const { STAKE, DOLLAR, RESERVE, TIMELOCK, GOVERNORALPHA, PROP1_INIT } =
-  contracts
+  contracts()
 import { ethers } from 'ethers'
 import { web3, setApproval, zeroAddress } from '../../utils/ethers'
 import { setDelegate } from '../../utils/governor'

@@ -5,7 +5,7 @@ import { web3 } from '../utils/ethers'
 
 const BigNumber = ethers.BigNumber
 
-const { address, abi } = contracts.MIGRATOR
+const { address, abi } = contracts().MIGRATOR
 
 export const migrate = async (account) => {
   const oldDollar = new ethers.Contract(
