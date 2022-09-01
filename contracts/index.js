@@ -40,7 +40,8 @@ const abi = {
   PROP1_INIT: prop1init,
   BATCHER: batcher,
   UNIV3_POSITIONS: univ3Positions,
-  UNIV3_STAKER: univ3Staker
+  UNIV3_STAKER: univ3Staker,
+  GOVERNORALPHA_OLD: GovernorAlphaABI
 }
 // Hardcode Pools & Vestings
 let mainnet = {

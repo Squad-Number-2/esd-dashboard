@@ -30,11 +30,15 @@ import { commas } from '../../utils/helpers'
 import useViewport from '../../hooks/useViewport'
 
 import {
+  fetchAllProposals,
   fetchProposals,
   fetchDelegate,
   fetchDelegations,
   fetchAddressProfile
 } from '../../utils/governor'
+
+import contracts from '../../contracts'
+const { GOVERNORALPHA, GOVERNORALPHA_OLD, STAKE } = contracts()
 
 export default function Home() {
   const { web3, connectWallet, disconnectWallet, account, status } = useWeb3()
@@ -53,7 +57,7 @@ export default function Home() {
       if (web3) {
         console.log('Fetching Proposals')
         setBlock(await web3.getBlock())
-        setProposals((await fetchProposals()).reverse())
+        setProposals((await fetchAllProposals()).reverse())
         const delegates = await fetchDelegations()
         const totalVotes = delegates
           .map((i) => parseFloat(i.vote_weight))

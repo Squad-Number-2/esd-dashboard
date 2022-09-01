@@ -2,7 +2,7 @@ import { Contract, Provider } from 'ethers-multicall'
 import { ethers } from 'ethers'
 import fetch from 'isomorphic-fetch'
 import contracts from '../contracts'
-const { GOVERNORALPHA, STAKE } = contracts()
+const { GOVERNORALPHA, GOVERNORALPHA_OLD, STAKE } = contracts()
 import { web3 } from '../utils/ethers'
 
 const enumerateProposalState = (state) => {
@@ -19,22 +19,45 @@ const enumerateProposalState = (state) => {
   return proposalStates[state]
 }
 
-export const fetchProposals = async () => {
-  // Multicall
-  const multi = new Provider(web3)
-  await multi.init() // Only required when `chainId` is not provided in the `Provider` constructor
+export const fetchAllProposals = async () => {
+  const oldProps = await fetchProposals(GOVERNORALPHA_OLD)
+  const props = await fetchProposals(GOVERNORALPHA)
+  return [...oldProps, ...props]
+}
 
-  // Governor Single
+export const getPropCount = async () => {
+  // Govs:
+  //GOVERNORALPHA
+  //GOVERNORALPHA_OLD
+
   const gov = new ethers.Contract(
     GOVERNORALPHA.address,
     GOVERNORALPHA.abi,
     web3
   )
+  const newCount = parseInt(await gov.proposalCount())
+  const govOld = new ethers.Contract(
+    GOVERNORALPHA_OLD.address,
+    GOVERNORALPHA_OLD.abi,
+    web3
+  )
+  const oldCount = parseInt(await govOld.proposalCount())
+  return newCount + oldCount
+}
+
+export const fetchProposals = async (contract) => {
+  // Multicall
+  const multi = new Provider(web3)
+  await multi.init() // Only required when `chainId` is not provided in the `Provider` constructor
+
+  // Governor Single
+  const gov = new ethers.Contract(contract.address, contract.abi, web3)
+
   // Governor Multi
-  const govMulti = new Contract(GOVERNORALPHA.address, GOVERNORALPHA.abi)
+  const govMulti = new Contract(contract.address, contract.abi)
 
   const proposalCount = parseInt(await gov.proposalCount())
-  console.log('Proposals Found: ', proposalCount)
+
   if (proposalCount === 0) return []
   const proposalGets = []
   const proposalStateGets = []
@@ -70,12 +93,21 @@ export const fetchProposals = async () => {
 }
 
 export const fetchSingleProposal = async (id) => {
-  // Governor Single
-  const gov = new ethers.Contract(
-    GOVERNORALPHA.address,
-    GOVERNORALPHA.abi,
+  // Check if the propsal's index is on the new govenor
+  let gov
+  const govOld = new ethers.Contract(
+    GOVERNORALPHA_OLD.address,
+    GOVERNORALPHA_OLD.abi,
     web3
   )
+  const oldCount = parseInt(await govOld.proposalCount())
+
+  if (id > oldCount) {
+    gov = new ethers.Contract(GOVERNORALPHA.address, GOVERNORALPHA.abi, web3)
+  } else {
+    gov = govOld
+  }
+  // Governor Single
   // Get state via ID
   let {
     againstVotes,
@@ -227,12 +259,7 @@ export const castVote = async (proposal, vote) => {
     GOVERNORALPHA.abi,
     signer
   )
-  try {
-    return await gov.castVote(proposal, vote)
-  } catch (e) {
-    console.log(e)
-    return false
-  }
+  return await gov.castVote(proposal, vote)
 }
 
 export const propose = async (targets, values, signatures, calldatas, desc) => {
@@ -255,12 +282,20 @@ export const queue = async (id) => {
   const signer = web3.getSigner()
 
   try {
+    // Make sure ID is in range
+    const govOld = new ethers.Contract(
+      GOVERNORALPHA_OLD.address,
+      GOVERNORALPHA_OLD.abi,
+      web3
+    )
+    const oldCount = parseInt(await govOld.proposalCount())
+
     const gov = new ethers.Contract(
       GOVERNORALPHA.address,
       GOVERNORALPHA.abi,
       signer
     )
-    return await gov.queue(id)
+    return await gov.queue(id - oldCount)
   } catch (e) {
     console.log(e)
     return alert(e.message)
@@ -271,12 +306,20 @@ export const execute = async (id) => {
   const signer = web3.getSigner()
 
   try {
+    // Make sure ID is in range
+    const govOld = new ethers.Contract(
+      GOVERNORALPHA_OLD.address,
+      GOVERNORALPHA_OLD.abi,
+      web3
+    )
+    const oldCount = parseInt(await govOld.proposalCount())
+
     const gov = new ethers.Contract(
       GOVERNORALPHA.address,
       GOVERNORALPHA.abi,
       signer
     )
-    return await gov.execute(id)
+    return await gov.execute(id - oldCount)
   } catch (e) {
     console.log(e)
     return alert(e.message)

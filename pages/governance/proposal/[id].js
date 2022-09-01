@@ -34,12 +34,11 @@ import {
   Skeleton,
   Avatar
 } from '@chakra-ui/react'
-import { isCommunityResourcable } from '@ethersproject/providers'
 
 export default function Proposal() {
   const router = useRouter()
   const { web3, connectWallet, disconnectWallet, account, status } = useWeb3()
-  const { watchTx } = useAlerts()
+  const { watchTx, addAlert } = useAlerts()
 
   const [proposal, setProposal] = useState({})
   const [proposer, setProposer] = useState({})
@@ -47,7 +46,6 @@ export default function Proposal() {
   const loadData = async () => {
     if (web3 && router.query.id) {
       console.log('Fetching Proposal')
-      console.log(router.query)
       const id = router.query.id
       const prop = await fetchSingleProposal(id)
       setProposal(prop)
@@ -59,8 +57,12 @@ export default function Proposal() {
   }
 
   const vote = async (bool) => {
-    const response = await castVote(router.query.id, bool)
-    watchTx(response.hash, 'Casting Vote')
+    try {
+      const response = await castVote(router.query.id, bool)
+      watchTx(response.hash, 'Casting Vote')
+    } catch (error) {
+      addAlert('error', error.message)
+    }
   }
 
   useEffect(() => {
@@ -234,7 +236,11 @@ export default function Proposal() {
               </>
             ) : null}
             {proposal.state === 'Succeeded' ? (
-              <Button w="100%" m=".5em 0" onClick={() => queue(prop.id)}>
+              <Button
+                w="100%"
+                m=".5em 0"
+                onClick={() => queue(router.query.id)}
+              >
                 Queue Proposal
               </Button>
             ) : null}
@@ -244,7 +250,7 @@ export default function Proposal() {
                 w="100%"
                 m=".5em 0"
                 colorScheme="green"
-                onClick={() => execute(id)}
+                onClick={() => execute(router.query.id)}
                 disabled={proposal.eta * 1000 > new Date().getTime()}
               >
                 Execute Proposal
