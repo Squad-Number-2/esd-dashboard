@@ -13,17 +13,17 @@ const Page = ({ children, header, subheader, back }) => {
   return (
     <Flex direction="column" minHeight="100vh">
       <Head>
-        <title>{`Empty Set ${header ? ' - ' + header : ''}`}</title>
+        <title>{`DSU Money ${header ? ' - ' + header : ''}`}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@emptysetdollar" />
         <meta
           property="og:title"
-          content={`Empty Set ${header ? ' - ' + header : null}`}
+          content={`DSU Money ${header ? ' - ' + header : ''}`}
         />
         <meta
           property="og:description"
-          content="Empty Set issues a decentralized, censorship resistant, community owned stablecoin."
+          content="DSU is a decentralized, censorship resistant, community owned stablecoin."
         />
         <meta
           property="og:image"
