@@ -185,36 +185,47 @@ export default function Proposal() {
               Vote Information
             </Heading>
             <Divider mt="2" mb="4" borderWidth={1} borderColor={'black'} />
-            <Flex p=".5em 0 0">
-              <Avatar
-                size={'lg'}
-                src={proposer.image}
-                alt={'Team Avatar'}
-                pos={'relative'}
-              />
-              <Flex mx=".5em" flexDirection="column" justifyContent="center">
-                <Heading fontSize={'2xl'} fontFamily={'body'} mb="1">
-                  {proposer.name}
-                </Heading>
-                <Link
-                  isExternal="true"
-                  src={'https://twitter.com/' + proposer.twitter}
-                >
-                  <Text fontWeight={600} color={'gray.500'}>
-                    {proposer.twitter}
-                  </Text>
-                </Link>
-              </Flex>
-            </Flex>
-            <Divider m=".5em 0 0" />
+            <Heading fontSize="xl" fontWeight={'400'}>
+              {subheading(proposal)}
+            </Heading>
 
-            <Box p=".5em 0">
-              <Heading fontSize="lg">Votes for:</Heading>
-              <Text>{commas(proposal.for_votes)} ESS</Text>
-              <Heading fontSize="lg">Votes against:</Heading>
-              <Text>{commas(proposal.against_votes)} ESS</Text>
-            </Box>
-
+            {proposal.state != 'Pending' ? (
+              <>
+                <Divider m=".5em 0 0" />
+                <Flex p=".5em 0 0">
+                  <Avatar
+                    size={'lg'}
+                    src={proposer.image}
+                    alt={'Team Avatar'}
+                    pos={'relative'}
+                  />
+                  <Flex
+                    mx=".5em"
+                    flexDirection="column"
+                    justifyContent="center"
+                  >
+                    <Heading fontSize={'2xl'} fontFamily={'body'} mb="1">
+                      {proposer.name}
+                    </Heading>
+                    <Link
+                      isExternal="true"
+                      src={'https://twitter.com/' + proposer.twitter}
+                    >
+                      <Text fontWeight={600} color={'gray.500'}>
+                        {proposer.twitter}
+                      </Text>
+                    </Link>
+                  </Flex>
+                </Flex>
+                <Divider m=".5em 0 0" />
+                <Box p=".5em 0">
+                  <Heading fontSize="lg">Votes for:</Heading>
+                  <Text>{commas(proposal.for_votes)} ESS</Text>
+                  <Heading fontSize="lg">Votes against:</Heading>
+                  <Text>{commas(proposal.against_votes)} ESS</Text>
+                </Box>
+              </>
+            ) : null}
             {proposal.state === 'Active' ? (
               <>
                 <Button

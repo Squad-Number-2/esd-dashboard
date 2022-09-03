@@ -112,7 +112,13 @@ export default function Home() {
         return 'Cancelled'
         break
       case 'Pending':
-        return `Pending - Starts at #${proposal.startBlock}`
+        return (
+          <Text color="grey" fontSize="sm">
+            <Badge colorScheme="purple">Pending</Badge>{' '}
+            {` - Starts at block #${proposal.startBlock}`}
+          </Text>
+        )
+        return
         break
       case 'Active':
         return block && proposal ? (
@@ -313,12 +319,16 @@ export default function Home() {
               proposals.map((prop, id) => (
                 <Box p=".5em 0">
                   <Link
-                    key={'prop' + prop.id}
+                    key={'prop' + id}
                     onClick={() =>
-                      router.push(`/governance/proposal/${prop.id + 1}`)
+                      router.push(
+                        `/governance/proposal/${proposals.length - id}`
+                      )
                     }
                   >
-                    <Text fontSize="md">{`${prop.id + 1}. ${prop.title}`}</Text>
+                    <Text fontSize="md">{`${proposals.length - id}. ${
+                      prop.title
+                    }`}</Text>
                   </Link>
                   {subheading(prop)}
                 </Box>

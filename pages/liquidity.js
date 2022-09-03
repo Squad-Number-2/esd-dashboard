@@ -131,7 +131,7 @@ export default function Dollar() {
               <Tr>
                 <Th>Liquidity Pool</Th>
                 <Th isNumeric>Total Value Locked (TVL)</Th>
-                <Th isNumeric>APR</Th>
+                {/* <Th isNumeric>APR</Th> */}
                 <Th isNumeric> </Th>
               </Tr>
             </Thead>
@@ -147,7 +147,7 @@ export default function Dollar() {
                     </Flex>
                   </Td>
                   <Td isNumeric>${commas(poolData[1].tvl)} USD</Td>
-                  <Td isNumeric>{(poolData[1].apr * 100).toFixed(2)}%</Td>
+                  {/* <Td isNumeric>{(poolData[1].apr * 100).toFixed(2)}%</Td> */}
                   <Th isNumeric>
                     <ManageModal
                       pool={CURVE_DSU}
@@ -171,7 +171,7 @@ export default function Dollar() {
                     </Flex>
                   </Td>
                   <Td isNumeric>${commas(poolData[2].tvl)} USD</Td>
-                  <Td isNumeric>{(poolData[2].apr * 100).toFixed(2)}%</Td>
+                  {/* <Td isNumeric>{(poolData[2].apr * 100).toFixed(2)}%</Td> */}
                   <Th isNumeric>
                     <ManageV3Modal
                       account={account}
@@ -198,7 +198,7 @@ export default function Dollar() {
               <Tr>
                 <Th>Liquidity Pool</Th>
                 <Th isNumeric>Total Value Locked (TVL)</Th>
-                <Th isNumeric>APR</Th>
+                {/* <Th isNumeric>APR</Th> */}
                 <Th isNumeric> </Th>
               </Tr>
             </Thead>
@@ -217,7 +217,7 @@ export default function Dollar() {
                     </Flex>
                   </Td>
                   <Td isNumeric>${commas(poolData[0].tvl)} USD</Td>
-                  <Td isNumeric>{(poolData[0].apr * 100).toFixed(2)}%</Td>
+                  {/* <Td isNumeric>{(poolData[0].apr * 100).toFixed(2)}%</Td> */}
                   <Th isNumeric>
                     <ManageModal
                       pool={UNISWAP_DSU_ESS}
@@ -241,7 +241,7 @@ export default function Dollar() {
                     </Flex>
                   </Td>
                   <Td isNumeric>${commas(poolData[3].tvl)} USD</Td>
-                  <Td isNumeric>{(poolData[3].apr * 100).toFixed(2)}%</Td>
+                  {/* <Td isNumeric>{(poolData[3].apr * 100).toFixed(2)}%</Td> */}
                   <Th isNumeric>
                     <ManageV3Modal
                       account={account}

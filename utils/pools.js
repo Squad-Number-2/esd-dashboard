@@ -289,7 +289,6 @@ export const getIncentivizeRewards = async (contract) => {
 
   const rewardRate = await incentivizer.rewardRate()
   const rewardComplete = await incentivizer.rewardComplete()
-  console.log(parseFloat(ethers.utils.formatUnits(rewardRate, 18)))
   return {
     rewardRate: parseFloat(ethers.utils.formatUnits(rewardRate, 18)),
     rewardComplete: parseFloat(ethers.utils.formatUnits(rewardComplete, 18))
@@ -321,7 +320,6 @@ export const getV3EssTvl = async () => {
   )
 
   const tvl = parseInt(stakeBal) * essPrice + parseInt(wethBal) * wethPrice
-  console.log(tvl)
   return tvl
 }
 
@@ -351,7 +349,6 @@ export const getWETHPrice = async () => {
   )
 
   const wethPrice = parseInt(dollarBal) / parseInt(wethBal)
-  console.log('WETH Price', wethPrice)
   return wethPrice
 }
 

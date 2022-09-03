@@ -22,27 +22,17 @@ const enumerateProposalState = (state) => {
 export const fetchAllProposals = async () => {
   const oldProps = await fetchProposals(GOVERNORALPHA_OLD)
   const props = await fetchProposals(GOVERNORALPHA)
-  return [...oldProps, ...props]
+  return [...oldProps.slice(0, 3), ...props] // hardcode 3 prop count
 }
 
 export const getPropCount = async () => {
-  // Govs:
-  //GOVERNORALPHA
-  //GOVERNORALPHA_OLD
-
   const gov = new ethers.Contract(
     GOVERNORALPHA.address,
     GOVERNORALPHA.abi,
     web3
   )
   const newCount = parseInt(await gov.proposalCount())
-  const govOld = new ethers.Contract(
-    GOVERNORALPHA_OLD.address,
-    GOVERNORALPHA_OLD.abi,
-    web3
-  )
-  const oldCount = parseInt(await govOld.proposalCount())
-  return newCount + oldCount
+  return newCount + 3 // old count we want to show
 }
 
 export const fetchProposals = async (contract) => {
@@ -85,6 +75,7 @@ export const fetchProposals = async (contract) => {
     prop.against_votes = (parseFloat(p.againstVotes) / 1e18).toFixed(2)
     prop.id = i
     prop.eta = parseInt(p.eta)
+    prop.startBlock = p.startBlock.toNumber()
     prop.endBlock = p.endBlock.toNumber()
     data.push(prop)
   })
@@ -92,17 +83,19 @@ export const fetchProposals = async (contract) => {
   return data
 }
 
-export const fetchSingleProposal = async (id) => {
+export const fetchSingleProposal = async (propId) => {
   // Check if the propsal's index is on the new govenor
+  let id = propId
   let gov
   const govOld = new ethers.Contract(
     GOVERNORALPHA_OLD.address,
     GOVERNORALPHA_OLD.abi,
     web3
   )
-  const oldCount = parseInt(await govOld.proposalCount())
+  const oldCount = 3
 
   if (id > oldCount) {
+    id = id - oldCount
     gov = new ethers.Contract(GOVERNORALPHA.address, GOVERNORALPHA.abi, web3)
   } else {
     gov = govOld
@@ -111,7 +104,6 @@ export const fetchSingleProposal = async (id) => {
   // Get state via ID
   let {
     againstVotes,
-    canceled,
     endBlock,
     eta,
     executed,
