@@ -32,6 +32,8 @@ export const Web3Provider = (props) => {
     await connect(key)
     setProvider(key)
     registerProvider(ethereum)
+    window.localStorage.removeItem('walletconnect')
+    window.localStorage.removeItem('provider')
   }
   const disconnectWallet = () => {
     reset()
@@ -63,7 +65,8 @@ export const Web3Provider = (props) => {
 
   useEffect(() => {
     const func = async () => {
-      if (account && web3 && web3._network.chainId === 1) fetchENS(account)
+      if (account && web3 && web3._network && web3._network.chainId === 1)
+        fetchENS(account)
     }
     func()
   }, [account])

@@ -58,7 +58,7 @@ export default function Proposal() {
 
   const vote = async (bool) => {
     try {
-      const response = await castVote(router.query.id, bool)
+      const response = await castVote(router.query.id - 3, bool)
       watchTx(response.hash, 'Casting Vote')
     } catch (error) {
       addAlert('error', error.message)
@@ -250,7 +250,7 @@ export default function Proposal() {
               <Button
                 w="100%"
                 m=".5em 0"
-                onClick={() => queue(router.query.id)}
+                onClick={() => queue(router.query.id - 3)}
               >
                 Queue Proposal
               </Button>
@@ -261,7 +261,7 @@ export default function Proposal() {
                 w="100%"
                 m=".5em 0"
                 colorScheme="green"
-                onClick={() => execute(router.query.id)}
+                onClick={() => execute(router.query.id - 3)}
                 disabled={proposal.eta * 1000 > new Date().getTime()}
               >
                 Execute Proposal

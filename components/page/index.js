@@ -13,22 +13,21 @@ const Page = ({ children, header, subheader, back }) => {
   return (
     <Flex direction="column" minHeight="100vh">
       <Head>
-        <title>{`DSU Money ${header ? ' - ' + header : ''}`}</title>
+        <title>{`${
+          header ? 'DSU - ' + header : 'Digital Standard Unit'
+        }`}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@emptysetdollar" />
         <meta
           property="og:title"
-          content={`DSU Money ${header ? ' - ' + header : ''}`}
+          content={`DSU ${header ? ' - ' + header : ''}`}
         />
         <meta
           property="og:description"
-          content="DSU is a decentralized, censorship resistant, community owned stablecoin."
+          content={`DSU is a trust-minimized, fully backed, & collateral-efficient stablecoin.`}
         />
-        <meta
-          property="og:image"
-          content="https://app.emptyset.finance/image.png"
-        />
+        <meta property="og:image" content="https://app.dsu.money/image.png" />
       </Head>
       <Header />
 
