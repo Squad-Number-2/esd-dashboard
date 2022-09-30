@@ -21,7 +21,7 @@ import univ3Pool from './univ3Pool.json'
 import univ3Staker from './univ3Staker.json'
 
 import mainnet_addresses from './addresses.json'
-import testnet_addresses from './kovan_addresses.json'
+import testnet_addresses from './goerli_addresses.json'
 import { web3 } from '../utils/ethers'
 
 const abi = {
@@ -103,7 +103,7 @@ Object.keys(abi).map((i) => {
 })
 
 const contracts = () => {
-  if (web3 && web3._network && web3._network.chainId === 42) return testnet
+  if (web3 && web3._network && web3._network.chainId != 5) return testnet
   return mainnet
 }
 

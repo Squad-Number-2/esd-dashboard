@@ -32,12 +32,12 @@ export const Web3Provider = (props) => {
     await connect(key)
     setProvider(key)
     registerProvider(ethereum)
-    window.localStorage.removeItem('walletconnect')
-    window.localStorage.removeItem('provider')
   }
   const disconnectWallet = () => {
     reset()
     setProvider(false)
+    window.localStorage.removeItem('walletconnect')
+    window.localStorage.removeItem('provider')
   }
 
   // Check to see if we've set a provider in local Storage and connect

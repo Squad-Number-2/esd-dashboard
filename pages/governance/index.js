@@ -50,8 +50,6 @@ export default function Home() {
   const [delegate, setDelegate] = useState(false)
   const [block, setBlock] = useState(false)
 
-  const { width } = useViewport()
-
   useEffect(() => {
     const func = async () => {
       if (web3) {
@@ -144,7 +142,14 @@ export default function Home() {
         )
         break
       case 'Succeeded':
-        return 'Succeeded - Waiting for proposal to be Queued'
+        return (
+          <Text fontSize="sm">
+            <Badge colorScheme="green" fontSize="1em">
+              Succeeded
+            </Badge>
+            {' - Waiting for proposal to be Queued'}
+          </Text>
+        )
         break
       case 'Queued':
         return proposal.eta * 1000 > now ? (

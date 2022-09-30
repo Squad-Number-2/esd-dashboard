@@ -28,13 +28,13 @@ export default function App({ Component, pageProps }) {
         chainId={chainID}
         connectors={{
           injected: {
-            chainId: [1, 42]
+            chainId: [1, 5]
           },
           walletconnect: {
-            chainId: [1, 42],
+            chainId: [1, 5],
             rpc: {
               1: 'https://eth-mainnet.alchemyapi.io/v2/B6PbmuuGJ3KNQXSmN_WB3FGzAxCtCttS',
-              42: 'https://kovan.infura.io/v3/0de24f0d71624f808c0cf9941e07ddd7'
+              5: 'https://eth-goerli.g.alchemy.com/v2/OKAsz_QI5wU2AQPUEFQCTqd_ZNLCw7c9'
             }
           }
         }}

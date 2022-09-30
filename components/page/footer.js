@@ -8,7 +8,7 @@ const Footer = () => {
   const { web3 } = useWeb3()
   const router = useRouter()
   return (
-    <Box centerContent w="100%" borderTop="2px solid #000">
+    <Box w="100%" borderTop="2px solid #000">
       <Section>
         <Flex
           direction={{ base: 'column', md: 'row' }}
@@ -76,10 +76,10 @@ const Footer = () => {
             </svg>
             <a href="https://emptyset.finance" target={'_blank'}>
               <Box display={'flex'} alignItems="center" justifyContent={'end'}>
-                <Text fontSize={'2xl'} marginRight="2">{`by`}</Text>
+                <Text fontSize={'xl'} marginRight="2">{`by`}</Text>
 
                 <svg
-                  width="200"
+                  width="130"
                   viewBox="0 0 778 134"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"

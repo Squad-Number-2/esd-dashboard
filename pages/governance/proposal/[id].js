@@ -15,7 +15,9 @@ import {
   castVote,
   queue,
   execute,
-  fetchAddressProfile
+  fetchAddressProfile,
+  fetchDelegate,
+  hasVoted
 } from '../../../utils/governor'
 import { commas } from '../../../utils/helpers'
 import ReactMarkdown from 'react-markdown'
@@ -23,16 +25,15 @@ import gfm from 'remark-gfm'
 
 import {
   Flex,
-  Grid,
   Box,
   Link,
   Heading,
   Text,
   Button,
   Divider,
-  Center,
   Skeleton,
-  Avatar
+  Avatar,
+  Badge
 } from '@chakra-ui/react'
 
 export default function Proposal() {
@@ -42,6 +43,8 @@ export default function Proposal() {
 
   const [proposal, setProposal] = useState({})
   const [proposer, setProposer] = useState({})
+  const [voter, setVoter] = useState(false)
+  const [block, setBlock] = useState(false)
 
   const loadData = async () => {
     if (web3 && router.query.id) {
@@ -49,16 +52,21 @@ export default function Proposal() {
       const id = router.query.id
       const prop = await fetchSingleProposal(id)
       setProposal(prop)
-      console.log(prop)
-
+      setBlock(await web3.getBlock())
+      console.log('Proposal: ', prop)
       const user = await fetchAddressProfile(prop.proposer)
       setProposer(user)
+
+      // Fetch voting data
+      const delegate = await fetchDelegate(account)
+      const voted = await hasVoted(prop, account)
+      setVoter({ isDelegate: delegate === account, hasVoted: voted })
     }
   }
 
   const vote = async (bool) => {
     try {
-      const response = await castVote(router.query.id - 3, bool)
+      const response = await castVote(router.query.id, bool)
       watchTx(response.hash, 'Casting Vote')
     } catch (error) {
       addAlert('error', error.message)
@@ -73,6 +81,7 @@ export default function Proposal() {
   }, [web3, router])
 
   const subheading = (proposal) => {
+    const now = new Date().getTime()
     switch (proposal.state) {
       case 'Cancelled':
         return 'Cancelled'
@@ -81,7 +90,20 @@ export default function Proposal() {
         return `Pending - Starts at #${proposal.startBlock}`
         break
       case 'Active':
-        return `Active - Voting ends at #${proposal.endBlock}`
+        return (
+          <Text fontSize="sm">
+            <Badge colorScheme="green" fontSize="1em">
+              Active
+            </Badge>{' '}
+            {`Voting ends in ${
+              block &&
+              formatDistance(
+                now + (proposal.endBlock - block.number) * 13000,
+                now
+              )
+            }`}
+          </Text>
+        )
         break
       case 'Defeated':
         return (
@@ -91,19 +113,48 @@ export default function Proposal() {
         )
         break
       case 'Succeeded':
-        return 'Succeeded - Waiting for proposal to be Queued'
+        return (
+          <Text fontSize="sm">
+            <Badge colorScheme="green" fontSize="1em">
+              Succeeded
+            </Badge>
+            {' - Waiting for proposal to be Queued'}
+          </Text>
+        )
         break
       case 'Queued':
-        const now = new Date().getTime()
-        return proposal.eta * 1000 > now
-          ? `Queued - Executable in ${formatDistance(proposal.eta * 1000, now)}`
-          : `Queued - Ready to Execute`
+        return proposal.eta * 1000 > now ? (
+          <Text fontSize="sm">
+            <Badge colorScheme="pink">{`Executable in ${formatDistance(
+              proposal.eta * 1000,
+              now
+            )}`}</Badge>
+          </Text>
+        ) : (
+          <Text fontSize="md">
+            <Badge colorScheme="pink" fontSize="1em">
+              Ready to Execute
+            </Badge>
+          </Text>
+        )
         break
       case 'Expired':
-        return 'Expired'
+        return (
+          <Text fontSize="sm">
+            <Badge colorScheme="grey" fontSize="1em">
+              Expired
+            </Badge>
+          </Text>
+        )
         break
       case 'Executed':
-        return 'Executed - Proposal has been executed'
+        return (
+          <Text fontSize="sm">
+            <Badge colorScheme="blue" fontSize="1em">
+              Executed
+            </Badge>
+          </Text>
+        )
         break
       default:
         break
@@ -226,31 +277,13 @@ export default function Proposal() {
                 </Box>
               </>
             ) : null}
-            {proposal.state === 'Active' ? (
-              <>
-                <Button
-                  colorScheme="green"
-                  w="100%"
-                  m=".5em 0"
-                  onClick={() => vote(true)}
-                >
-                  Vote for Proposal
-                </Button>
-                <Button
-                  colorScheme="red"
-                  w="100%"
-                  m=".5em 0"
-                  onClick={() => vote(false)}
-                >
-                  Vote against Proposal
-                </Button>
-              </>
-            ) : null}
+
+            {proposal.state === 'Active' ? handleActive(voter, vote) : null}
             {proposal.state === 'Succeeded' ? (
               <Button
                 w="100%"
                 m=".5em 0"
-                onClick={() => queue(router.query.id - 3)}
+                onClick={() => queue(router.query.id)}
               >
                 Queue Proposal
               </Button>
@@ -261,7 +294,7 @@ export default function Proposal() {
                 w="100%"
                 m=".5em 0"
                 colorScheme="green"
-                onClick={() => execute(router.query.id - 3)}
+                onClick={() => execute(router.query.id)}
                 disabled={proposal.eta * 1000 > new Date().getTime()}
               >
                 Execute Proposal
@@ -272,4 +305,52 @@ export default function Proposal() {
       </Section>
     </Page>
   )
+}
+
+const handleActive = (voter, vote) => {
+  const { isDelegate, hasVoted } = voter
+  if (!isDelegate) {
+    return (
+      <>
+        <Text>You need to be a delegate to vote</Text>
+      </>
+    )
+  } else if (isDelegate && !hasVoted) {
+    return (
+      <>
+        <Button
+          colorScheme="green"
+          w="100%"
+          m=".5em 0"
+          onClick={() => vote(true)}
+        >
+          Vote for Proposal
+        </Button>
+        <Button
+          colorScheme="red"
+          w="100%"
+          m=".5em 0"
+          onClick={() => vote(false)}
+        >
+          Vote against Proposal
+        </Button>
+      </>
+    )
+  } else if (isDelegate && hasVoted) {
+    const votes = parseInt(hasVoted.votes.toString()) / 1e18
+    return (
+      <>
+        <Divider m=".5em 0 0.5em" />
+
+        <Heading fontSize="lg">Your Vote</Heading>
+        <Button
+          colorScheme={hasVoted.support ? 'green' : 'red'}
+          w="100%"
+          m=".5em 0"
+        >
+          {`${commas(votes)} ${hasVoted.support ? 'for' : 'against'} proposal`}
+        </Button>
+      </>
+    )
+  }
 }

@@ -4,6 +4,7 @@ import fetch from 'isomorphic-fetch'
 import contracts from '../contracts'
 const { GOVERNORALPHA, GOVERNORALPHA_OLD, STAKE } = contracts()
 import { web3 } from '../utils/ethers'
+import { composePlugins } from 'next-compose-plugins/lib/compose'
 
 const enumerateProposalState = (state) => {
   const proposalStates = [
@@ -136,6 +137,7 @@ export const fetchSingleProposal = async (propId) => {
   // Break up description string for title/desc
   const splitInfo = description.split(/# |\n/g)
   return {
+    id,
     title: splitInfo[1] || 'Untitled',
     description: splitInfo[2] || 'No description.',
     details: description.split('\n').slice(1).join('\n') || 'No details.',
@@ -148,6 +150,24 @@ export const fetchSingleProposal = async (propId) => {
     for_votes,
     against_votes,
     actions
+  }
+}
+
+export const hasVoted = async (prop, address) => {
+  const gov = new ethers.Contract(
+    GOVERNORALPHA.address,
+    GOVERNORALPHA.abi,
+    web3
+  )
+  const propFilter = gov.filters.VoteCast()
+  const votes = await gov.queryFilter(propFilter, prop.startBlock, 'latest')
+  const hasVoted = votes
+    .filter((item) => item.args.proposalId.toNumber() === prop.id)
+    .filter((item) => item.args?.voter === address)[0]
+  if (hasVoted) {
+    return { ...hasVoted.args }
+  } else {
+    return false
   }
 }
 
@@ -185,7 +205,12 @@ export const fetchDelegations = async () => {
 
   let delegateAccounts = {}
   if (!voteChanged) return []
-
+  console.log(
+    voteChanged.filter(
+      (item) =>
+        item.args.delegate === '0x750eb0759F56a55cF0bb528fe4EFc6f8cFd27C56'
+    )
+  )
   voteChanged.map((event) => {
     const { delegate, newBalance } = event.args
     delegateAccounts[delegate] = newBalance
@@ -251,7 +276,7 @@ export const castVote = async (proposal, vote) => {
     GOVERNORALPHA.abi,
     signer
   )
-  return await gov.castVote(proposal, vote)
+  return await gov.castVote(proposal - 3, vote)
 }
 
 export const propose = async (targets, values, signatures, calldatas, desc) => {
@@ -274,20 +299,12 @@ export const queue = async (id) => {
   const signer = web3.getSigner()
 
   try {
-    // Make sure ID is in range
-    const govOld = new ethers.Contract(
-      GOVERNORALPHA_OLD.address,
-      GOVERNORALPHA_OLD.abi,
-      web3
-    )
-    const oldCount = parseInt(await govOld.proposalCount())
-
     const gov = new ethers.Contract(
       GOVERNORALPHA.address,
       GOVERNORALPHA.abi,
       signer
     )
-    return await gov.queue(id - oldCount)
+    return await gov.queue(id - 3)
   } catch (e) {
     console.log(e)
     return alert(e.message)
@@ -298,20 +315,12 @@ export const execute = async (id) => {
   const signer = web3.getSigner()
 
   try {
-    // Make sure ID is in range
-    const govOld = new ethers.Contract(
-      GOVERNORALPHA_OLD.address,
-      GOVERNORALPHA_OLD.abi,
-      web3
-    )
-    const oldCount = parseInt(await govOld.proposalCount())
-
     const gov = new ethers.Contract(
       GOVERNORALPHA.address,
       GOVERNORALPHA.abi,
       signer
     )
-    return await gov.execute(id - oldCount)
+    return await gov.execute(id - 3)
   } catch (e) {
     console.log(e)
     return alert(e.message)
