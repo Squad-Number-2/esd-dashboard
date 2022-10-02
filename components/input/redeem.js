@@ -6,15 +6,31 @@ import contracts from '../../contracts'
 import useAlerts from '../../contexts/useAlerts'
 
 import { setApproval } from '../../utils/ethers'
-import { commas } from '../../utils/helpers'
+import { commas, isNumeric } from '../../utils/helpers'
 import { redeem } from '../../utils/reserve'
+import { BigNumber, utils } from 'ethers'
 
 export default function Mint({ balance, allowance, estimates }) {
   const { watchTx } = useAlerts()
-  const [value, setValue] = useState('')
+
+  const [valid, setValid] = useState(true)
+  const [value, setValue] = useState({
+    bn: BigNumber.from(0),
+    string: '0.0'
+  })
+
+  const updateValue = (input) => {
+    if (isNumeric(input)) {
+      const bn = utils.parseUnits(input, 18)
+      setValid(true)
+      return setValue({ bn, string: input.toString() })
+    }
+    setValid(false)
+    return setValue({ ...value, string: input.toString() })
+  }
 
   const setMax = () => {
-    setValue(parseFloat(balance))
+    updateValue(balance)
   }
 
   const executeApprove = async () => {
@@ -26,9 +42,12 @@ export default function Mint({ balance, allowance, estimates }) {
   }
 
   const executeRedeem = async () => {
-    const response = await redeem(value.toString())
+    const response = await redeem(value.bn)
     watchTx(response.hash, 'Redeem USDC')
-    setValue('')
+    setValue({
+      bn: BigNumber.from(0),
+      string: '0.0'
+    })
   }
 
   return (
@@ -52,9 +71,9 @@ export default function Mint({ balance, allowance, estimates }) {
             border={0}
             _focus={{ border: 0 }}
             fontWeight={'600'}
-            value={value}
-            isInvalid={parseFloat(value) > parseFloat(balance)}
-            onChange={(e) => setValue(e.target.value)}
+            value={value.string}
+            isInvalid={!valid}
+            onChange={(e) => updateValue(e.target.value)}
           />
           <Button
             onClick={() => setMax()}

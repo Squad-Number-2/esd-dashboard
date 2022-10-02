@@ -6,15 +6,31 @@ import contracts from '../../contracts'
 import useAlerts from '../../contexts/useAlerts'
 
 import { setApproval } from '../../utils/ethers'
-import { commas } from '../../utils/helpers'
+import { commas, isNumeric } from '../../utils/helpers'
 import { mint } from '../../utils/reserve'
+import { BigNumber, utils } from 'ethers'
 
 export default function Mint({ balance, allowance, estimates }) {
   const { watchTx } = useAlerts()
-  const [value, setValue] = useState('')
+
+  const [valid, setValid] = useState(true)
+  const [value, setValue] = useState({
+    bn: BigNumber.from(0),
+    string: '0.0'
+  })
+
+  const updateValue = (input) => {
+    if (isNumeric(input)) {
+      const bn = utils.parseUnits(input, 18)
+      setValid(true)
+      return setValue({ bn, string: input.toString() })
+    }
+    setValid(false)
+    return setValue({ ...value, string: input.toString() })
+  }
 
   const setMax = () => {
-    setValue(parseFloat(balance))
+    updateValue(balance)
   }
 
   const executeApprove = async () => {
@@ -24,10 +40,14 @@ export default function Mint({ balance, allowance, estimates }) {
     )
     watchTx(response.hash, 'Approving USDC')
   }
+
   const executeMint = async () => {
-    const response = await mint(value.toString())
+    const response = await mint(value.bn)
     watchTx(response.hash, 'Minting DSU')
-    setValue('')
+    setValue({
+      bn: BigNumber.from(0),
+      string: '0.0'
+    })
   }
 
   return (
@@ -49,9 +69,9 @@ export default function Mint({ balance, allowance, estimates }) {
             border={0}
             _focus={{ border: 0 }}
             fontWeight={'600'}
-            value={value}
-            isInvalid={parseFloat(value) > parseFloat(balance)}
-            onChange={(e) => setValue(e.target.value)}
+            value={value.string}
+            isInvalid={!valid}
+            onChange={(e) => updateValue(e.target.value)}
           />
           <Button
             onClick={() => setMax()}
@@ -88,7 +108,7 @@ export default function Mint({ balance, allowance, estimates }) {
             border="2px solid #000"
             variant={'outline'}
             colorScheme={'black'}
-            disabled={parseFloat(value) > parseFloat(balance)}
+            disabled={!valid}
             onClick={() => executeMint()}
           >
             Mint DSU

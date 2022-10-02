@@ -1,7 +1,7 @@
 export const commas = (x) => {
   return parseFloat(x).toLocaleString('en-US', {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 2
   })
 }
 
@@ -15,4 +15,12 @@ Number.prototype.toFixedNoRounding = function (n) {
   }
   const b = n - (a.length - dot) + 1
   return b > 0 ? a + '0'.repeat(b) : a
+}
+
+export function isNumeric(str) {
+  if (typeof str != 'string') return false // we only process strings!
+  return (
+    !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+    !isNaN(parseFloat(str))
+  ) // ...and ensure strings of whitespace fail
 }

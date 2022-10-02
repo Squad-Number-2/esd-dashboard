@@ -7,12 +7,6 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Flex,
-  Box,
-  Center,
-  Image,
-  Link,
-  Heading,
   Text,
   useDisclosure,
   Button,
@@ -27,14 +21,33 @@ import useAlerts from '../../contexts/useAlerts'
 
 import { web3, setApproval } from '../../utils/ethers'
 import { mint } from '../../utils/reserve'
+import { BigNumber } from 'ethers'
 
 export default function Mint({ balance, allowance }) {
   const { watchTx } = useAlerts()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [value, setValue] = useState('')
+
+  const [valid, setValid] = useState(true)
+  const [value, setValue] = useState({
+    bn: BigNumber.from(0),
+    string: '0.0'
+  })
+
+  const updateValue = (input) => {
+    if (input.match(/^\d{1,}(\.\d{0,4})?$/)) {
+      const bn = BigNumber.from(input).mul(
+        BigNumber.from('10').pow(BigNumber.from(6))
+      )
+      console.log(input)
+      setValid(true)
+      return setValue({ bn, string: input.toString() })
+    }
+    setValid(false)
+    return setValue({ ...value, string: input.toString() })
+  }
 
   const setMax = () => {
-    setValue(parseFloat(balance))
+    updateValue(balance)
   }
 
   const executeApprove = async () => {
@@ -76,9 +89,9 @@ export default function Mint({ balance, allowance }) {
             <InputGroup>
               <Input
                 placeholder="0.00"
-                value={value}
+                value={value.string}
                 isInvalid={parseFloat(value) > parseFloat(balance)}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={(e) => updateValue(e.target.value)}
               />
               <InputRightAddon>
                 <Button onClick={() => setMax()} variant="ghost">
@@ -98,7 +111,7 @@ export default function Mint({ balance, allowance }) {
               </Button>
             ) : (
               <Button
-                disabled={parseFloat(value) > parseFloat(balance)}
+                disabled={valid}
                 colorScheme="green"
                 onClick={() => executeMint()}
               >

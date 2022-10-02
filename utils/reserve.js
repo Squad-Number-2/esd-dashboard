@@ -1,12 +1,10 @@
 import { Contract, Provider } from 'ethers-multicall'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import contracts from '../contracts'
 import { web3 } from '../utils/ethers'
 import fetch from 'isomorphic-fetch'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
-
-const BigNumber = ethers.BigNumber
 
 export const gasEstimates = async () => {
   const gas = await fetcher(
@@ -24,7 +22,7 @@ export const gasEstimates = async () => {
   return { mint, redeem, approve }
 }
 
-export const mint = async (rawAmount) => {
+export const mint = async (bn) => {
   const signer = web3.getSigner()
   // Token contract single
   const reserve = new ethers.Contract(
@@ -32,16 +30,16 @@ export const mint = async (rawAmount) => {
     contracts().RESERVE.abi,
     signer
   )
-  const amount = ethers.utils.parseUnits(rawAmount, 18)
+
   try {
-    const response = await reserve.mint(amount, { gasLimit: 500000 })
+    const response = await reserve.mint(bn, { gasLimit: 500000 })
     return response
   } catch (e) {
     return e
   }
 }
 
-export const redeem = async (rawAmount) => {
+export const redeem = async (bn) => {
   const signer = web3.getSigner()
   // Token contract single
   const reserve = new ethers.Contract(
@@ -49,9 +47,9 @@ export const redeem = async (rawAmount) => {
     contracts().RESERVE.abi,
     signer
   )
-  const amount = ethers.utils.parseUnits(rawAmount, 18)
+
   try {
-    const response = await reserve.redeem(amount, { gasLimit: 500000 })
+    const response = await reserve.redeem(bn, { gasLimit: 500000 })
     return response
   } catch (e) {
     // Parse Error & hit notification lib
