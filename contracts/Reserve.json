@@ -3,9 +3,15 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "borrowAmount",
         "type": "uint256"
       }
     ],
@@ -117,6 +123,32 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "newPaused",
+        "type": "bool"
+      }
+    ],
+    "name": "PausedUpdate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newPauser",
+        "type": "address"
+      }
+    ],
+    "name": "PauserUpdate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "account",
@@ -156,19 +188,6 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "newRedemptionTax",
-        "type": "uint256"
-      }
-    ],
-    "name": "RedemptionTaxUpdate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
         "internalType": "address",
         "name": "newRegistry",
         "type": "address"
@@ -189,17 +208,11 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "settleAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "proceedAmount",
+        "name": "repayAmount",
         "type": "uint256"
       }
     ],
-    "name": "Settle",
+    "name": "Repay",
     "type": "event"
   },
   {
@@ -260,6 +273,7 @@
   {
     "constant": false,
     "inputs": [
+      { "internalType": "address", "name": "account", "type": "address" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
     "name": "borrow",
@@ -288,7 +302,9 @@
   },
   {
     "constant": true,
-    "inputs": [],
+    "inputs": [
+      { "internalType": "address", "name": "borrower", "type": "address" }
+    ],
     "name": "debt",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "payable": false,
@@ -374,7 +390,25 @@
     "constant": true,
     "inputs": [],
     "name": "owner",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [{ "internalType": "address", "name": "o", "type": "address" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "paused",
+    "outputs": [{ "internalType": "bool", "name": "p", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "pauser",
+    "outputs": [{ "internalType": "address", "name": "p", "type": "address" }],
     "payable": false,
     "stateMutability": "view",
     "type": "function"
@@ -409,24 +443,6 @@
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [],
-    "name": "redemptionTax",
-    "outputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "value", "type": "uint256" }
-        ],
-        "internalType": "struct Decimal.D256",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "constant": false,
     "inputs": [
       { "internalType": "address", "name": "makerToken", "type": "address" },
@@ -445,10 +461,22 @@
     "inputs": [],
     "name": "registry",
     "outputs": [
-      { "internalType": "contract IRegistry", "name": "", "type": "address" }
+      { "internalType": "contract IRegistry", "name": "reg", "type": "address" }
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "address", "name": "account", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "repay",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -491,14 +519,19 @@
   },
   {
     "constant": false,
+    "inputs": [{ "internalType": "bool", "name": "newPaused", "type": "bool" }],
+    "name": "setPaused",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "newRedemptionTax",
-        "type": "uint256"
-      }
+      { "internalType": "address", "name": "newPauser", "type": "address" }
     ],
-    "name": "setRedemptionTax",
+    "name": "setPauser",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -517,10 +550,8 @@
   },
   {
     "constant": false,
-    "inputs": [
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
-    ],
-    "name": "settle",
+    "inputs": [],
+    "name": "setup",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -546,6 +577,15 @@
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "totalDebt",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   }
 ]

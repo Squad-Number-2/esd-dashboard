@@ -19,6 +19,7 @@ import batcher from './erc721batcher.json'
 import univ3Positions from './univ3positions.json'
 import univ3Pool from './univ3Pool.json'
 import univ3Staker from './univ3Staker.json'
+import wrapOnlyBatcher from './wrapOnlyBatcher.json'
 
 import mainnet_addresses from './addresses.json'
 import testnet_addresses from './goerli_addresses.json'
@@ -41,7 +42,8 @@ const abi = {
   BATCHER: batcher,
   UNIV3_POSITIONS: univ3Positions,
   UNIV3_STAKER: univ3Staker,
-  GOVERNORALPHA_OLD: GovernorAlphaABI
+  GOVERNORALPHA_OLD: GovernorAlphaABI,
+  WRAP_ONLY_BATCHER: wrapOnlyBatcher
 }
 // Hardcode Pools & Vestings
 let mainnet = {
@@ -95,6 +97,7 @@ let testnet = {
     address: 'mock'
   }
 }
+
 Object.keys(abi).map((i) => {
   testnet[i] = {
     address: testnet_addresses[i] ? testnet_addresses[i] : 'mock',
@@ -103,7 +106,7 @@ Object.keys(abi).map((i) => {
 })
 
 const contracts = () => {
-  if (web3 && web3._network && web3._network.chainId != 5) return testnet
+  if (web3 && web3._network && web3._network.chainId === 5) return testnet
   return mainnet
 }
 

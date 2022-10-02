@@ -189,14 +189,20 @@ export default function Home() {
               {reserveData.balance ? `$${commas(reserveData.balance)}` : '--'}
             </DataBox>
             <DataBox title="Protocol Revenue">
-              {reserveData.revenue ? `$${commas(reserveData.revenue)}` : '--'}
-            </DataBox>
-            <DataBox title="Approved DSU">
-              {reserveData.outstanding
-                ? `${commas(reserveData.outstanding)}`
+              {reserveData.revenue
+                ? `$${commas(Math.abs(reserveData.revenue))}`
                 : '--'}
             </DataBox>
-            <DataBox title="Outstanding Assets">--</DataBox>
+            <DataBox title="Low Gas Mintable">
+              {reserveData.outstanding
+                ? `${commas(reserveData.debt - reserveData.outstanding)}`
+                : '--'}
+            </DataBox>
+            <DataBox title="Outstanding Assets">
+              {reserveData.outstanding
+                ? `${commas(reserveData.outstanding)} USDC`
+                : '--'}
+            </DataBox>
           </Grid>
         </Box>
       </Section>

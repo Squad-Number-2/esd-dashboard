@@ -70,21 +70,28 @@ export const getData = async (rawAmount) => {
     contracts().DOLLAR.abi,
     web3
   )
+  const usdc = new ethers.Contract(
+    contracts().USDC.address,
+    contracts().USDC.abi,
+    web3
+  )
   try {
     // Why do these calls return .value apart from rbResponse
     const rrResponse = await reserve.reserveRatio()
-    console.log(rrResponse[0].toString())
 
     const rbResponse = await reserve.reserveBalance()
     const rpResponse = await reserve.redeemPrice()
     const tsResponse = await dollar.totalSupply()
 
-    // Get current balance of fronted DSU
-    const batcherBalance = await dollar.balanceOf(
-      '0x0B663CeaCEF01f2f88EB7451C70Aa069f19dB997'
+    // Outsanding assets in the natcher
+    const batcherBalance = await usdc.balanceOf(
+      contracts().WRAP_ONLY_BATCHER.address
     )
 
-    const trueBalance = tsResponse.sub(batcherBalance)
+    // Total DSU Debt mintable
+    const totalDebt = await reserve.totalDebt()
+    //  Supply minus Debt
+    const trueBalance = tsResponse.sub(totalDebt)
 
     const revenue =
       parseFloat(ethers.utils.formatUnits(rbResponse, 6)) -
@@ -94,7 +101,8 @@ export const getData = async (rawAmount) => {
       balance: ethers.utils.formatUnits(rbResponse, 6),
       price: ethers.utils.formatUnits(rpResponse.value, 18),
       revenue,
-      outstanding: ethers.utils.formatUnits(batcherBalance, 18)
+      outstanding: ethers.utils.formatUnits(batcherBalance, 6),
+      debt: ethers.utils.formatUnits(totalDebt, 18)
     }
   } catch (e) {
     // Parse Error & hit notification lib
