@@ -38,7 +38,7 @@ export default function Mint({ account, esd, esds }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [value, setValue] = useState('')
 
-  const allowance = useContractAllowance(V1_DOLLAR.address, MIGRATOR.address)
+  const allowance = useContractAllowance('V1_DOLLAR', 'MIGRATOR')
 
   const executeApprove = async () => {
     const response = await setApproval(V1_DOLLAR.address, MIGRATOR.address)

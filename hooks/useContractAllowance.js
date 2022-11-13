@@ -11,7 +11,7 @@ const currentAllowance = (contract, spender, digits, fixed) => {
   let [allowance, setAllowance] = useState(0)
 
   const getAllowance = async () => {
-    if (contracts()[contract].address === 'mock') return 0 // Shitty mock for multinetwork
+    if (!contracts()[contract]) return 0 // Shitty mock for multinetwork
     return await fetchAllowance(
       account,
       contracts()[contract].address,
