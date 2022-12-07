@@ -87,38 +87,43 @@ export default function Home() {
             m="0em 0em 1em"
           >
             <Flex>
-              <Box w="50%" pr="10px">
+              <Box w="70%" pr="10px">
                 <Heading fontSize="2xl">
-                  Migrate ESD V1 tokens to Empty Set V2.
+                  Migration from ESD to ESS has concluded.
                 </Heading>
                 <Text m="1em 0em 0em">
-                  Empty Set has recently upgraded. Click the migrate button to
-                  burn your ESD V1 tokens and receive the equivalent ESS. This
-                  process is irreversible.
+                  {`Following months of disucssion on the forum & discord, the 
+                  Emptyset DAO voted to shutdown the migration pathway from ESD (V1) to ESS (V2). You are 
+                  still able to buy, sell, & transfer your ESD but it can not be migrated to ESS nor does it 
+                  have voting rights in the current DAO.`}
                 </Text>
               </Box>
-              <Box w="50%">
-                <Heading fontSize="lg">Your V1 Balance</Heading>
-                <Flex m="1em 0em 0em">
-                  <Stat w="fit-content">
-                    <StatLabel>Wallet ESD</StatLabel>
-                    <Skeleton isLoaded={oldDollarBalance} mr="10px">
-                      <StatNumber>ø {commas(oldDollarBalance)}</StatNumber>
-                    </Skeleton>
-                  </Stat>
-                  <Stat>
-                    <StatLabel>Bonded ESD (ESDS)</StatLabel>
-                    <Skeleton isLoaded={oldDaoBalance} mr="10px">
-                      <StatNumber>ø {commas(oldDaoBalance)}</StatNumber>
-                    </Skeleton>
-                  </Stat>
-                </Flex>
-                <br />
-                <MigrationModal
-                  account={account}
-                  esd={oldDollarBalance}
-                  esds={oldDaoBalance}
-                />
+              <Box
+                w="30%"
+                display={'flex'}
+                flexDirection={'column'}
+                justifyContent={'space-around'}
+              >
+                <Link href={'/governance/proposal/5'}>
+                  <Heading fontSize="lg">{`Governance Vote →`} </Heading>
+                </Link>
+
+                <Link
+                  href={
+                    'https://www.emptyset.xyz/t/close-esd-ess-migration-pathway/347'
+                  }
+                  target={'_blank'}
+                >
+                  <Heading fontSize="lg">{`EIP Discussion →`} </Heading>
+                </Link>
+                <Link
+                  href={
+                    'https://app.uniswap.org/#/swap?inputCurrency=0x36f3fd68e7325a35eb768f1aedaae9ea0689d723&outputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&chain=mainnet'
+                  }
+                  target={'_blank'}
+                >
+                  <Heading fontSize="lg">{`Trade ESD →`} </Heading>
+                </Link>
               </Box>
             </Flex>
           </Box>
