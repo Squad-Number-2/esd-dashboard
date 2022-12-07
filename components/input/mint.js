@@ -50,6 +50,13 @@ export default function Mint({ balance, allowance, estimates }) {
     })
   }
 
+  const isInvalid = () => {
+    if (value.string === '0.0') return false
+    if (0 >= parseFloat(value.string)) return 'Value too low'
+    if (balance < parseFloat(value.string)) return 'Balance too low'
+    return false
+  }
+
   return (
     <Box maxW={'340px'} mr={5} mb={3}>
       <Text fontSize={'lg'} fontWeight={500}>
@@ -108,10 +115,10 @@ export default function Mint({ balance, allowance, estimates }) {
             border="2px solid #000"
             variant={'outline'}
             colorScheme={'black'}
-            disabled={!valid}
+            disabled={isInvalid()}
             onClick={() => executeMint()}
           >
-            Mint DSU
+            {isInvalid() ? isInvalid() : 'Mint DSUs'}
           </Button>
         )}
       </Flex>
